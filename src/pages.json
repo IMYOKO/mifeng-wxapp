@@ -5,7 +5,14 @@
 		{ "path": "pages/advertise/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
 		{ "path": "pages/user/index", "style": { "navigationBarTitleText": "蜜蜂广告" } }
 	],
-	"subPackages": [],
+	"subPackages": [
+		{
+			"root": "pages-home",
+			"pages": [
+				{ "path": "fxUs", "style": { "navigationBarTitleText": "发现我们" } }
+			]
+		}
+	],
 	"tabBar": {
 		"color": "#999",
 		"selectedColor": "#FFD602",

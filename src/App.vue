@@ -15,7 +15,7 @@
 <style lang="less">
 page {
 	height: 100%;
-	background: #f1f2f8;
+	background: #F6F6F6;
 }
 .clearfix {
 	zoom: 1;

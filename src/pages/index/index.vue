@@ -1,6 +1,6 @@
 <template>
 	<view class="home">
-		<view class="banner-wrapper" v-if="bannerItem.length > 0">
+		<view class="banner-wrapper">
 			<swiper class="swiper"
 				:indicator-dots="indicatorDots"
 				:indicator-active-color="'#FFD602'"
@@ -62,7 +62,7 @@ export default {
 			console.log('clickApplyCoop')
 		},
 		clickFindUs () {
-			console.log('clickFindUs')
+			this.$CommonJs.pathTo('/pages-home/fxUs')
 		},
 		wexinlogin () {
 			uni.login({
@@ -92,18 +92,20 @@ export default {
 
 <style lang="less" scoped>
 .home {
+	height: 100%;
+	background: #fff;
+
 	.banner-wrapper {
 		height: 600upx;
 		overflow: hidden;
 		.swiper {
 			height: 600upx;
 			overflow: hidden;
-			background: #fff;
+			background: #dbdbdb;
 		}
 
 		.swiper-item {
 			height: 100%;
-			background: #fff;
 			.image {
 				width: 100%;
 				height: 600upx;
