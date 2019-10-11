@@ -6,47 +6,12 @@ const pathTo = url => {
 }
 
 // 公共提示
-const showToast = (title, duration) => {
-  duration === undefined ? duration = 2000 : duration
+const showToast = (title, duration = 2000) => {
   uni.showToast({
     title,
     icon: 'none',
     duration
   });
-}
-
-const getUserInfor = () => {
-  console.log(!uni.getStorageSync('openid'))
-  if (!uni.getStorageSync('openid')) {
-    // sessionStorageSync.setItem("openid",uuida());
-    uni.login({
-      provider: 'weixin',
-      success(loginRes) {
-        console.log(loginRes)
-        const url = configData.BasicUrl + "/app/activity/getH5Openid?code=" + loginRes.code;
-        // uni.request({
-        //   method: 'GET',
-        //   url: url,
-        //   data: {},
-        //   success(res) {
-        //     console.log("返回了登录信息");
-        //     console.log(res);
-        //     if (res.statusCode === 200) {
-        //       uni.setStorageSync('openid', JSON.parse(res.data.data.result).openid);
-        //     }
-        //   }
-        // });
-        // 获取用户信息
-        // uni.getUserInfo({
-        //   provider: 'weixin',
-        //   success(infoRes) {
-        //     console.log(infoRes)
-        //     uni.setStorageSync('userInfo', infoRes.userInfo)
-        //   }
-        // });
-      }
-    });
-  }
 }
 
 // 时间戳转换成时间
@@ -78,6 +43,5 @@ const timestampToTime = (timestamp, timeType, showType) => {
 export default {
   pathTo,
   showToast,
-  getUserInfor,
   timestampToTime
 }

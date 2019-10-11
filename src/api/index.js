@@ -1,61 +1,42 @@
 import configData from '../config/index'
 
-class BasicApi {
-  get (url, config) {
-    return uni.request({
-      url: configData.BasicUrl + url,
-      header: {...config}
-    })
-  }
-  post (url, data, config) {
-    return uni.request({
-      method: 'POST',
-      url: configData.BasicUrl + url,
-      data,
-      header: {...config}
-    })
-  }
-  postWifi (url, data, config) {
-    console.log(configData.WifiUrl + url)
-    return uni.request({
-      // method: 'GET',
-      url: configData.WifiUrl + url,
-      // data,
-      header: {...config}
-    })
-  }
-  resultCallback (data, sucssCallbak, errorCallbak) {
-    var [error, res] = data;
-    if (error) {
-      console.log(error)
-      uni.showToast({
-        title: '请求失败',
-        icon: 'none',
-        duration: 2000
-      });
-      errorCallbak && errorCallbak();
-    } else {
-      console.log(data);
-      let resultDdata = res.data;
-      // console.log("返回数据" + JSON.stringify(resultDdata));
-      if (res.statusCode === 200 && resultDdata.flag === 0) {
-        sucssCallbak && sucssCallbak(resultDdata)
-      } else {
-        let title = ''
-        if (resultDdata.errmsg) {
-          title = resultDdata.errmsg
-        } else {
-          title = '请求失败！'
+class BasicRequest {
+  request (method, url, data = {}, headers = {}) {
+    return new Promise((reslove, reject) => {
+      uni.request({
+        method,
+        url: configData.BasicUrl + url,
+        data,
+        header: {...headers},
+        success: res => {
+          if (res.statusCode === 200) {
+            reslove(res)
+          } else {
+            // uni.showToast({
+            //   title: '失败',
+            //   icon: 'none',
+            //   duration: 2000
+            // });
+            reject(res)
+          }
+        },
+        fail: err => {
+          // uni.showToast({
+          //   title: '失败',
+          //   icon: 'none',
+          //   duration: 2000
+          // });
+          reject(err)
         }
-        uni.showToast({
-          title,
-          icon: 'none',
-          duration: 2000
-        });
-        errorCallbak && errorCallbak(resultDdata);
-      }
-    }
+      })
+    })
+  }
+  GET (url, headers) {
+    return this.request('GET', url, {}, headers)
+  }
+  POST (url, data, headers) {
+    return this.request('POST', url, data, headers)
   }
 }
 
-export default BasicApi
+export default BasicRequest

@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import User from './user/index'
+
 Vue.use(Vuex)
 
-const state = {}
-
-const mutations = {}
-
 export default new Vuex.Store({
-  state,
-  mutations
+  modules: {
+    User
+  }
 })

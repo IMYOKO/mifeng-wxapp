@@ -1,6 +1,6 @@
-import BasicApi from './index'
+import BasicRequest from './index'
 
-class Api extends BasicApi {
+class Api extends BasicRequest {
   constructor() {
     super()
   }
@@ -10,7 +10,7 @@ class Api extends BasicApi {
    * @param {String} code 
    */
   login (data) {
-    return this.post('/api/login.htm', data, {})
+    return this.POST('/api/login.htm', data)
   }
 
 
