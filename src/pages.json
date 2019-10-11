@@ -1,0 +1,34 @@
+{
+	"pages": [
+		{ "path": "pages/index/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/matter/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/advertise/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/user/index", "style": { "navigationBarTitleText": "蜜蜂广告" } }
+	],
+	"subPackages": [],
+	"tabBar": {
+		"color": "#999",
+		"selectedColor": "#FFD602",
+		"borderStyle": "black",
+		"backgroundColor": "#fff",
+		"list": [
+			{ "pagePath": "pages/index/index", "text": "首页", "iconPath": "/static/images/ic_home_home_dark.png", "selectedIconPath": "/static/images/ic_home_home_bright.png" },
+			{ "pagePath": "pages/matter/index", "text": "素材", "iconPath": "/static/images/ic_home_material_dark.png", "selectedIconPath": "/static/images/ic_home_material_bright.png" },
+			{ "pagePath": "pages/advertise/index", "text": "广告", "iconPath": "/static/images/ic_home_advertisement_dark.png", "selectedIconPath": "/static/images/ic_home_advertisement_bright.png" },
+			{ "pagePath": "pages/user/index", "text": "我的", "iconPath": "/static/images/ic_home_my_dark.png", "selectedIconPath": "/static/images/ic_home_my_bright.png" }
+		]
+	},
+	"globalStyle": {
+		"backgroundTextStyle": "dark",
+		"navigationBarTextStyle": "dark",
+		"navigationBarTitleText": "蜜蜂广告",
+		"navigationBarBackgroundColor": "#141414",
+		"backgroundColor": "#f1f2f8",
+		"backgroundColorTop": "#f6f6f6",
+    "backgroundColorBottom": "#f6f6f6"
+	},
+	"condition": {
+		"current": 0,
+		"list": []
+	}
+}
