@@ -59,7 +59,7 @@ export default {
 			console.log('clickPostAd')
 		},
 		clickApplyCoop () {
-			console.log('clickApplyCoop')
+			this.$CommonJs.pathTo('/pages-home/applyCoop')
 		},
 		clickFindUs () {
 			this.$CommonJs.pathTo('/pages-home/fxUs')

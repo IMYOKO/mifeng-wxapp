@@ -9,7 +9,9 @@
 		{
 			"root": "pages-home",
 			"pages": [
-				{ "path": "fxUs", "style": { "navigationBarTitleText": "发现我们" } }
+				{ "path": "fxUs", "style": { "navigationBarTitleText": "发现我们" } },
+				{ "path": "applyCoop", "style": { "navigationBarTitleText": "申请合作" } },
+				{ "path": "applySuccess", "style": { "navigationBarTitleText": "申请合作" } }
 			]
 		}
 	],
