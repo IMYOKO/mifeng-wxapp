@@ -11,7 +11,9 @@
 			"pages": [
 				{ "path": "fxUs", "style": { "navigationBarTitleText": "发现我们" } },
 				{ "path": "applyCoop", "style": { "navigationBarTitleText": "申请合作" } },
-				{ "path": "applySuccess", "style": { "navigationBarTitleText": "申请合作" } }
+				{ "path": "applySuccess", "style": { "navigationBarTitleText": "申请合作" } },
+				{ "path": "postAd", "style": { "navigationBarTitleText": "发布广告" } },
+				{ "path": "chooseMatter", "style": { "navigationBarTitleText": "选择素材" } }
 			]
 		}
 	],

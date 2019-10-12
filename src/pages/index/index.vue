@@ -56,7 +56,7 @@ export default {
 			console.log(url)
 		},
 		clickPostAd () {
-			console.log('clickPostAd')
+			this.$CommonJs.pathTo('/pages-home/postAd')
 		},
 		clickApplyCoop () {
 			this.$CommonJs.pathTo('/pages-home/applyCoop')
