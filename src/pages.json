@@ -13,8 +13,13 @@
 				{ "path": "applyCoop", "style": { "navigationBarTitleText": "申请合作" } },
 				{ "path": "applySuccess", "style": { "navigationBarTitleText": "申请合作" } },
 				{ "path": "postAd", "style": { "navigationBarTitleText": "发布广告" } },
+				{ "path": "postAdDetail", "style": { "navigationBarTitleText": "发布广告详情" } },
+				{ "path": "paySuccess", "style": { "navigationBarTitleText": "支付成功" } },
+				{ "path": "updatePayPass", "style": { "navigationBarTitleText": "修改支付密码" } },
+				{ "path": "updatePayPassTwo", "style": { "navigationBarTitleText": "修改支付密码" } },
 				{ "path": "chooseMatter", "style": { "navigationBarTitleText": "选择素材" } },
 				{ "path": "chooseAdMachine", "style": { "navigationBarTitleText": "选择广告机" } },
+				{ "path": "chooseDate", "style": { "navigationBarTitleText": "选择具体时间" } },
 				{ "path": "search", "style": { "navigationBarTitleText": "搜索" } }
 			]
 		}
