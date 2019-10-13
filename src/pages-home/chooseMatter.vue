@@ -5,20 +5,65 @@
       <view class="b-item" :class="type == 2 ? 'selected' : ''"  @click="clickHeadItem(2)">组合素材</view>
     </view>
     <view class="content">
-      <view clas ="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.name)">
+      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.name)">
         <video :src="item.video" class="ct-video" v-if="item.type == 2" />
-        <image class="ct-img" :class="item.type == 2?'group' : ''" :src="item.logo" />
+        <image class="ct-img" :class="item.type == 2 ? 'group' : ''" :src="item.logo" />
         <view class="tit">{{item.name}}</view>
       </view>
     </view>
+
+    <!--加载更多时动画-->
+    <BottomLoadMore :show.sync="load_more" message="正在加载" />
+
+    <!--没有更多数据时动画-->
+    <BottomNoMore :show="no_more" />
+
+    <!-- 未发现更多啊数据 -->
+    <Placeholder :show='is_empty' />
+
+    <button v-if="is_empty" class="matterAddBtn" @click="clickMatterAdd">点击上传素材</button>
   </view>
 </template>
 
 <script>
+import Placeholder from '../component/common/placeholder'
+import BottomNoMore from '../component/common/bottomNoMore'
+import BottomLoadMore from '../component/common/bottomLoadMore'
 export default {
   data () {
     return {
-      contentList: [],    //页面列表数据
+      load_more: false,    //加载更多图案
+      no_more: true,       //没有更多数据
+      is_empty: true,     //无数据，显示空页面
+      page: 1,
+      contentList: [
+        {
+          id: 0,
+          name: '标题标题',
+          type: 1,
+          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5'
+        },
+        {
+          id: 1,
+          name: '标题标题',
+          type: 1,
+          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5'
+        },
+        {
+          id: 3,
+          name: '标题标题',
+          type: 2,
+          video: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/1dbced70d86811e9b15d91b335f928c5',
+          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5',
+        },
+        {
+          id: 4,
+          name: '标题标题',
+          type: 2,
+          video: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/1dbced70d86811e9b15d91b335f928c5',
+          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5',
+        }
+      ],    //页面列表数据
       type: 1, 
     }
   },
@@ -29,11 +74,20 @@ export default {
     clickChooseIt (id, name) {
       console.log(id, name)
     }
+  },
+  components: {
+    Placeholder,
+    BottomNoMore,
+    BottomLoadMore
   }
 }
 </script>
 
 <style lang="less" scoped>
+.chooseMatter {
+  padding-top:80rpx;
+  box-sizing: border-box;
+
   .banner{
     width: 100%;
     height: 80rpx;
@@ -124,4 +178,5 @@ export default {
       }
     }
   }
+}
 </style>
