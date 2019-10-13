@@ -1,5 +1,6 @@
 import {USER_INFO} from './constant';
 const checkRole = async (checkPhone = false) => {
+    return;
     let userInfo = uni.getStorageSync(USER_INFO) || null;
     if(!userInfo){    //未授权登录
         uni.navigateTo({

@@ -21,7 +21,7 @@
       </form>
     </view>
     <view class="section top">
-      <image class="icon_logo" src="../images/pic_sign_in_logo_1.png"></image>
+      <image class="icon_logo" src="../static/images/pic_sign_in_logo_1.png"></image>
       <view class="text">蜜蜂广告</view>
       <view class="company">深圳市天青色网络科技有限公司</view>
     </view>
@@ -47,14 +47,14 @@
   </view>
 </template>
 <script>
-  import tip from '../../utils/tip';
-  import request from '../../utils/request';
-  import html2wxml from '../../components/html2wxml';
+  import tip from '../utils/tip';
+  import request from '../utils/request';
+  import html2wxml from '../components/html2wxml';
   import {
     USER_TOKEN,
     USER_INFO,
     EXPIRE
-  } from '../../utils/constant';
+  } from '../utils/constant';
   export default {
     config: {
       navigationBarTitleText: '微信授权登录',

@@ -14,34 +14,34 @@
       <view class = "b-item" :class="apply_status == 3?'selected':''" @tap = "clickStatusItem(3)">审核拒绝</view>
     </view>
     <view class = "content">
-      <view class = "ct-view" :for = "contentList" :key = "unique" :data-type = "item.type" :data-video = "item.video" :data-logo = "item.logo" :data-name = "item.name" @tap = "clickPre">
-        <image src="../../static/images/pic_zhanwei_2.png" class = "ct-video" :if = "item.type == 2"></image>
-        <image class = "status" src = "../../static/images/pic_material_audit.png" :if = "item.apply_status  == 1"></image>
-        <image class = "status" src = "../../static/images/pic_material_audit_failed.png" :if = "item.apply_status == 3"></image>
+      <view class = "ct-view" v-for = "(item, index) in contentList" :key = "unique" :data-type = "item.type" :data-video = "item.video" :data-logo = "item.logo" :data-name = "item.name" @tap = "clickPre">
+        <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if = "item.type == 2"></image>
+        <image class = "status" src = "../static/images/pic_material_audit.png" v-if = "item.apply_status  == 1"></image>
+        <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if = "item.apply_status == 3"></image>
         <image class = "ct-img" :class="item.type == 2?'group':''" :src="item.logo"></image>
         <view class = "tit">{{item.name}}</view>
       </view>
       
     </view>
       <!--加载更多时动画-->
-  <bottomLoadMore :show="load_more" message="正在加载"></bottomLoadMore>
+  <bottomLoadMore :show.sync="load_more" message="正在加载"></bottomLoadMore>
   <!--没有更多数据时动画-->
-  <bottomNoMore :show="no_more" ></bottomNoMore>
+  <bottomNoMore :show.sync="no_more" ></bottomNoMore>
   <!--暂无数据显示-->
-  <placeholder :show="is_empty"></placeholder>
+  <placeholder :show.sync="is_empty"></placeholder>
   </view>
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
-import request from '../../utils/request';
-import tip from '../../utils/tip';
-import checkRole from '../../utils/check-role';
+import request from '../utils/request';
+import tip from '../utils/tip';
+import checkRole from '../utils/check-role';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
-} from '../../utils/constant';
-import bottomLoadMore from '../../components/common/bottomLoadMore';
-import bottomNoMore from '../../components/common/bottomNoMore';
-import placeholder from '../../components/common/placeholder';
+} from '../utils/constant';
+import bottomLoadMore from '../components/common/bottomLoadMore';
+import bottomNoMore from '../components/common/bottomNoMore';
+import placeholder from '../components/common/placeholder';
 export default {
   config: {
     navigationBarTitleText: '蜜蜂广告',
@@ -55,9 +55,9 @@ export default {
     return {
       load_more: false,    //加载更多图案
       no_more: false,       //没有更多数据
-      is_empty: true,     //无数据，显示空页面
+      is_empty: false,     //无数据，显示空页面
       page:1,
-      contentList:[],    //页面列表数据
+      contentList: [],    //页面列表数据
       type:1,           //1 图片素材  2组合素材
       apply_status:2,    // 1,2,3对应未审核，已通过，已拒绝
     }
@@ -66,7 +66,7 @@ export default {
 
   },
   async onShow(){
-    // await checkRole();
+    await checkRole();
     this.page = 1;
     this.getMatterList(1,true);
   },
@@ -99,7 +99,7 @@ export default {
     async clickManager(){
       await checkRole(true);
       uni.navigateTo({
-        url:'./manageMatter?type='+this.type
+        url:'/pages-matter//manageMatter?type='+this.type
       })
     },
     async clickAdd(){
@@ -122,7 +122,7 @@ export default {
         })
       } catch (err) {
         this.is_empty = this.page == 1 && this.contentList.length == 0;
-        this.no_more = true;
+        this.no_more = !this.is_empty;
         this.load_more = false;
         console.log(err)
         return;

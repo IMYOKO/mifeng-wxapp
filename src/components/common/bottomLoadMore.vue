@@ -1,5 +1,5 @@
 <template>
-    <view class="loadMoreGif" :if="show">
+    <view class="loadMoreGif" v-if="show">
         <image src="../../static/images/loadding.gif" />
         <text>{{message}}</text>
     </view>

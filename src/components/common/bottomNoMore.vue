@@ -1,5 +1,5 @@
 <template>
-    <view class="noMore" :if="show">
+    <view class="noMore" v-if="show">
         <!-- <text class="line"></text> -->
         <text class="text">{{message}}</text>
         <!-- <text class="line"></text> -->

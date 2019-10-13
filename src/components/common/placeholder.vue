@@ -1,5 +1,5 @@
 <template>
-    <view class="empty-placeholder row-center" :if="show">
+    <view class="empty-placeholder row-center" v-if="show">
         <image class="icon-xl" :src="icon"/>
         <view class="txt">{{message}}</view>
     </view>
