@@ -3,7 +3,8 @@
 		{ "path": "pages/index/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
 		{ "path": "pages/matter/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
 		{ "path": "pages/advertise/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
-		{ "path": "pages/user/index", "style": { "navigationBarTitleText": "蜜蜂广告" } }
+		{ "path": "pages/user/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/login/index", "style": { "navigationBarTitleText": "登录" } }
 	],
 	"subPackages": [
 		{
