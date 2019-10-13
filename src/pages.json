@@ -1,9 +1,9 @@
 {
 	"pages": [
-		{ "path": "pages/index/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
-		{ "path": "pages/matter/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
-		{ "path": "pages/advertise/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
-		{ "path": "pages/user/index", "style": { "navigationBarTitleText": "蜜蜂广告" } }
+		{ "path": "pages/index", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/matter", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/advertise", "style": { "navigationBarTitleText": "蜜蜂广告" } },
+		{ "path": "pages/user", "style": { "navigationBarTitleText": "蜜蜂广告" } }
 	],
 	"subPackages": [
 		{
@@ -13,7 +13,9 @@
 				{ "path": "applyCoop", "style": { "navigationBarTitleText": "申请合作" } },
 				{ "path": "applySuccess", "style": { "navigationBarTitleText": "申请合作" } },
 				{ "path": "postAd", "style": { "navigationBarTitleText": "发布广告" } },
-				{ "path": "chooseMatter", "style": { "navigationBarTitleText": "选择素材" } }
+				{ "path": "chooseMatter", "style": { "navigationBarTitleText": "选择素材" } },
+				{ "path": "chooseAdMachine", "style": { "navigationBarTitleText": "选择广告机" } },
+				{ "path": "search", "style": { "navigationBarTitleText": "搜索" } }
 			]
 		}
 	],
@@ -23,10 +25,10 @@
 		"borderStyle": "black",
 		"backgroundColor": "#fff",
 		"list": [
-			{ "pagePath": "pages/index/index", "text": "首页", "iconPath": "/static/images/ic_home_home_dark.png", "selectedIconPath": "/static/images/ic_home_home_bright.png" },
-			{ "pagePath": "pages/matter/index", "text": "素材", "iconPath": "/static/images/ic_home_material_dark.png", "selectedIconPath": "/static/images/ic_home_material_bright.png" },
-			{ "pagePath": "pages/advertise/index", "text": "广告", "iconPath": "/static/images/ic_home_advertisement_dark.png", "selectedIconPath": "/static/images/ic_home_advertisement_bright.png" },
-			{ "pagePath": "pages/user/index", "text": "我的", "iconPath": "/static/images/ic_home_my_dark.png", "selectedIconPath": "/static/images/ic_home_my_bright.png" }
+			{ "pagePath": "pages/index", "text": "首页", "iconPath": "/static/images/ic_home_home_dark.png", "selectedIconPath": "/static/images/ic_home_home_bright.png" },
+			{ "pagePath": "pages/matter", "text": "素材", "iconPath": "/static/images/ic_home_material_dark.png", "selectedIconPath": "/static/images/ic_home_material_bright.png" },
+			{ "pagePath": "pages/advertise", "text": "广告", "iconPath": "/static/images/ic_home_advertisement_dark.png", "selectedIconPath": "/static/images/ic_home_advertisement_bright.png" },
+			{ "pagePath": "pages/user", "text": "我的", "iconPath": "/static/images/ic_home_my_dark.png", "selectedIconPath": "/static/images/ic_home_my_bright.png" }
 		]
 	},
 	"globalStyle": {
