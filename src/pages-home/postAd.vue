@@ -86,11 +86,12 @@ export default {
     },
     //选择时间
     clickChooseDate () {
-      console.log('clickChooseDate')
+      this.$CommonJs.pathTo('/pages-home/chooseDate')
     },
     // 确认投放
     clickSubmit () {
       console.log('clickSubmit')
+      this.$CommonJs.pathTo('/pages-home/postAdDetail')
     }
   }
 }
