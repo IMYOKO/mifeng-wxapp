@@ -99,13 +99,13 @@ export default {
     async clickManager(){
       await checkRole(true);
       uni.navigateTo({
-        url:'/pages-matter//manageMatter?type='+this.type
+        url:'/pages-matter/manageMatter?type='+this.type
       })
     },
     async clickAdd(){
       await checkRole(true);
       uni.navigateTo({
-        url:'./addMatter?type='+this.type
+        url:'/pages-matter/addMatter?type='+this.type
       })
     },
     async getMatterList(page, refresh) {

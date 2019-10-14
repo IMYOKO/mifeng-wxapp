@@ -14,10 +14,10 @@
 			</swiper>
 		</view>
 		<view class="midder">
-			<image class = "img1" src = "../../static/images/pic_post_1.png" @click="clickPostAd" />
-      <image class = "img2" src = "../../static/images/pic_application_2.png" @click="clickApplyCoop" />
+			<image class = "img1" src = "../static/images/pic_post_1.png" @click="clickPostAd" />
+      <image class = "img2" src = "../static/images/pic_application_2.png" @click="clickApplyCoop" />
 		</view>
-		<image class = "img3" src = "../../static/images/pic_findus_3.png" @click="clickFindUs" />
+		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
 	</view>
 </template>
 

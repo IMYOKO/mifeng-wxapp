@@ -1,15 +1,14 @@
-import wepy from 'wepy';
 import qiniuUploader  from './qiniuUploader';
-
+import {request} from './request';
 export default async (filePath,fn) => {
   // 添加token请求头
   let header =  { 'Content-Type': 'application/json' }
-  let token = wepy.getStorageSync('token');
+  let token = uni.getStorageSync('token');
   if (token) {
     header.Authorization =token
   }
   // 发起请求
-  let response = await wepy.request({
+  let response = await request({
       url: 'https://xcx.mifengad.com/api/common/upload/token',
       method:'GET',
       header: header,
@@ -20,7 +19,7 @@ export default async (filePath,fn) => {
     tip.toast(json.msg || '请求失败，请重试')
     // 401清除登录信息
     if (json.code === 401) {
-      wepy.removeStorageSync('token')
+      uni.removeStorageSync('token')
     }
     // 抛出异常，阻止调用者继续执行，调用者可通过.catch抓取该异常后继续执行
     return Promise.reject(json);

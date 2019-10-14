@@ -11,7 +11,7 @@ const base_url = 'https://xcx.mifengad.com/api/frontend/'
  *  loading: '',
  * }
  */
-const request = (params) => {
+export const request = (params) => {
   return new Promise(res => {
     uni.request({
       ...params,

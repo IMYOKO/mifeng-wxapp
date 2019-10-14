@@ -93,7 +93,7 @@ function doUpload(filePath, success, fail, options, progress, cancelTask) {
     if (!config.qiniuShouldUseQiniuFileName) {
       formData['key'] = fileName
     }
-    var uploadTask = wx.uploadFile({
+    var uploadTask = uni.uploadFile({
         url: url,
         filePath: filePath,
         name: 'file',
@@ -136,7 +136,7 @@ function doUpload(filePath, success, fail, options, progress, cancelTask) {
 }
 
 function getQiniuToken(callback) {
-  wx.request({
+  uni.request({
     url: config.qiniuUploadTokenURL,
     success: function (res) {
       var token = res.data.uptoken;

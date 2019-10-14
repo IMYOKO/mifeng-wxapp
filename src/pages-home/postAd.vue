@@ -77,12 +77,12 @@ export default {
     },
     //选择素材
     clickChooseMatter () {
-      console.log('clickChooseMatter')
       this.$CommonJs.pathTo('/pages-home/chooseMatter')
     },
     //选择广告机
-    clickDelAdMachine (option) {
+    clickChooseMachine (option) {
       console.log(option)
+      this.$CommonJs.pathTo('/pages-home/chooseAdMachine')
     },
     //选择时间
     clickChooseDate () {

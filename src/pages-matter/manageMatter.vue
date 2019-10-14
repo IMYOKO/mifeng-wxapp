@@ -3,7 +3,7 @@
     <view class = "content">
       <view class = "ct-view" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" :data-index = "index" @tap = "clickItem">
         <video :src="item.video" class = "ct-video" v-if = "item.type == 2"></video>
-        <cover-image  v-if = "item.isSelected" class = "select-icon" src = "../../static/images/ic_home_select.png"></cover-image>
+        <cover-image  v-if = "item.isSelected" class = "select-icon" src = "../static/images/ic_home_select.png"></cover-image>
         <image class = "ct-img" :class=" item.type == 2?'group':''" :src="item.logo"></image>
         <view class = "tit">{{item.name}}</view>
       </view>
@@ -15,22 +15,22 @@
   <!--暂无数据显示-->
   <placeholder :show.sync="is_empty"></placeholder>
     <view class = "btm">
-      <image class = "all-icon" src = "../../static/images/ic_home_select.png" v-if = "isAll" @tap = "clickAll"></image>
-      <image class = "all-icon" src = "../../staticimages/ic_home_not_select.png" v-else @tap = "clickAll"></image>
+      <image class = "all-icon" src = "../static/images/ic_home_select.png" v-if = "isAll" @tap = "clickAll"></image>
+      <image class = "all-icon" src = "../static/images/ic_home_not_select.png" v-else @tap = "clickAll"></image>
       <view class = "text" @tap = "clickAll">全选</view>
       <view class = "del" @tap = "clickDel">删除</view>
     </view>
   </view>
 </template>
 <script>
-import request from '../../utils/request';
-import tip from '../../utils/tip';
+import request from '../utils/request';
+import tip from '../utils/tip';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
-} from '../../utils/constant';
-import bottomLoadMore from '../../components/common/bottomLoadMore';
-import bottomNoMore from '../../components/common/bottomNoMore';
-import placeholder from '../../components/common/placeholder';
+} from '../utils/constant';
+import bottomLoadMore from '../components/common/bottomLoadMore';
+import bottomNoMore from '../components/common/bottomNoMore';
+import placeholder from '../components/common/placeholder';
 export default {
   config: {
     navigationBarTitleText: '管理素材',
@@ -63,13 +63,13 @@ export default {
         title: '管理组合素材'
       })
     }
-  }
+  },
   onShow(){
     this.page = 1;
     this.getMatterList(1,true);
-  }
+  },
 
-  methods = {
+  methods: {
     //点击素材
     clickItem(e){
       let id = e.currentTarget.dataset.id;
@@ -116,41 +116,46 @@ export default {
       await tip.success('删除成功')
       this.isAll = false;
       this.onShow();
-    }
-  }
-	async getMatterList(page,refresh){
-    let that = this;
-    const json = await request({
-      url:'users/materials',
-      method:'GET',
-      data:{
-        page:page || 1,
-        apply_status:'',
-        type:this.type,
+    },
+    async getMatterList(page, refresh) {
+      let json;
+      try {
+        json = await request({
+          url:'users/materials',
+          method:'GET',
+          data:{
+            page:page || 1,
+            apply_status:this.apply_status,
+            type:this.type,
+          }
+        })
+      } catch (err) {
+        this.is_empty = this.page == 1 && this.contentList.length == 0;
+        this.no_more = !this.is_empty;
+        this.load_more = false;
+        console.log(err)
+        return;
       }
-    });
-    for(var i in json.data.data){
-      json.data.data[i].isSelected = false;
-    }
-    if (refresh) {
-      that.contentList = json.data.data;
-    } else {
-      that.contentList = [...that.contentList, ...json.data.data];
-    }
-    if(json.data.data.length < json.data.per_page  && json.data.data.length != 0){
-      //没有更多数据
-      that.no_more = true;
-    }else{			
-      that.no_more = false;
-    }
-    if (that.page == 1 && json.data.data.length == 0) {
-    //暂无数据
-    that.is_empty = true;
-    } else {
-      that.is_empty = false;
-    }
-    that.$apply();
-  }
+      this.load_more = false;
+      if (refresh) {
+        this.contentList = json.data.data;
+      } else {
+        this.contentList = [...this.contentList, ...json.data.data];
+      }
+      if(json.data.data.length < json.data.per_page && json.data.data.length != 0){
+        //没有更多数据
+        this.no_more = true;
+      }else{			
+        this.no_more = false;
+      }
+      if (this.page == 1 && json.data.data.length == 0) {
+        //暂无数据
+        this.is_empty = true;
+      } else {
+        this.is_empty = false;
+      }
+    },
+  },
 
     /**
      * 页面相关事件处理函数--监听用户下拉动作
@@ -161,7 +166,7 @@ export default {
     setTimeout(() => {
       wepy.stopPullDownRefresh();
     }, 1000);  
-  }
+  },
 
     /**
      * 页面上拉触底事件的处理函数
@@ -171,7 +176,6 @@ export default {
     if ((!that.no_more) && (!that.is_empty)) {
         that.isAll = false;
         that.page += 1;
-        that.$apply();
         that.getMatterList(that.page,false);
       }
   }

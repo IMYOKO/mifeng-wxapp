@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <view wx:if="{{showModal}}" class="modal" @tap.stop="closeModal">
+    <view v-if="showModal" class="modal" @tap.stop="closeModal">
       <view class="modal_body">
         <view class="modal_content">
           <view class="content">请勾选并详细阅读《广告发布规则》才能进行素材发布</view>
@@ -19,7 +19,7 @@
     </view>
     <view class="text_group">
       <radio-group bindchange="radioChange" @tap="click_radio">
-        <radio style="zoom:.5" checked="{{status}}" color="#FFD602" />
+        <radio style="zoom:.5" :checked="status" color="#FFD602" />
       </radio-group>
       <view class="subtext">是否详细阅读并同意</view>
       <view class="subtext" style="color:#E9C300" @tap="Torules">《广告发布规则》</view>
@@ -27,30 +27,34 @@
     <view class="item pd mt">
       <view class="line"></view>
       <view class="tit">素材类型</view>
-      <view class="itembtn {{type == 1?'selected':''}}" @tap="clickTypeItem(1)">图片素材</view>
-      <view class="itembtn {{type == 2?'selected':''}}" @tap="clickTypeItem(2)">组合素材</view>
+      <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">
+        <view class="picker-container">
+            <view class="itembtn">{{typeRange[type - 1]}}</view>
+            <image class="arrow" src="../static/images/ic_home_open_1.png"></image>
+        </view>
+      </picker>
     </view>
     <view class="item pd" @tap="clickChooseImg">
       <view class="line"></view>
       <view class="tit">选择图片</view>
       <!--<image class = "img" src=  "{{logo}}"></image>-->
-      <image class="arrow" src="../images/ic_home_open_1.png"></image>
+      <image class="arrow" src="../static/images/ic_home_open_1.png"></image>
     </view>
-    <view class="item pd" wx:if="{{type == 2}}" @tap="clickChooseVideo">
+    <view class="item pd" v-if="type == 2" @tap="clickChooseVideo">
       <view class="line"></view>
       <view class="tit">选择视频</view>
       <!--<video wx:if = "{{video}}" class = "img" show-fullscreen-btn = "false" src=  "{{video}}"></video>-->
-      <image class="arrow" src="../images/ic_home_open_1.png"></image>
+      <image class="arrow" src="../static/images/ic_home_open_1.png"></image>
     </view>
     <view class="placeholderContainer">
-      <view class="placeholderContent" wx:if="{{type == 1}}">
-        <image class="image" style="z-index: 0" src="../images/pic_addmatter_image_placeholder.png"></image>
-        <image class="image" style="z-index: 10" src="{{logo}}"></image>
+      <view class="placeholderContent" v-if="type == 1">
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder.png"></image>
+        <image class="image" style="z-index: 10" :src="logo"></image>
       </view>
-      <view class="placeholderContent" wx:if="{{type == 2}}">
-        <image class="image" style="z-index: 0" src="../images/pic_addmatter_group_placeholder.png"></image>
-        <video wx:if="{{video}}" src="{{video}}"></video>
-        <image class="videoImg" src="{{logo}}"></image>
+      <view class="placeholderContent" v-if="type == 2">
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png"></image>
+        <video v-if="video" :src="video"></video>
+        <image class="videoImg" :src="logo"></image>
       </view>
     </view>
 
@@ -64,7 +68,6 @@
   </view>
 </template>
 <script>
-  import wepy from 'wepy';
   import request from '../utils/request';
   import FormidTaker from '../components/formidTaker';
   import tip from '../utils/tip';
@@ -74,50 +77,43 @@
     USER_SPECICAL_INFO
   } from '../utils/constant';
   import qiniuUpload from '../utils/qiniuUpload';
-  export default class AddMatter extends wepy.page {
-    config = {
+  export default {
+    config: {
       navigationBarTitleText: '添加素材',
-    }
-      components = {
+    },
+    components: {
       formidTaker: FormidTaker
-    }
-
-    data = {
-      nameLength: 0,
-      name: '',
-      logo: '',
-      type: 1,
-      video: '',
-      seconds: 0,
-      status: true,
-      showModal:false,
-    }
-
-
+    },
+    data () {
+      return {
+        nameLength: 0,
+        name: '',
+        logo: '',
+        type: 1,
+        video: '',
+        seconds: 0,
+        status: true,
+        showModal:false,
+        typeRange: ['图片素材', '组合素材']
+      }
+    },
     onLoad(options) {
-      this.type = options.type || 1;
-    }
-    onShow() {
-
-    }
-    computed = {
-
-    }
-    methods = {
+      this.type = options.type || 0;
+    },
+    methods: {
       radioChange(){
         // this.status = !this.status
         console.log(this.status)
       },
       click_radio() {
         this.status = !this.status
-        this.$apply()
         // console.log("click_radio:",this.status)
       },
       closeModal(){
         this.showModal = false
       },
       Torules() {
-        wepy.navigateTo({
+        uni.navigateTo({
           url: './adRulse?adtype=0&&adxieyitype=rule'
         })
       },
@@ -125,22 +121,20 @@
       inputName(e) {
         this.name = e.detail.value;
         this.nameLength = e.detail.value.length;
-        this.$apply();
       },
       //选择类型
-      clickTypeItem(typeVaule) {
-        this.type = typeVaule;
-        this.$apply();
+      typeChange(e) {
+        this.type = Number(e.detail.value) + 1;
       },
       //上传照片
       clickChooseImg() {
         let that = this;
-        wx.showActionSheet({
+        uni.showActionSheet({
           itemList: ['拍照', '从相册选择'],
           success(res) {
             console.log(res);
             if (res.tapIndex == 0) {
-              wx.chooseImage({
+              uni.chooseImage({
                 count: 1,
                 sourceType: ['camera'],
                 success: function (res) {
@@ -148,13 +142,12 @@
                   tip.loading('上传中');
                   qiniuUpload(tempFilePaths[0], async function (res) {
                     that.logo = res.imageURL;
-                    that.$apply();
                     tip.loaded();
                   })
                 },
               })
             } else if (res.tapIndex == 1) {
-              wx.chooseImage({
+              uni.chooseImage({
                 count: 1,
                 sourceType: ['album'],
                 success: function (res) {
@@ -162,7 +155,6 @@
                   tip.loading('上传中');
                   qiniuUpload(tempFilePaths[0], async function (res) {
                     that.logo = res.imageURL;
-                    that.$apply();
                     tip.loaded();
                   })
                 },
@@ -177,7 +169,7 @@
       //添加视频
       clickChooseVideo() {
         let that = this;
-        wx.chooseVideo({
+        uni.chooseVideo({
           sourceType: ['album', 'camera'],
           maxDuration: 60,
           camera: 'back',
@@ -186,17 +178,14 @@
             tip.loading('视频上传中');
             qiniuUpload(res.tempFilePath, async function (res) {
               that.video = res.imageURL;
-              that.$apply();
               tip.loaded();
             })
           },
           complete(res) {
             that.seconds = res.duration;
-            that.$apply();
             if (that.seconds > 60) {
               that.video = '';
               that.seconds = '';
-              that.$apply();
               tip.toast('视频超过60s');
             }
           },
@@ -220,7 +209,7 @@
           tip.toast('上传视频不能超过1分钟请重新选择');
           return;
         }
-        wepy.navigateTo({
+        uni.navigateTo({
           url: './preMatter?type=' + this.type + '&logo=' + this.logo + '&video=' + this.video + '&name=' + this
             .name
         })
@@ -259,13 +248,10 @@
             seconds: this.seconds,
           }
         })
-        wepy.redirectTo({
+        uni.redirectTo({
           url: './addMatterSuccess'
         })
       }
-    }
-    events = {
-
     }
   }
 
@@ -469,8 +455,6 @@
     text-align: center;
     font-size: 24rpx;
     color: rgba(20, 20, 20, 1);
-    background: rgba(246, 246, 246, 1);
-    border-radius: 0;
   }
 
   .selected {
@@ -517,6 +501,11 @@
       position: absolute;
       left: 0;
     }
+  }
+
+  .picker-container {
+    display: flex;
+    align-items: center;
   }
 
 </style>

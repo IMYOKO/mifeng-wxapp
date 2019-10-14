@@ -10,11 +10,11 @@
   </view>
 </template>
 <script>
-import request from '../../utils/request';
-import tip from '../../utils/tip';
+import request from '../utils/request';
+import tip from '../utils/tip';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
-} from '../../utils/constant';
+} from '../utils/constant';
 export default {
   config: {
     navigationBarTitleText: '结果页面',
