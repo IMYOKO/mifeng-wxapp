@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class = "img" v-if = "type == 1">
-      <image class = "images" :src="logo" :height = "windowHeight"></image>
+      <image class = "images" :src="logo" :style = "windowHeight"></image>
       <!--<image class = "images" src=  "{{logo}}" mode="widthFix"></image>-->
       <!-- <image class = "img-logo" v-if = "{{logoImg}}" src=  "{{logoImg}}"></image> -->
       <!-- <image class = "img-code" v-if = "{{codeImg}}" src=  "{{codeImg}}"></image> -->
@@ -57,14 +57,20 @@ export default {
   },
   async onLoad(options) {
     let systemInfo = uni.getSystemInfoSync();
-    this.windowHeight = Math.ceil(systemInfo.windowHeight/(systemInfo.windowWidth/750))
+    this.windowHeight = `height:${Math.ceil(systemInfo.windowHeight/(systemInfo.windowWidth/750))}rpx`
     this.type = options.type;
     if(this.type == 2){
       this.pace = 0.8; //滚动速度
     }
     this.logo = options.logo;
     this.video = options.video;
-    await this.getContent();
+    const json = await request({
+      url:'scrolling_text',
+      method:'GET',
+    });
+    this.name = json.data.content;
+    this.logoImg = json.data.picture.logo;
+    this.codeImg = json.data.picture.qr_code;
     // this.startMarquee()
   },
 //根据viewId查询view的宽度
@@ -77,15 +83,6 @@ export default {
         resolve(rect.width);
       }).exec();
     });
-  },
-  async getContent(){
-    const json = await request({
-        url:'scrolling_text',
-        method:'GET',
-      });
-      this.name = json.data.content;
-      this.logoImg = json.data.picture.logo;
-      this.codeImg = json.data.picture.qr_code;
   },
   //停止跑马灯
   stopMarquee() {

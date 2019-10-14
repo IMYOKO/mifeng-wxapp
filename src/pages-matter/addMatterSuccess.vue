@@ -1,6 +1,6 @@
 <template>
   <view>
-    <image class = "img" src="../images/pic_home_payment_tips.png"></image>
+    <image class = "img" src="../static/images/pic_home_payment_tips.png"></image>
     <view class = "tit">提交成功</view>
     <view class = "ct">请等待小蜜对您的素材进行审核喔</view>
     <view class = "btn-view">
@@ -22,14 +22,14 @@ export default {
   methods: {
     //查看素材
     clickSeeMatter(){
-      wepy.switchTab({
-        url:'./matter'
+      uni.switchTab({
+        url:'/pages/matter'
       })
     },
     //返回首页
     clickBack(){
-      wepy.switchTab({
-        url:'./index'
+      uni.switchTab({
+        url:'/pages/index'
       })
     }
   }
