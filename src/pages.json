@@ -48,7 +48,10 @@
 				{ "path": "explain", "style": { "navigationBarTitleText": "充值说明" } },
 				{ "path": "balanceDetail", "style": { "navigationBarTitleText": "余额明细" } },
 				{ "path": "addCard", "style": { "navigationBarTitleText": "添加银行卡" } },
-				{ "path": "recharge", "style": { "navigationBarTitleText": "余额充值" } }
+				{ "path": "recharge", "style": { "navigationBarTitleText": "余额充值" } },
+				{ "path": "earningDetail", "style": { "navigationBarTitleText": "收益明细" } },
+				{ "path": "feedback", "style": { "navigationBarTitleText": "意见反馈" } },
+				{ "path": "myPoint", "style": { "navigationBarTitleText": "我的积分" } }
 			]
 		}
 	],
