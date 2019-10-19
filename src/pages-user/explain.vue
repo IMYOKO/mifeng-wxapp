@@ -1,6 +1,6 @@
 <template>
   <view class="explain">
-    <rich-text nodes="{{info.content}}"></rich-text>
+    <rich-text :nodes="info.content"></rich-text>
   </view>
 </template>
 

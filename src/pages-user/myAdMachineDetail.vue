@@ -28,7 +28,7 @@
       </view>
       <view class = "note">在播广告</view>
       <view class = "content">
-        <view class = "ct-view" wx:for = "{{adInfo.materials}}" wx:key = "unqiue">
+        <view class = "ct-view" v-for="(item, index) in adInfo.materials" :key="index">
           <video :src="item.video" class = "ct-video" v-if="item.type == 2"></video>
           <image class = "ct-img" :class="item.type == 2 ? 'group' : ''" :src="item.logo" />
           <view class = "tit">{{item.name}}</view>

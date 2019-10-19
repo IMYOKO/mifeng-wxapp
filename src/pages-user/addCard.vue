@@ -25,7 +25,7 @@
         <view class = "item none">
           <view class = "tit">验证码</view>
           <input type="text" placeholder="请输入验证码" name = "request_code" maxlength = "6" placeholder-class = "input-placeholder"  />
-          <view class = "yzm {{isSend?'disabled':''}}" @tap ="{{isSend?'':'clickYzm'}}">{{yzmContent}}</view>
+          <!-- <view class = "yzm {{isSend?'disabled':''}}" @tap ="{{isSend?'':'clickYzm'}}">{{yzmContent}}</view> -->
         </view>
       </view>
       <button class = "btn" form-type="submit">下一步</button>
