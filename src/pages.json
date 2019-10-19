@@ -38,6 +38,18 @@
 			"pages": [
 				{ "path": "adDetail", "style": { "navigationBarTitleText": "广告详情" } }
 			]
+		},
+		{
+			"root": "pages-user",
+			"pages": [
+				{ "path": "myAdMachineDetail", "style": { "navigationBarTitleText": "我的广告机详情" } },
+				{ "path": "myAdMachine", "style": { "navigationBarTitleText": "我的广告机" } },
+				{ "path": "myWallet", "style": { "navigationBarTitleText": "我的钱包" } },
+				{ "path": "explain", "style": { "navigationBarTitleText": "充值说明" } },
+				{ "path": "balanceDetail", "style": { "navigationBarTitleText": "余额明细" } },
+				{ "path": "addCard", "style": { "navigationBarTitleText": "添加银行卡" } },
+				{ "path": "recharge", "style": { "navigationBarTitleText": "余额充值" } }
+			]
 		}
 	],
 	"tabBar": {
