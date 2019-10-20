@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class = "top">
-      <image class = "bg-img" src = "../static/images/pic_my_integral_background.png"></image>
+      <image class = "bg-img" src = "../static/images/pic_my_integral_background.png" />
       <view class = "money">
         <view class = "num">{{userInfo.integral}}</view>
         <view class = "text">我的积分</view>

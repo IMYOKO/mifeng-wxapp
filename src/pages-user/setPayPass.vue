@@ -4,7 +4,7 @@
     <view class ="tit">验证码</view>
     <view class ="item">
       <input type="number" @input = "inputCode"  maxlength = "6" placeholder="请输入验证码" placeholder-class = "input-placeholder"/>
-      <view class = "yzm" :class="isSend?'disabled':''" @tap="{{isSend?'':'clickYzm'}}">{{yzmContent}}</view>
+      <!-- <view class = "yzm" :class="isSend?'disabled':''" @tap="{{isSend?'':'clickYzm'}}">{{yzmContent}}</view> -->
     </view>
     <button class= "btn" @tap="clickNext">下一步</button>
   </view>

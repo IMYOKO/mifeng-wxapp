@@ -25,10 +25,10 @@
       </view>
       <view class = "text-view" wx:else>
         <view class = "text">服务费{{serviceFee}}元</view>
-        <view class = "textxx" wx:if = "{{serviceFee !=0}}">到账金额{{factFee}}元</view>
+        <view class = "textxx" v-if="serviceFee !=0">到账金额{{factFee}}元</view>
       </view>
     </view>
-    <button class = "btn" :class="isBeyond?'disabled':''" @tap ="{{isBeyond?'':'clickTx'}}">提现</button>
+    <button class = "btn" :class="isBeyond?'disabled':''" @tap ="isBeyond">提现</button>
     <view class="modal-mask"   catchtouchmove="preventTouchMove" v-if="showPay" @tap ="hideModal"></view>
     <view class = "pop-pay" v-if="showPay">
       <view class = "top">
@@ -43,6 +43,7 @@
         </block>
       </view>
       <view class = "forget" @tap="clickForget">忘记支付密码？</view>
+    </view>
   </view>
 </template>
 
