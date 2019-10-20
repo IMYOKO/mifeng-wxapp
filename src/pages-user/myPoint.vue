@@ -7,7 +7,7 @@
         <view class = "text">我的积分</view>
       </view>
     </view>
-    <view class = "item" v-for = "(item, index) in contentList" :key = "unique">
+    <view class = "item" v-for="(item, index) in contentList" :key="index">
       <view class = "item-top">
         <view class ="tit">{{item.name}}</view>
         <view class = "pri">{{item.integral}}</view>

@@ -6,11 +6,11 @@
       <view class = "img-num">图片({{images.length}}/3)</view>
       <view class = "up-img">
         <view class = "uploaded-img" v-for = "(item, index) in images" :for-item = "item" :key = "index">
-          <image :src = "item" class = "img"></image>   
-          <image class = "del" :data-index = "index" @tap = "clickDelImg" src="../static/images/ic_home_picture_delete.png"></image>   
+          <image :src = "item" class = "img"/>   
+          <image class = "del" :data-index = "index" @tap = "clickDelImg" src="../static/images/ic_home_picture_delete.png"/>   
         </view>
         <view class = "add" @tap = "clickAddImg" v-if = "images.length < 3">
-          <image class = "add-img" src="../static/images/ic_my_feedback_add.png" ></image>  
+          <image class = "add-img" src="../static/images/ic_my_feedback_add.png" />  
           <view class = "add-text">添加图片</view> 
         </view>
       </view>

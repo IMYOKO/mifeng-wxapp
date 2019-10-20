@@ -52,6 +52,9 @@
 				{ "path": "recharge", "style": { "navigationBarTitleText": "余额充值" } },
 				{ "path": "earningDetail", "style": { "navigationBarTitleText": "收益明细" } },
 				{ "path": "feedback", "style": { "navigationBarTitleText": "意见反馈" } },
+				{ "path": "setPayPass", "style": { "navigationBarTitleText": "设置支付密码" } },
+				{ "path": "earningWithdraw", "style": { "navigationBarTitleText": "收益提现" } },
+				{ "path": "withdrawSuccess", "style": { "navigationBarTitleText": "结果页面" } },
 				{ "path": "myPoint", "style": { "navigationBarTitleText": "我的积分" } }
 			]
 		}

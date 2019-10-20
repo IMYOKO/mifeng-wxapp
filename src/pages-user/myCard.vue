@@ -29,7 +29,15 @@
 
 <script>
 export default {
-  
+  methods: {
+    clickAddCard () {
+      this.$CommonJs.pathTo('/pages-user/addCard')
+    },
+    // 忘记支付密码
+    clickForget () {
+      this.$CommonJs.pathTo('/pages-home/updatePayPass')
+    }
+  }
 }
 </script>
 

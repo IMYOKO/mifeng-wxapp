@@ -1,6 +1,6 @@
 <template>
   <view>
-    <image src = "../static/images/pic_banner_1.png" class = "bg-img"></image>
+    <image src = "../static/images/pic_banner_1.png" class = "bg-img"/>
     <view class = "header">
       <view class = "h-item">
         <view class = "h-text">总收益</view>
@@ -16,7 +16,7 @@
     <view class="charts">
       <UchartsComponent :cHeight="uchartOpts.height" :cWidth="uchartOpts.width" :opts="uchartOpts"></UchartsComponent>
     </view>
-    <view class = "item" v-for = "(item, index) in contentList" :key = "unique">
+    <view class = "item" v-for ="(item, index) in contentList" :key="index">
       <view class = "item-top">
         <view class ="tit">{{item.name}}</view>
         <view class = "pri">+{{item.money}}</view>

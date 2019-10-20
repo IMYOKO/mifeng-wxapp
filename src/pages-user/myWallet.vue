@@ -33,13 +33,13 @@ export default {
       this.$CommonJs.pathTo('/pages-user/recharge')
     },
     clickTx () {
-      this.$CommonJs.pathTo('/pages-user/recharge')
+      this.$CommonJs.pathTo('/pages-user/earningDetail')
     },
     clickMycard () {
-      this.$CommonJs.pathTo('/pages-user/recharge')
+      this.$CommonJs.pathTo('/pages-user/myCard')
     },
     clickSetPass () {
-      this.$CommonJs.pathTo('/pages-user/recharge')
+      this.$CommonJs.pathTo('/pages-user/setPayPass')
     },
   }
 }
