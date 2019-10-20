@@ -9,7 +9,7 @@
           </view>
           <scroll-view style="width: 640rpx;height: 642rpx;" scroll-y>
             <view class="modal_content">
-              <html2wxml :parserName="name" :parserContent.sync="content"></html2wxml>
+              <uParse :parserName="name" :parserContent.sync="content"></uParse>
             </view>
           </scroll-view>
           <view class="modal_footer">
@@ -49,7 +49,7 @@
 <script>
   import tip from '../utils/tip';
   import request from '../utils/request';
-  import html2wxml from '../components/html2wxml';
+  import uParse from '../components/uParse/wxParse';
   import {
     USER_TOKEN,
     USER_INFO,
@@ -60,7 +60,7 @@
       navigationBarTitleText: '微信授权登录',
     },
     components: {
-      html2wxml: html2wxml,
+      uParse: uParse,
     },
     data () {
       return {

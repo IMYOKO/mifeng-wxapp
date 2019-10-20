@@ -85,28 +85,28 @@ export default {
       this.$CommonJs.pathTo('/pages-user/myWallet')
     },
     clickMyPoint() {
-      wepy.navigateTo({
-        url: './myPoint'
+      uni.navigateTo({
+        url: '/pages-user/myPoint'
       })
     },
     clickEarningDetail() {
-      wepy.navigateTo({
-        url: './earningDetail'
+      uni.navigateTo({
+        url: '/pages-user/earningDetail'
       })
     },
     clickFeedback() {
-      wepy.navigateTo({
-        url: './feedback'
+      uni.navigateTo({
+        url: '/pages-user/feedback'
       })
     },
     clickAboutUs() {
-      wepy.navigateTo({
-        url: './aboutUs'
+      uni.navigateTo({
+        url: '/pages-user/aboutUs'
       })
     },
     clickXieyi() {
-      wepy.navigateTo({
-        url: './adRulse?adtype=1&&adxieyitype=rule'
+      uni.navigateTo({
+        url: '/pages-matter/adRulse?adtype=1&&adxieyitype=rule'
       })
     }
   }

@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-    clickBanlance () {
+    clickBalance () {
       this.$CommonJs.pathTo('/pages-user/balanceDetail')
     },
     clickCz () {

@@ -8,7 +8,7 @@
 <script>
   import request from '../utils/request';
   import tip from '../utils/tip';
-  import html2wxml from '../components/html2wxml';
+  import html2wxml from '../components/uParse/wxParse';
   export default {
     config: {
       navigationBarTitleText: '广告发布规则',
@@ -24,16 +24,18 @@
         adxieyitype:''
       }
     },
-    async getServerAgreement() {
-      let res = await request({
-        url: 'serviceAgreement/show',
-        method: "get",
-        data: {
-          "key": this.adxieyitype // rule
-        }
-      })
-      this.content = res.data.content;
-      this.$emit('html2wxml', 'htmlParserNotice');
+    methods: {
+      async getServerAgreement() {
+        let res = await request({
+          url: 'serviceAgreement/show',
+          method: "get",
+          data: {
+            "key": this.adxieyitype // rule
+          }
+        })
+        this.content = res.data.content;
+        this.$emit('html2wxml', 'htmlParserNotice');
+      },
     },
     onLoad(option) {
       console.log(option)
