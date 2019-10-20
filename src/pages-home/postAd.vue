@@ -1,14 +1,6 @@
 <template>
   <view class="postAd">
     <image class="top-img" src="../static/images/pic_home_banner_2.png" />
-    <view class="neck-ct">
-      <view class="item">
-        <view class="line"></view>
-        <view class="tit">广告名称</view>
-        <view class="num">{{nameLength}}/50</view>
-      </view>
-      <textarea maxlength="50" placeholder="请输入投放广告名称" placeholder-class="input-placeholder" @input="inputName"></textarea>
-    </view>
     <view class="item pd mt" @click="clickChooseMatter">
       <view class="line"></view>
       <view class="tit">选择素材</view>
@@ -61,9 +53,6 @@
 export default {
   data () {
     return {
-      nameLength: '',
-      name: '',
-      nameLength: 0, //广告名称长度
       machineCartList: [],
       material_id: '', //素材id
       material_name: '', //素材名称
@@ -71,10 +60,6 @@ export default {
     }
   },
   methods: {
-    //输入广告名称
-    inputName () {
-      console.log('inputName')
-    },
     //选择素材
     clickChooseMatter () {
       this.$CommonJs.pathTo('/pages-home/chooseMatter')

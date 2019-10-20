@@ -8,11 +8,13 @@
         <button class = "top-btn add" @tap = "clickAdd">添加</button>
       </view>
     </view>
-    <view class = "banner">
-      <view class = "b-item" :class="apply_status == 2?'selected':''" @tap = "clickStatusItem(2)">审核通过</view>
-      <view class = "b-item" :class="apply_status == 1?'selected':''" @tap = "clickStatusItem(1)">审核中</view>
-      <view class = "b-item" :class="apply_status == 3?'selected':''" @tap = "clickStatusItem(3)">审核拒绝</view>
-    </view>
+      <view class = "banner" >
+        <scroll-view class = "sv" scroll-x="true">
+          <view v-for="(item, index) in tags" :key="unique" @tap="selectTag(index)" class="b-item" :class="selectedTag == index ? 'selected' : ''">
+            {{item}}
+          </view>
+        </scroll-view>
+      </view>
     <view class = "content">
       <view class = "ct-view" v-for = "(item, index) in contentList" :key = "unique" :data-type = "item.type" :data-video = "item.video" :data-logo = "item.logo" :data-name = "item.name" @tap = "clickPre">
         <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if = "item.type == 2"></image>
@@ -57,9 +59,27 @@ export default {
       no_more: false,       //没有更多数据
       is_empty: false,     //无数据，显示空页面
       page:1,
-      contentList: [],    //页面列表数据
+      //页面列表数据
+      contentList: [
+        {
+          name: '广告1',
+          logo: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7',
+          apply_status: 1,
+          tags: [1],
+          type: 1
+        },
+        {
+          name: '广告1',
+          logo: 'http://howtos.makeblock.com/9a37bd60ca4111e9a54effa3ca0c4aa7',
+          apply_status: 2,
+          tags: [2],
+          type: 1
+        },
+      ],
       type:1,           //1 图片素材  2组合素材
       apply_status:2,    // 1,2,3对应未审核，已通过，已拒绝
+      selectedTag: 0,
+      tags: ['全部素材', '竖版图片', '横版图片', '竖版视频', '横版视频', '组合素材']
     }
   },
   onLoad(options) {
@@ -89,6 +109,9 @@ export default {
       this.type = type;
       this.page = 1;
       this.getMatterList(1,true);
+    },
+    selectTag(index) {
+      this.selectedTag = index;
     },
     //点击状态筛选
     clickStatusItem(status){
@@ -217,21 +240,30 @@ export default {
 }
 .banner{
   width:100%;
+  height:80rpx;
   background:rgba(255,255,255,1);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding:0 45rpx;
-  box-sizing: border-box;
   position: fixed;
   top:80rpx;
   left:0;
-  z-index:9999;
+  white-space: nowrap;
+  overflow:hidden; 
+  z-index:2;
+  .sv{
+    padding: 0 40rpx;
+    box-sizing: border-box;
+  }
   .b-item{
+    width:140rpx;
     height:80rpx;
     line-height:80rpx;
     font-size:28rpx;
-    color:rgba(153,153,153,1);
+    color:rgba(102,102,102,1);
+    display: inline-block;
+  }
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
   }
   .selected{
     color:rgba(20,20,20,1);

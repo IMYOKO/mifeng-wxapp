@@ -10,13 +10,13 @@
     <view class = "ct-item" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" @tap = "clickDetail">
       <view class = "top">
         <view class = "type" v-if="item.material.type == 1">广告类型：图片</view>
-        <view class = "type" v-elif = "item.material.type == 2">广告类型：组合</view>
+        <view class = "type" v-if = "item.material.type == 2">广告类型：组合</view>
         <view class = "dot"></view>
         <view class = "status" v-if = "item.order_show_status == 'wait_pay'">待支付</view>
-        <view class = "status" v-elif = "item.order_show_status == 'wait_market'">待投放</view>
-        <view class = "status" v-elif = "item.order_show_status == 'market_process'">投放中</view>
-        <view class = "status" v-elif = "item.order_show_status == 'market_finish'">投放结束</view>
-        <view class = "status" v-elif = "item.order_show_status == 'is_closed'">已关闭</view>
+        <view class = "status" v-if = "item.order_show_status == 'wait_market'">待投放</view>
+        <view class = "status" v-if = "item.order_show_status == 'market_process'">投放中</view>
+        <view class = "status" v-if = "item.order_show_status == 'market_finish'">投放结束</view>
+        <view class = "status" v-if = "item.order_show_status == 'is_closed'">已关闭</view>
       </view>
       <view class = "middle">
         <image class  = "img" :src="item.material.logo"></image>
@@ -53,11 +53,11 @@
           <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png"></image>
           <view class = "pay-text">微信支付</view>
         </block>
-        <block v-elif = "pay_type == 2">
+        <block v-if = "pay_type == 2">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png"></image>
           <view class = "pay-text">余额支付</view>
         </block>
-        <block v-elif = "pay_type == 4">
+        <block v-if = "pay_type == 4">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png"></image>
           <view class = "pay-text">积分支付</view>
         </block>
@@ -131,7 +131,30 @@ export default {
       no_more: false,       //没有更多数据
       is_empty: false,     //无数据，显示空页面
       page:1,
-      contentList:[],    //页面列表数据
+      //页面列表数据
+      contentList:[
+        {
+          material: {
+            type: 1,
+            logo: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7',
+          },
+          order_items: [
+            {
+              advertise_machine: {
+                advertise_machine_label_type: {
+                  name: '餐饮'
+                }
+              }
+            }
+          ],
+          id: '01',
+          name: '广告1',
+          market_days_number: 10,
+          total_amount: 500,
+          order_show_status: 'wait_pay',
+          
+        }
+      ],
       select_tag:'',
       payId:'',         //需要支付的订单id
       payMoney:0,       //需要支付的钱
@@ -143,7 +166,7 @@ export default {
       isFocus:true,
       passLength:6,
       payPassValue:'',   //支付密码输入内容
-      inputBan:false,
+      inputBan:false
     }
   },
   async onShow(){
@@ -503,7 +526,7 @@ page{
     }
   }
   .btn{
-    width:150rpx;
+    width:170rpx;
     height:54rpx;
     line-height:54rpx;
     background:rgba(255,214,2,1);

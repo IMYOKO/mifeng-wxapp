@@ -1,10 +1,10 @@
 <template>
   <view>
     <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_paid.png" v-if = "orderInfo.order_show_status == 'wait_pay'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_put_on.png" v-elif = "orderInfo.order_show_status == 'wait_market'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-elif = "orderInfo.order_show_status == 'market_process'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-elif = "orderInfo.order_show_status == 'market_finish'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-elif = "orderInfo.order_show_status == 'is_closed'"></image>
+    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_put_on.png" v-if = "orderInfo.order_show_status == 'wait_market'"></image>
+    <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-if = "orderInfo.order_show_status == 'market_process'"></image>
+    <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-if = "orderInfo.order_show_status == 'market_finish'"></image>
+    <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-if = "orderInfo.order_show_status == 'is_closed'"></image>
     <view class = "tit">{{orderInfo.name}}</view>
     <view class = "time">
       <view class = "time-selectet" @tap  ="clickDate">
@@ -81,8 +81,8 @@
           <view class = "item">
             <view class = "info-tit">支付方式</view>
             <view class = "text" v-if = "orderInfo.pay_type == 2">余额支付</view>
-            <view class = "text" v-elif = "orderInfo.pay_type == 3">微信支付</view>
-            <view class = "text" v-elif = "orderInfo.pay_type == 4">积分支付</view>
+            <view class = "text" v-if = "orderInfo.pay_type == 3">微信支付</view>
+            <view class = "text" v-if = "orderInfo.pay_type == 4">积分支付</view>
           </view>
         </view>
       </block>
@@ -101,11 +101,11 @@
           <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png"></image>
           <view class = "pay-text">微信支付</view>
         </block>
-        <block v-elif = "pay_type == 2">
+        <block v-if = "pay_type == 2">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png"></image>
           <view class = "pay-text">余额支付</view>
         </block>
-        <block v-elif = "pay_type == 4">
+        <block v-if = "pay_type == 4">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png"></image>
           <view class = "pay-text">积分支付</view>
         </block>
@@ -189,6 +189,16 @@ export default {
     this.userInfo = uni.getStorageSync(USER_INFO) || null;
   },
   methods: {
+    async getOrderInfo(){
+      const json = await request({
+        url:'orders/show',
+        method:'GET',
+        data:{
+          id:this.id
+        }
+      })
+      this.orderInfo = json.data;
+    },
     //取消订单
     async clickCancel(){
       await tip.confirm('确定要取消该订单?');
@@ -365,17 +375,7 @@ export default {
           }
         }
       });
-    },
-  async getOrderInfo(){
-    const json = await request({
-      url:'orders/show',
-      method:'GET',
-      data:{
-        id:this.id
-      }
-    })
-    this.orderInfo = json.data;
-  }
+    }
 }
 
 </script>

@@ -14,6 +14,18 @@
         <image class = "banner-img" src = "../static/images/ic_more_2.png" />
       </view>
     </view>
+    <view class = "banner area-picker" >
+      <view class="item" @tap="clickSx">全选</view>
+      <picker class="picker" mode="selector" :range="mapFilter.provinces" :value="province" @change="provinceChange">
+        选择省
+      </picker>
+      <picker class="picker" mode="selector" :range="mapFilter.cities" :value="province" @change="provinceChange">
+        选择市
+      </picker>
+      <picker class="picker" mode="selector" :range="mapFilter.areas" :value="province" @change="provinceChange">
+        选择区
+      </picker>
+    </view>
     <view class = "ct-view" v-for="(item, index) in contentList" :key="index" @tap="clickItem(item.id, index, item.my_cart)">
       <view class = "ct">
         <image class = "logo" :src="item.logo" />
@@ -83,6 +95,12 @@ export default {
       latitude:'',
       adMachineId:[],     //选择的广告机id
       machineType:[],     //广告机类别
+      province: 0,
+      mapFilter: {
+        provinces: ['请选择', '广东', '湖南', '江西'],
+        cities: ['请选择', '深圳', '长沙', '南昌'],
+        areas: ['请选择', '宝安', '中心']
+      }
     }
   },
   methods: {
@@ -93,6 +111,9 @@ export default {
       this.advertise_machine_label_type_id = id;
       this.page = 1;
       this.getMachineList(1, true);
+    },
+    provinceChange(e) {
+      console.log(e)
     },
     clickShow(){
       this.showClassify = true
@@ -380,6 +401,21 @@ export default {
   .selected{
     font-weight:bold;
     color:rgba(20,20,20,1);
+  }
+  .area-picker {
+    top: 164rpx;
+    padding: 0 40rpx;
+    display: flex;
+    align-items: center;
+  }
+  .picker {
+    font-size: 28rpx;
+    margin-left: 20rpx;
+    flex: 1;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style>
