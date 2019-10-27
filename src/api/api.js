@@ -97,7 +97,7 @@ class Api extends BasicRequest {
 
   /**
    * 删除素材
-   * @param {Number} id
+   * @param {String} ids
    */
   delMaterials (payload) {
     return this.POST('/api/materials/delMaterials', payload)

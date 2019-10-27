@@ -13,7 +13,7 @@ export default class Tips {
     uni.showToast({
       title: title,
       icon:'none',
-      image: "../images/ic_success.png",
+      image: "../static/images/ic_success.png",
       mask: true,
       duration: duration
     });

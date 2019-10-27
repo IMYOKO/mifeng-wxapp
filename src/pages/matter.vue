@@ -1,20 +1,18 @@
 <template>
   <view>
-    <!-- <view class = "top">
-      <view class = "item" :class="type == 1?'selected':''"  @tap = "clickTypeItem(1)">图片素材</view>
-      <view class = "item" :class="type == 2?'selected':''"  @tap = "clickTypeItem(2)">组合素材</view>
+    <view class="top-button">
       <view class = "item">
-        <button class = "top-btn" @tap = "clickManager">管理</button>
-        <button class = "top-btn add" @tap = "clickAdd">添加</button>
+        <button class = "top-btn" @tap ="clickManager">管理</button>
+        <button class = "top-btn add" @tap ="clickAdd">添加</button>
       </view>
-    </view> -->
-      <view class = "banner" >
-        <scroll-view class = "sv" scroll-x="true">
-          <view v-for="(item, index) in tags" :key="index" @tap="selectTag(index)" class="b-item" :class="selectedTag == index ? 'selected' : ''">
-            {{item}}
-          </view>
-        </scroll-view>
-      </view>
+    </view>
+    <view class = "banner" >
+      <scroll-view class = "sv" scroll-x="true">
+        <view v-for="(item, index) in tags" :key="index" @tap="selectTag(index)" class="b-item" :class="selectedTag == index ? 'selected' : ''">
+          {{item}}
+        </view>
+      </scroll-view>
+    </view>
     <view class = "content">
       <view class = "ct-view" v-for ="(item, index) in contentList" :key ="index" @tap="clickPre(item)">
         <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.type === 2" />
@@ -37,7 +35,7 @@
 import { mapState, mapMutations } from 'vuex'
 // import request from '../utils/request';
 import tip from '../utils/tip';
-// import checkRole from '../utils/check-role';
+import checkRole from '../utils/check-role';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
 } from '../utils/constant';
@@ -102,6 +100,9 @@ export default {
     },
     selectTag(index) {
       this.selectedTag = index;
+      this.type = index;
+      this.start = 0
+      this.getMatterList(0, true);
     },
     //点击状态筛选
     clickStatusItem(status){
@@ -110,7 +111,7 @@ export default {
       this.getMatterList(1,true);
     },
     async clickManager(){
-      await checkRole(true);
+      // await checkRole(true);
       uni.navigateTo({
         url:'/pages-matter/manageMatter?type='+this.type
       })
@@ -223,8 +224,43 @@ export default {
    
   }
 }
+.top-button {
+  width: 34%;
+  height:80rpx;
+  background:#141414;
+  position: fixed;
+  top:0rpx;
+  right:0;
+  white-space: nowrap;
+  overflow:hidden; 
+  z-index: 600;
+
+  .item{
+    height:80rpx;
+    font-size:28rpx;
+    color:rgba(153,153,153,1);
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom:6rpx solid #141414;
+    .top-btn{
+      height:48rpx;
+      line-height:48rpx;
+      text-align: center;
+      font-size:24rpx;
+      color:rgba(20,20,20,1);
+      background:rgba(246,246,246,1);
+      border-radius: 0;
+    }
+    .add{
+      background:rgba(51,51,51,1);
+      color:rgba(255,214,2,1);
+      margin-left:10rpx;
+    }
+  }
+}
 .banner{
-  width:100%;
+  width:66%;
   height:80rpx;
   background:#141414;
   position: fixed;
@@ -232,9 +268,9 @@ export default {
   left:0;
   white-space: nowrap;
   overflow:hidden; 
-  z-index: 1000;
+  z-index: 500;
   .sv{
-    padding: 0 40rpx;
+    padding: 0 10rpx 0  40rpx;
     box-sizing: border-box;
   }
   .b-item{
