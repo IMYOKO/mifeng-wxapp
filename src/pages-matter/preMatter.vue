@@ -1,16 +1,16 @@
 <template>
   <view>
-    <view class = "img" v-if = "type == 1">
-      <image class = "images" :src="logo" :style = "windowHeight"></image>
-      <!--<image class = "images" src=  "{{logo}}" mode="widthFix"></image>-->
-      <!-- <image class = "img-logo" v-if = "{{logoImg}}" src=  "{{logoImg}}"></image> -->
-      <!-- <image class = "img-code" v-if = "{{codeImg}}" src=  "{{codeImg}}"></image> -->
+    <view class = "img" v-if="type == 1">
+      <image class = "images" :src="logo" :style = "windowHeight" />
+      <!--<image class = "images" src=  "{{logo}}" mode="widthFix" />-->
+      <!-- <image class = "img-logo" v-if = "{{logoImg}}" src=  "{{logoImg}}" /> -->
+      <!-- <image class = "img-code" v-if = "{{codeImg}}" src=  "{{codeImg}}" /> -->
     </view>
-    <view class = "video" v-if = "type == 2">
+    <view class = "video" v-if="type == 2">
       <video :src="video"></video>
       <!-- <cover-image class = "img-logo" v-if = "{{logoImg}}" src=  "{{logoImg}}"></cover-image> -->
       <!-- <cover-image class = "img-code" v-if = "{{codeImg}}" src=  "{{codeImg}}"></cover-image> -->
-      <image class = "images" :src = "logo">
+      <image class = "images" :src="logo">
         <!-- <view class="rollCon" style="{{type == 2?'width:662rpx;':''}}">
           <view class='box'>
             <view class='text' style="left:{{offsetLeft}}px" >{{name}}</view>

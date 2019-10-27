@@ -1,27 +1,27 @@
 <template>
   <view>
-    <view class = "top">
+    <!-- <view class = "top">
       <view class = "item" :class="type == 1?'selected':''"  @tap = "clickTypeItem(1)">图片素材</view>
       <view class = "item" :class="type == 2?'selected':''"  @tap = "clickTypeItem(2)">组合素材</view>
       <view class = "item">
         <button class = "top-btn" @tap = "clickManager">管理</button>
         <button class = "top-btn add" @tap = "clickAdd">添加</button>
       </view>
-    </view>
+    </view> -->
       <view class = "banner" >
         <scroll-view class = "sv" scroll-x="true">
-          <view v-for="(item, index) in tags" :key="unique" @tap="selectTag(index)" class="b-item" :class="selectedTag == index ? 'selected' : ''">
+          <view v-for="(item, index) in tags" :key="index" @tap="selectTag(index)" class="b-item" :class="selectedTag == index ? 'selected' : ''">
             {{item}}
           </view>
         </scroll-view>
       </view>
     <view class = "content">
-      <view class = "ct-view" v-for = "(item, index) in contentList" :key = "unique" :data-type = "item.type" :data-video = "item.video" :data-logo = "item.logo" :data-name = "item.name" @tap = "clickPre">
-        <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if = "item.type == 2"></image>
-        <image class = "status" src = "../static/images/pic_material_audit.png" v-if = "item.apply_status  == 1"></image>
-        <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if = "item.apply_status == 3"></image>
-        <image class = "ct-img" :class="item.type == 2?'group':''" :src="item.logo"></image>
-        <view class = "tit">{{item.name}}</view>
+      <view class = "ct-view" v-for ="(item, index) in contentList" :key ="index" @tap="clickPre(item)">
+        <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.type === 2" />
+        <image class = "status" src = "../static/images/pic_material_audit.png" v-if ="item.auditStatus  === 0" />
+        <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if ="item.auditStatus === 2" />
+        <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
+        <view class = "tit">{{item.materialName}}</view>
       </view>
       
     </view>
@@ -35,9 +35,9 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
-import request from '../utils/request';
+// import request from '../utils/request';
 import tip from '../utils/tip';
-import checkRole from '../utils/check-role';
+// import checkRole from '../utils/check-role';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
 } from '../utils/constant';
@@ -45,9 +45,6 @@ import bottomLoadMore from '../components/common/bottomLoadMore';
 import bottomNoMore from '../components/common/bottomNoMore';
 import placeholder from '../components/common/placeholder';
 export default {
-  config: {
-    navigationBarTitleText: '蜜蜂广告',
-  },
   components: {
     bottomLoadMore:bottomLoadMore,
     bottomNoMore:bottomNoMore,
@@ -58,51 +55,44 @@ export default {
       load_more: false,    //加载更多图案
       no_more: false,       //没有更多数据
       is_empty: false,     //无数据，显示空页面
-      page:1,
+      start: 0,
       //页面列表数据
       contentList: [
-        {
-          name: '广告1',
-          logo: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7',
-          apply_status: 1,
-          tags: [1],
-          type: 1
-        },
-        {
-          name: '广告1',
-          logo: 'http://howtos.makeblock.com/9a37bd60ca4111e9a54effa3ca0c4aa7',
-          apply_status: 2,
-          tags: [2],
-          type: 1
-        },
+        // {
+        //   name: '广告1',
+        //   logo: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7',
+        //   apply_status: 1,
+        //   tags: [1],
+        //   type: 1
+        // },
+        // {
+        //   name: '广告1',
+        //   logo: 'http://howtos.makeblock.com/9a37bd60ca4111e9a54effa3ca0c4aa7',
+        //   apply_status: 2,
+        //   tags: [2],
+        //   type: 1
+        // },
       ],
-      type:1,           //1 图片素材  2组合素材
-      apply_status:2,    // 1,2,3对应未审核，已通过，已拒绝
+      offset: 10,
+      type: 0,           //0 全部素材 1-竖屏图片、2-横屏图片、3-竖屏视频、4-横屏视频、5-组合素材
+      apply_status:2,    // 1,2,3对应未审核，已通过，已拒绝  0-待审核，1-审核通过，2-审核拒绝
       selectedTag: 0,
       tags: ['全部素材', '竖版图片', '横版图片', '竖版视频', '横版视频', '组合素材']
     }
   },
-  onLoad(options) {
-
-  },
-  async onShow(){
-    await checkRole();
-    this.page = 1;
-    this.getMatterList(1,true);
+  onShow () {
+    if (!this.userInfo) {
+      this.$CommonJs.pathTo('/pages/login')
+    }
+    this.getMatterList(0, true);
   },
   computed: {
-
+    ...mapState('User/User', ['userInfo']),
   },
   methods: {
     //预览
-    clickPre(e){
-      let type = e.currentTarget.dataset.type;
-      let logo = e.currentTarget.dataset.logo;
-      let video = e.currentTarget.dataset.video;
-      let name = e.currentTarget.dataset.name;
-      uni.navigateTo({
-        url:'./preMatter?type='+type+'&logo='+logo+'&video='+video+'&name='+name
-      })
+    clickPre(item){
+      this.$CommonJs.pathTo(`/pages-matter/preMatter?type=${item.screenType}&logo=${item.logo}&video=${item.video}&name=${item.name}`)
     },
     //点击分类筛选
     clickTypeItem(type){
@@ -131,42 +121,38 @@ export default {
         url:'/pages-matter/addMatter?type='+this.type
       })
     },
-    async getMatterList(page, refresh) {
-      let json;
+    async getMatterList(start, refresh) {
+      const payload = {
+        materialType: this.type,
+        start,
+        offset: this.offset
+      }
       try {
-        json = await request({
-          url:'users/materials',
-          method:'GET',
-          data:{
-            page:page || 1,
-            apply_status:this.apply_status,
-            type:this.type,
-          }
-        })
-      } catch (err) {
-        this.is_empty = this.page == 1 && this.contentList.length == 0;
+        const response = await this.$server.getMaterialsList(payload)
+        this.load_more = false;
+        if (refresh) {
+          this.contentList = response.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...response.data.data.item];
+        }
+        if(response.data.data.isNext === 0){
+          //没有更多数据
+          this.no_more = true;
+        }else{			
+          this.no_more = false;
+        }
+        if (this.start === 0 && response.data.data.isNext == 0) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
+        console.log(res)
+      } catch (error) {
+        this.is_empty = this.start === 0 && this.contentList.length === 0;
         this.no_more = !this.is_empty;
         this.load_more = false;
-        console.log(err)
         return;
-      }
-      this.load_more = false;
-      if (refresh) {
-        this.contentList = json.data.data;
-      } else {
-        this.contentList = [...this.contentList, ...json.data.data];
-      }
-      if(json.data.data.length < json.data.per_page && json.data.data.length != 0){
-        //没有更多数据
-        this.no_more = true;
-      }else{			
-        this.no_more = false;
-      }
-      if (this.page == 1 && json.data.data.length == 0) {
-        //暂无数据
-        this.is_empty = true;
-      } else {
-        this.is_empty = false;
       }
     },
   },
@@ -175,8 +161,8 @@ export default {
      * 页面相关事件处理函数--监听用户下拉动作
      */
   onPullDownRefresh() {
-    this.page = 1;
-    this.getMatterList(1,true);
+    this.start = 0;
+    this.getMatterList(0, true);
     setTimeout(() => {
       uni.stopPullDownRefresh();
     }, 1000);  
@@ -186,10 +172,9 @@ export default {
      * 页面上拉触底事件的处理函数
      */
   onReachBottom() {
-    let that = this;
-    if ((!that.no_more) && (!that.is_empty)) {
-        that.page += 1;
-        that.getMatterList(that.page,false);
+    if ((!this.no_more) && (!this.is_empty)) {
+        this.start += 1;
+        this.getMatterList(this.start, false);
       }
   }
 }
@@ -241,13 +226,13 @@ export default {
 .banner{
   width:100%;
   height:80rpx;
-  background:rgba(255,255,255,1);
+  background:#141414;
   position: fixed;
-  top:80rpx;
+  top:0rpx;
   left:0;
   white-space: nowrap;
   overflow:hidden; 
-  z-index:2;
+  z-index: 1000;
   .sv{
     padding: 0 40rpx;
     box-sizing: border-box;
@@ -257,7 +242,7 @@ export default {
     height:80rpx;
     line-height:80rpx;
     font-size:28rpx;
-    color:rgba(102,102,102,1);
+    color:rgba(153,153,153,1);
     display: inline-block;
   }
   ::-webkit-scrollbar{
@@ -266,7 +251,7 @@ export default {
     color: transparent;
   }
   .selected{
-    color:rgba(20,20,20,1);
+    color:rgba(255,214,2,1);
     font-weight: bold;
   }
 }
@@ -276,7 +261,7 @@ export default {
   padding:0 15rpx;
   box-sizing: border-box;
   justify-content: space-around;
-  margin-top:180rpx;
+  margin-top:100rpx;
   .ct-view{
     position: relative;
     width:340rpx;

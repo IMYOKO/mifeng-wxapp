@@ -1,8 +1,8 @@
 <template>
   <view class="container">
     <!-- 弹框协议 -->
-    <view :if="showModal" class="modal">
-      <form class="catchForm" report-submit bindsubmit="catchSubmit">
+    <view v-if="showModal" class="modal">
+      <form class="catchForm">
         <view class="modal_body">
           <view class="modal_header">
             用户注册协议
@@ -13,7 +13,7 @@
             </view>
           </scroll-view>
           <view class="modal_footer">
-            <button form-type="submit" class="catchBtn">
+            <button form-type="submit" class="catchBtn" @click="catchSubmit">
               <view class="modal_btn">同意此协议</view>
             </button>
           </view>
@@ -21,7 +21,7 @@
       </form>
     </view>
     <view class="section top">
-      <image class="icon_logo" src="../static/images/pic_sign_in_logo_1.png"></image>
+      <image class="icon_logo" src="../static/images/pic_sign_in_logo_1.png" />
       <view class="text">蜜蜂广告</view>
       <view class="company">深圳市天青色网络科技有限公司</view>
     </view>
@@ -34,115 +34,95 @@
       </view>
     </view>
     <view class="btn-view">
-      <button class="login_btn btn" lang="zh_CN" open-type='getUserInfo' bindgetuserinfo="login">允许</button>
+      <button class="refuse_btn btn" @click="goHome">拒绝</button>
+      <button class="login_btn btn" lang="zh_CN" open-type='getUserInfo' @getuserinfo="login">允许</button>
     </view>
     <view class="section body">
-      <!-- <view class="text">该程序将获取以下授权：</view> -->
       <view class="text_group">
-      <radio style="zoom:.5" :value="status" :checked="status" color="#FFD602" />
+        <radio style="zoom:.5" :checked="status" @change="agreed" color="#FFD602" />
         <text class="subtext">登录并使用蜜蜂广告小程序默认同意</text>
-        <text @tap="showModal" class="subtext" style="color:#E9C300">《注册服务协议》</text>
+        <text @click="showModal = true" class="subtext" style="color:#E9C300">《注册服务协议》</text>
       </view>
     </view>
   </view>
 </template>
 <script>
-  import tip from '../utils/tip';
-  import request from '../utils/request';
-  import uParse from '../components/uParse/wxParse';
-  import {
-    USER_TOKEN,
-    USER_INFO,
-    EXPIRE
-  } from '../utils/constant';
-  export default {
-    config: {
-      navigationBarTitleText: '微信授权登录',
-    },
-    components: {
-      uParse: uParse,
-    },
-    data () {
-      return {
-        showModal: true,
-        content: '',
-        status:true
-      }
-    },
-    methods: {
-      async login(e) {
-        if (e.detail.errMsg == 'getUserInfo:fail auth deny') {
-          tip.toast('请允许授权')
-        }
-        let pages = getCurrentPages();
-        let codeInfo = await uni.login();
-        let wxUserInfo = await uni.getUserInfo({
-          lang: 'zh_CN'
-        });
-        let encryptedData = wxUserInfo.encryptedData;
-        let iv = wxUserInfo.iv;
-        const json = await request({
-          url: 'auth/login_mini_app',
-          method: 'POST',
-          loading: '登录中',
-          data: {
-            code: codeInfo.code,
-            encrypt_data: encryptedData,
-            iv: iv,
-          }
-        });
-        uni.setStorageSync('token', json.data.access_token);
-        uni.setStorageSync('userInfo', json.data.user);
-        await tip.success('登录成功');
-        if (pages.length > 1) {
-          uni.navigateBack();
-        } else {
-          uni.switchTab({
-            url: './index'
-          })
-        }
-
-      },
-      async catchSubmit(e) {
-        let formId = e.detail.formId;
-        // console.log('获取formId=' + formId);
-        // if (formId == 'the formId is a mock one') {
-        //   return;
-        // }
-        let res = await request({
-          url: 'wxForm/store',
-          method: 'post',
-          data: {
-            form_id: formId
-          }
-        }).then(() => {
-          this.showModal = false
-
-        });
-      },
-      showModal() {
-        this.showModal = true
-      }
-    },
-    async getServerAgreement() {
-      let res = await request({
-        url: 'serviceAgreement/show',
-        method: "get",
-        data: {
-          "key": "register"
-        }
-      })
-      this.content = res.data.content
-      this.$invoke('html2wxml', 'htmlParserNotice')
-    },
-    onLoad() {
-      this.getServerAgreement()
+import uParse from '../components/uParse/wxParse';
+import { mapState, mapMutations } from 'vuex'
+export default {
+  components: {
+    uParse: uParse,
+  },
+  data () {
+    return {
+      showModal: true,
+      content: '',
+      status:true,
+      openid: null,
+      userInfo: null
     }
+  },
+  methods: {
+    ...mapMutations('User/User', ['SETUSERINFO']),
+    agreed () {
+      console.log(this.status)
+      this.status = !this.status
+    },
+    goHome () {
+      uni.switchTab({url: '/pages/index'})
+    },
+    async login(e) {
+      if (e.detail.errMsg == 'getUserInfo:fail auth deny') {
+        this.$CommonJs.showToast('请允许授权')
+        return
+      }
+      try {
+        const payload = {
+          username: this.openid
+        }
+        const res = await this.$server.login(payload)
+        uni.setStorageSync("token", res.header.Authorization)
+        this.userInfo = e.detail.userInfo
+        await this.$server.setUserInfo(this.userInfo)
+        uni.setStorageSync('userInfo', this.userInfo)
+        this.SETUSERINFO(this.userInfo)
+        this.$CommonJs.showToast('登录成功')
+        uni.navigateBack();
+      } catch (error) {
+        console.log(error)
+        this.$CommonJs.showToast('登录失败')
+      }
+    },
+    async register (code) {
+      try {
+        const res = await this.$server.register({code})
+        console.log(res)
+        this.openid = res.data.data.openid
+        console.log(this.openid)
+        this.showModal = false
+      } catch (error) {
+        this.showModal = false
+      }
+    },
+    catchSubmit() {
+      uni.login({
+        provider: 'weixin',
+        success: (loginRes) => {
+          this.register(loginRes.code)
+        },
+        fail: () => {}
+      })
+    },
+    async getServerAgreement() {},
+  },
+  onLoad() {
+    this.getServerAgreement()
   }
-
+}
 </script>
 <style lang="less">
   .container {
+    min-height: 100%;
     background-color: #fff;
   }
 
@@ -310,17 +290,18 @@
     justify-content: space-around;
 
     .btn {
-      width: 675rpx;
+      width: 340rpx;
       height: 92rpx;
       border-radius: 5rpx;
       line-height: 92rpx;
       margin-top: 70rpx;
       font-size: 32rpx;
       border-radius: 4rpx;
+      border: none;
     }
 
     .login_btn {
-      background-color: var(--theme_color);
+      background-color: #E9C300;
       color: #FFF;
     }
 

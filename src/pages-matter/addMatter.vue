@@ -30,31 +30,30 @@
       <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">
         <view class="picker-container">
             <view class="itembtn">{{typeRange[type - 1]}}</view>
-            <image class="arrow" src="../static/images/ic_home_open_1.png"></image>
+            <image class="arrow" src="../static/images/ic_home_open_1.png" />
         </view>
       </picker>
     </view>
     <view class="item pd" @tap="clickChooseImg">
       <view class="line"></view>
       <view class="tit">选择图片</view>
-      <!--<image class = "img" src=  "{{logo}}"></image>-->
-      <image class="arrow" src="../static/images/ic_home_open_1.png"></image>
+      <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
     <view class="item pd" v-if="type == 2" @tap="clickChooseVideo">
       <view class="line"></view>
       <view class="tit">选择视频</view>
       <!--<video wx:if = "{{video}}" class = "img" show-fullscreen-btn = "false" src=  "{{video}}"></video>-->
-      <image class="arrow" src="../static/images/ic_home_open_1.png"></image>
+      <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
     <view class="placeholderContainer">
       <view class="placeholderContent" v-if="type == 1">
-        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder.png"></image>
-        <image class="image" style="z-index: 10" :src="logo"></image>
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder.png" />
+        <image class="image" style="z-index: 10" :src="logo" />
       </view>
       <view class="placeholderContent" v-if="type == 2">
-        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png"></image>
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
         <video v-if="video" :src="video"></video>
-        <image class="videoImg" :src="logo"></image>
+        <image class="videoImg" :src="logo" />
       </view>
     </view>
 
@@ -128,6 +127,7 @@
       },
       //上传照片
       clickChooseImg() {
+
         let that = this;
         uni.showActionSheet({
           itemList: ['拍照', '从相册选择'],
@@ -155,6 +155,7 @@
                   tip.loading('上传中');
                   qiniuUpload(tempFilePaths[0], async function (res) {
                     that.logo = res.imageURL;
+                    console.log(that.logo)
                     tip.loaded();
                   })
                 },
@@ -236,21 +237,16 @@
           tip.toast('上传视频不能超过1分钟请重新选择');
           return;
         }
-        const json = await request({
-          url: 'materials/store',
-          method: 'POST',
-          loading: '',
-          data: {
-            name: this.name,
-            logo: this.logo,
-            type: this.type,
-            video: this.video,
-            seconds: this.seconds,
-          }
-        })
-        uni.redirectTo({
-          url: './addMatterSuccess'
-        })
+        const payload = {
+          materialName: this.name,
+          materialType: this.type,
+          logo: this.logo,
+          video: this.video,
+        }
+        try {
+          await this.$server.addMaterials(payload)
+          this.$CommonJs.pathTo('/pages-matter/addMatterSuccess')
+        } catch (error) {}
       }
     }
   }

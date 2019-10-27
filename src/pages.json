@@ -4,12 +4,13 @@
 		{ "path": "pages/matter", "style": { "navigationBarTitleText": "蜜蜂广告" } },
 		{ "path": "pages/advertise", "style": { "navigationBarTitleText": "蜜蜂广告" } },
 		{ "path": "pages/user", "style": { "navigationBarTitleText": "蜜蜂广告" } },
-		{ "path": "pages/login", "style": { "navigationBarTitleText": "登录" } }
+		{ "path": "pages/login", "style": { "navigationBarTitleText": "微信授权登录" } }
 	],
 	"subPackages": [
 		{
 			"root": "pages-home",
 			"pages": [
+				{ "path": "webView", "style": { "navigationBarTitleText": "" } },
 				{ "path": "fxUs", "style": { "navigationBarTitleText": "发现我们" } },
 				{ "path": "applyCoop", "style": { "navigationBarTitleText": "申请合作" } },
 				{ "path": "applySuccess", "style": { "navigationBarTitleText": "申请合作" } },

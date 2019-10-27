@@ -8,14 +8,14 @@
 				:interval="interval"
 				:duration="duration"
 			>
-				<swiper-item class="swiper-item" v-for="(item, index) in bannerItem" :key='index' @click="goWebView(item.img_path)">
-					<image :src="item.img_path" class="image" />
+				<swiper-item class="swiper-item" v-for="(item, index) in bannerItem" :key='index' @click="goWebView(item)">
+					<image :src="item.imageUrl" class="image" />
 				</swiper-item>
 			</swiper>
 		</view>
 		<view class="midder">
 			<image class = "img1" src = "../static/images/pic_post_1.png" @click="clickPostAd" />
-      <image class = "img2" src = "../static/images/pic_application_2.png" @click="clickApplyCoop" />
+      <image class = "img2" src = "../static/images/pic_application_2.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
 	</view>
@@ -31,61 +31,52 @@ export default {
 			autoplay: true,
 			interval: 3000,
 			duration: 500,
-			bannerItem: [
-				{
-					img_path: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7'
-				},
-				{
-					img_path: 'http://howtos.makeblock.com/9a37bd60ca4111e9a54effa3ca0c4aa7'
-				}
-			]
+			bannerItem: []
 		}
 	},
 	onShow () {
-		// this.wexinlogin()
+		this.getBanner({type: 1})
 	},
 	computed: {
-		...mapState('User/User', ['isLogin']),
-		...mapState('User/User', {
-			login2: state => state.isLogin
-		})
+		...mapState('User/User', ['userInfo']),
 	},
 	methods: {
-		...mapMutations('User/User', ['LOGIN']),
-		goWebView (url) {
-			console.log(url)
+		goWebView (item) {
+			if (item.linkType === 0) {
+				return
+			}
+			if (item.linkType === 1) {
+				this.$CommonJs.pathTo('/pages-home/webView?src=' + item.linkUrl)
+				return
+			}
+			if (item.linkType === 2) {
+				return
+			}
+			if (item.linkType === 3) {
+				return
+			}
+		},
+		async getBanner (payload) {
+			const res = await this.$server.getBanner(payload)
+			this.bannerItem = res.data.data.banner
 		},
 		clickPostAd () {
+			if (!this.userInfo) {
+				this.$CommonJs.pathTo('/pages/login')
+				return
+			}
 			this.$CommonJs.pathTo('/pages-home/postAd')
 		},
-		clickApplyCoop () {
-			this.$CommonJs.pathTo('/pages-home/applyCoop')
+		clickAddMatter () {
+			if (!this.userInfo) {
+				this.$CommonJs.pathTo('/pages/login')
+				return
+			}
+			this.$CommonJs.pathTo('/pages-matter/addMatter')
 		},
 		clickFindUs () {
 			this.$CommonJs.pathTo('/pages-home/fxUs')
 		},
-		wexinlogin () {
-			uni.login({
-				provider: 'weixin',
-				success: (loginRes) => {
-					this.weixinCode = loginRes.code
-					this.login()
-				},
-				fail: () => {
-				}
-			})
-		},
-		async login () {
-			uni.showLoading({
-        title: '请求中...'
-			});
-			try {
-				const data = await this.$server.login({})
-				console.log(data)
-			} catch (error) {
-				console.log(error)
-			}
-		}
 	}
 }
 </script>

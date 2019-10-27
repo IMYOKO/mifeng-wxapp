@@ -1,10 +1,10 @@
 const state = {
-  isLogin: false
+  userInfo: uni.getStorageSync('userInfo') || null
 }
 
 const mutations = {
-  ['LOGIN'] (state) {
-    state.isLogin = !state.isLogin
+  ['SETUSERINFO'] (state, paylaod) {
+    state.userInfo = paylaod
   }
 }
 

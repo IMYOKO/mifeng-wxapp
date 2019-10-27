@@ -16,7 +16,11 @@ export default async (filePath,fn) => {
   // 响应数据
   const json = response.data
   if (json.code !== 0) {
-    tip.toast(json.msg || '请求失败，请重试')
+    uni.showToast({
+      title: json.msg || '请求失败，请重试',
+      icon: 'none',
+      duration: 2000
+    })
     // 401清除登录信息
     if (json.code === 401) {
       uni.removeStorageSync('token')
@@ -26,6 +30,7 @@ export default async (filePath,fn) => {
   }
   let imgToken = json.data.token;
   let baseUrl  = json.data.baseUrl;
+  console.log(baseUrl)
   qiniuUploader.upload(filePath, (res) => {
     console.log('res:',res);
       if (fn) {

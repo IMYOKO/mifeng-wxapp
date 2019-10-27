@@ -1,7 +1,17 @@
 import configData from '../config/index'
 
+const defaultheader = () => {
+  const token = uni.getStorageSync("token") || null
+  if (token) {
+    return {
+      'Authorization': token
+    }
+  }
+  return {}
+}
+
 class BasicRequest {
-  request (method, url, data = {}, headers = {}) {
+  request (method, url, data = {}, headers = defaultheader()) {
     return new Promise((reslove, reject) => {
       uni.request({
         method,
@@ -9,23 +19,20 @@ class BasicRequest {
         data,
         header: {...headers},
         success: res => {
-          if (res.statusCode === 200) {
+          if (res.statusCode === 200 && res.data.status === 0) {
             reslove(res)
           } else {
-            // uni.showToast({
-            //   title: '失败',
-            //   icon: 'none',
-            //   duration: 2000
-            // });
+            if (res.data.msg) {
+              uni.showToast({
+                title: res.data.msg,
+                icon: 'none',
+                duration: 2000
+              });
+            }
             reject(res)
           }
         },
         fail: err => {
-          // uni.showToast({
-          //   title: '失败',
-          //   icon: 'none',
-          //   duration: 2000
-          // });
           reject(err)
         }
       })
