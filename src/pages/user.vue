@@ -2,18 +2,13 @@
   <view class="user">
     <image class="top-bg" src="../static/images/pic_my_background.png"/>
     <view class="user">
-      <image class="tx" :src="userInfo.logo"/>
-      <view class="name">{{userInfo.name}}</view>
-      <view class="sf" v-if="userInfo.level == 'municipal'">市级代理</view>
-      <view class="sf" v-else-if="userInfo.level == 'district'">区级代理</view>
-      <view class="sf" v-else-if="userInfo.level == 'ordinary'">普通代理</view>
-      <view class="sf" v-else-if="userInfo.level == 'terminal'">终端代理</view>
-      <view class="sf" v-else-if="userInfo.level == 'personal'">个人代理</view>
-      <view class="sf" v-else-if="userInfo.level == 'general'">一般用户</view>
+      <image class="tx" :src="userInfo.avatarUrl"/>
+      <view class="name">{{userInfo.nickName}}</view>
+      <view class="sf">{{userInfo.userLevelName}}</view>
     </view>
     <view @tap="clickMyAd">
       <formidTaker>
-        <view class="item" v-if="userInfo.level != 'general'">
+        <view class="item" v-if="userInfo.userLevel > 0">
           <image class="item-icon" src="../static/images/ic_my_advertising_machine.png"/>
           <view class="item-text">我的广告机</view>
         </view>
@@ -37,7 +32,7 @@
     </view>
     <view @tap="clickEarningDetail">
       <formidTaker>
-        <view class="item" v-if="userInfo.level != 'general'">
+        <view class="item" v-if="userInfo.userLevel != 'general'">
           <image class="item-icon" src="../static/images/ic_my_profit.png"/>
           <view class="item-text">收益明细</view>
         </view>
@@ -71,13 +66,36 @@
 </template>
 
 <script>
+import {getUserInfo, updateUserInfo, checkRole} from '../utils/user';
+const userMap = {
+  0: '一般用户',
+  1: '机主',
+  2: '经销商',
+  3: '区代理',
+  4: '市代理',
+  5: '省代理',
+  6: '合伙人'
+}
 export default {
   data () {
     return {
       userInfo: null,
     }
   },
+  async onShow () {
+    await checkRole();
+    await this.requestUserInfo();
+    this.userInfo = getUserInfo();
+  },
   methods: {
+    async requestUserInfo () {
+      try {
+        const res = await this.$server.getUserInfo();
+        const userInfo = res.data.data.userInfo;
+        userInfo.userLevelName = userMap[userInfo.userLevel];
+        updateUserInfo(userInfo);
+      } catch (err) {}
+    },
     clickMyAd() {
       this.$CommonJs.pathTo('/pages-user/myAdMachine')
     },

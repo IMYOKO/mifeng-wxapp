@@ -106,7 +106,7 @@
 </template>
 <script>
 import request from '../utils/request';
-import checkRole from '../utils/check-role';
+import {checkRole} from '../utils/user';
 import tip from '../utils/tip';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO

@@ -42,6 +42,64 @@ export default {
     Placeholder,
     BottomNoMore,
     BottomLoadMore
+  },
+  onShow () {
+    this.getBalanceList(1,true);
+  },
+  methods: {
+    async getBalanceList(page,refresh){
+      let list = [];
+      try {
+        const json = await this.$server.getUserAssetsBillList({
+          start: page || 1,
+          offset: 20
+        });
+        list = json.data.data.item;
+      } catch (err) {
+        list = [];
+      }
+      list.forEach(item => {
+        item.add = parseFloat(list[i].amount) > 0;
+      });
+      if (refresh) {
+        this.contentList = list;
+      } else {
+        this.contentList = [...this.contentList, ...list];
+      }
+      if(list.length < 20  && list.length != 0){
+        //没有更多数据
+        this.no_more = true;
+      }else{
+        this.no_more = false;
+      }
+      if (this.page == 1 && list.length == 0) {
+      //暂无数据
+      this.is_empty = true;
+      } else {
+        this.is_empty = false;
+      }
+    },
+
+    /**
+    * 页面相关事件处理函数--监听用户下拉动作
+    */
+    onPullDownRefresh() {
+      this.page = 1;
+      this.getBalanceList(1,true);
+      setTimeout(() => {
+        uni.stopPullDownRefresh();
+      }, 1000);
+    },
+
+    /**
+    * 页面上拉触底事件的处理函数
+    */
+    onReachBottom() {
+      if ((!this.no_more) && (!this.is_empty)) {
+          this.page += 1;
+          this.getBalanceList(this.page,false);
+        }
+    }
   }
 }
 </script>

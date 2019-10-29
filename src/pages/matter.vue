@@ -33,9 +33,8 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
-// import request from '../utils/request';
 import tip from '../utils/tip';
-import checkRole from '../utils/check-role';
+import {checkRole} from '../utils/user';
 import {
   USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
 } from '../utils/constant';

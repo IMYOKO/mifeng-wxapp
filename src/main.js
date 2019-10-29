@@ -11,6 +11,7 @@ Vue.prototype.$store = store
 Vue.prototype.$server = Api
 Vue.prototype.$CommonJs = commonJs
 Vue.prototype.$ConfigData = configData
+
 App.mpType = 'app'
 
 const app = new Vue({

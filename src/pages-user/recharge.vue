@@ -4,10 +4,10 @@
       <view class = "tit">充值金额</view>
       <view class = "input-view">
         <view class = "icon">￥</view>
-        <input type="digit" placeholder = "请填写您的充值金额"  placeholder-style = "font-size:30rpx;color:##CFCFCF;" @input = "inputMoney"/>
+        <input type="digit" placeholder = "请填写您的充值金额" placeholder-style = "font-size:30rpx;color:##CFCFCF;" @input = "inputMoney"/>
       </view>
       <view class = "text-view">
-        <view class = "text">可用余额{{userInfo.money}}元</view>
+        <view class = "text">可用余额{{userInfo.amountKy || 0}}元</view>
         <view class = "sm" @tap="clickExplain">充值说明</view>
       </view>
     </view> 
@@ -16,18 +16,60 @@
 </template>
 
 <script>
+import tip from '../utils/tip';
+import {getUserInfo} from '../utils/user';
 export default {
   data () {
     return {
       userInfo: null,
-      money: '',
+      money: ''
     }
   },
-  clickExplain () {
-    this.CommonJs.pathTo('/pages-user/explain')
+  onShow () {
+    this.userInfo = getUserInfo();
   },
-  clickSubmit () {
-    
+  methods: {
+    inputMoney (e) {
+      this.money = Number(e.detail.value);
+    },
+    clickExplain () {
+      this.$CommonJs.pathTo('/pages-user/explain')
+    },
+    async clickSubmit () {
+      if(!this.money){
+        tip.toast('请输入充值金额');
+        return;
+      }
+      if(this.money < 10){
+        tip.toast('请输入十元以上金额');
+        return;
+      }
+      try {
+        const res = await this.$server.userRecharge({
+          amount: this.money
+        });
+        const data = res.data.data;
+        wx.requestPayment({
+          'timeStamp': data.timeStamp,
+          'nonceStr': data.nonceStr,
+          'package': data.package,
+          'signType': data.signType,
+          'paySign': data.paySign,
+          'success': function(res) {
+            tip.success('充值成功');
+            setTimeout(() => {
+              wepy.navigateBack();
+            }, 1000);
+          },
+          'fail': function (res) {
+            // tip.toast('支付取消');
+            console.log(res)
+          }
+        }); 
+      } catch (err) {
+
+      }
+    }
   }
 }
 </script>

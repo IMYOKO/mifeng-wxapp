@@ -7,7 +7,7 @@
         <view class = "balance-text">余额明细</view>
       </view>
       <view class = "money">
-        <view class = "num">{{userInfo.money}}</view>
+        <view class = "num">{{userInfo.amountYe || 0}}</view>
         <view class = "text">我的余额</view>
       </view>
     </view>
@@ -19,13 +19,23 @@
 </template>
 
 <script>
+import {updateUserInfo, getUserInfo} from '../utils/user';
 export default {
   data () {
     return {
       userInfo: null
     }
   },
+  async onShow(){
+    await this.getUserInfo();
+    this.userInfo = getUserInfo();
+  },
   methods: {
+    //获取用户信息
+    async getUserInfo(){
+      const json = await this.$server.getUserAssets();
+      updateUserInfo(json.data.data);
+    },
     clickBalance () {
       this.$CommonJs.pathTo('/pages-user/balanceDetail')
     },
