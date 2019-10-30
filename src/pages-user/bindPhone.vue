@@ -14,7 +14,7 @@
       </view>
     </view>
     <view class = "btn-view">
-      <button class="login_btn btn" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">允许</button>
+      <button class="login_btn btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">允许</button>
     </view>
   </view>
 </template>
@@ -28,17 +28,37 @@ export default {
     navigationBarTitleText: '绑定手机号码',
   },
   methods: {
+    async login () {
+      return new Promise((reslove, reject) => {
+        uni.login({
+          provider: 'weixin',
+          success: (loginRes) => {
+            reslove({code: loginRes.code})
+          },
+          fail: () => {
+            reject({ code: null})
+          }
+        })
+      })
+    },
     async getPhoneNumber(e) {
-      let codeInfo = await uni.login();
-      console.log(codeInfo);
-      let code = codeInfo.code;
-      let encrypt_data = e.detail.encryptedData;
-      let iv = e.detail.iv;
-      const json = await this.$server.setUserPhone({phone: iv});
-      let userInfo = json.data.user;
-      uni.setStorageSync('userInfo',userInfo);
-      await tip.success('绑定成功');
-      uni.navigateBack();
+      console.log(e)
+      const loginres = await this.login()
+      if (loginres.code) {
+        const payload = {
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv,
+          code: loginres.code
+        }
+        console.log(payload)
+        // const res = await this.$server.setUserPhone(payload)
+        // if (res.data.status !== 0) {
+        //   await tip.error('绑定失败')
+        //   return false;
+        // }
+        // await tip.success('绑定成功');
+        // uni.navigateBack();
+      }
     }
   }
 }
@@ -46,6 +66,7 @@ export default {
 </script>
 <style lang="less">
 .container{
+  min-height: 100%;
   background-color: #fff;
 }
 .section {
@@ -99,7 +120,7 @@ export default {
       width: 10rpx;
       height:10rpx;
       border-radius: 10rpx;
-      background:var(--theme_color);;
+      background:rgba(246, 210, 24, 1);
       margin-right: 26rpx;
     }
     .subtext {
@@ -123,7 +144,7 @@ export default {
     border-radius:4rpx;
   }
   .login_btn{
-    background-color: var(--theme_color);
+    background-color: rgba(246, 210, 24, 1);
     color: #FFF;
   }
   .refuse_btn{

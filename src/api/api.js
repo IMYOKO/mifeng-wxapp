@@ -36,7 +36,9 @@ class Api extends BasicRequest {
   
   /**
    * 设置手机号码
-   * @param {Number} phone 
+   * @param {String} code 
+   * @param {String} iv 
+   * @param {String} encryptedData 
    */
   setUserPhone (payload) {
     return this.POST('/api/user/setUserPhone', payload)

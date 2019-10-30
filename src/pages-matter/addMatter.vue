@@ -34,23 +34,37 @@
         </view>
       </picker>
     </view>
-    <view class="item pd" @tap="clickChooseImg">
+    <view class="item pd" v-if="type === 1 || type === 2 || type === 5" @tap="clickChooseImg">
       <view class="line"></view>
       <view class="tit">选择图片</view>
       <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
-    <view class="item pd" v-if="type == 2" @tap="clickChooseVideo">
+    <view class="item pd" v-if="type === 3 || type === 4 || type === 5" @tap="clickChooseVideo">
       <view class="line"></view>
       <view class="tit">选择视频</view>
       <!--<video wx:if = "{{video}}" class = "img" show-fullscreen-btn = "false" src=  "{{video}}"></video>-->
       <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
     <view class="placeholderContainer">
-      <view class="placeholderContent" v-if="type == 1">
+      <view class="placeholderContent" v-if="type === 1">
         <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder.png" />
         <image class="image" style="z-index: 10" :src="logo" />
       </view>
-      <view class="placeholderContent" v-if="type == 2">
+      <view class="placeholderContent" v-if="type === 2">
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder.png" />
+        <image class="image" style="z-index: 10" :src="logo" />
+      </view>
+      <view class="placeholderContent" v-if="type === 3 ">
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
+        <video v-if="video" :src="video"></video>
+        <image class="videoImg" :src="logo" />
+      </view>
+      <view class="placeholderContent" v-if="type === 4 ">
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
+        <video v-if="video" :src="video"></video>
+        <image class="videoImg" :src="logo" />
+      </view>
+      <view class="placeholderContent" v-if="type === 5 ">
         <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
         <video v-if="video" :src="video"></video>
         <image class="videoImg" :src="logo" />
@@ -93,7 +107,7 @@
         seconds: 0,
         status: true,
         showModal:false,
-        typeRange: ['图片素材', '组合素材']
+        typeRange: ['竖屏图片', '横屏图片', '竖屏视频', '横屏视频', '组合素材']
       }
     },
     onLoad(options) {
@@ -123,6 +137,7 @@
       },
       //选择类型
       typeChange(e) {
+        console.log(e.detail.value)
         this.type = Number(e.detail.value) + 1;
       },
       //上传照片
@@ -198,15 +213,15 @@
           tip.toast('请输入素材名称');
           return;
         }
-        if (!this.logo) {
+        if ((this.type === 1 || this.type === 2 || this.type === 5) && !this.logo) {
           tip.toast('请选择图片');
           return;
         }
-        if (this.type == 2 && !this.video) {
+        if ((this.type === 3 || this.type === 4 || this.type === 5) && !this.video) {
           tip.toast('请选择视频');
           return;
         }
-        if (this.type == 2 && parseFloat(this.seconds) > 60) {
+        if ((this.type === 3 || this.type === 4 || this.type === 5) && parseFloat(this.seconds) > 60) {
           tip.toast('上传视频不能超过1分钟请重新选择');
           return;
         }
@@ -225,15 +240,15 @@
           tip.toast('请输入广告名称');
           return;
         }
-        if (!this.logo) {
+        if ((this.type === 1 || this.type === 2 || this.type === 5) && !this.logo) {
           tip.toast('请选择图片');
           return;
         }
-        if (this.type == 2 && !this.video) {
+        if ((this.type === 3 || this.type === 4 || this.type === 5) && !this.video) {
           tip.toast('请选择视频');
           return;
         }
-        if (this.type == 2 && parseFloat(this.seconds) > 60) {
+        if ((this.type === 3 || this.type === 4 || this.type === 5) && parseFloat(this.seconds) > 60) {
           tip.toast('上传视频不能超过1分钟请重新选择');
           return;
         }
