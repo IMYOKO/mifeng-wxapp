@@ -54,22 +54,7 @@ export default {
       is_empty: false,     //无数据，显示空页面
       start: 0,
       //页面列表数据
-      contentList: [
-        // {
-        //   name: '广告1',
-        //   logo: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7',
-        //   apply_status: 1,
-        //   tags: [1],
-        //   type: 1
-        // },
-        // {
-        //   name: '广告1',
-        //   logo: 'http://howtos.makeblock.com/9a37bd60ca4111e9a54effa3ca0c4aa7',
-        //   apply_status: 2,
-        //   tags: [2],
-        //   type: 1
-        // },
-      ],
+      contentList: [],
       offset: 10,
       type: 0,           //0 全部素材 1-竖屏图片、2-横屏图片、3-竖屏视频、4-横屏视频、5-组合素材
       apply_status:2,    // 1,2,3对应未审核，已通过，已拒绝  0-待审核，1-审核通过，2-审核拒绝
@@ -156,10 +141,9 @@ export default {
       }
     },
   },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
   onPullDownRefresh() {
     this.start = 0;
     this.getMatterList(0, true);
@@ -167,15 +151,14 @@ export default {
       uni.stopPullDownRefresh();
     }, 1000);  
   },
-
-    /**
-     * 页面上拉触底事件的处理函数
-     */
+  /**
+   * 页面上拉触底事件的处理函数
+   */
   onReachBottom() {
     if ((!this.no_more) && (!this.is_empty)) {
-        this.start += 1;
-        this.getMatterList(this.start, false);
-      }
+      this.start += 1;
+      this.getMatterList(this.start, false);
+    }
   }
 }
 
@@ -267,7 +250,7 @@ export default {
   left:0;
   white-space: nowrap;
   overflow:hidden; 
-  z-index: 500;
+  z-index: 1000;
   .sv{
     padding: 0 10rpx 0  40rpx;
     box-sizing: border-box;

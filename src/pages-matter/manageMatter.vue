@@ -4,7 +4,7 @@
       <view class = "ct-view" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" :data-index = "index" @tap = "clickItem">
         <video :src="item.video" class = "ct-video" v-if ="item.materialType === 3 || item.materialType === 3 || item.materialType === 5"></video>
         <cover-image  v-if = "item.isSelected" class = "select-icon" src = "../static/images/ic_home_select.png"></cover-image>
-        <image class = "ct-img" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class=" item.materialType === 5?'group':''" :src="item.logo" />
+        <image class = "ct-img" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5?'group':''" :src="item.logo" />
         <view class = "tit">{{item.materialName}}</view>
       </view>
     </view>

@@ -1,14 +1,17 @@
 <template>
   <view class="chooseMatter">
-    <view class = "banner">
-      <view class="b-item" :class="type == 1 ? 'selected' : ''"  @click="clickHeadItem(1)">图片素材</view>
-      <view class="b-item" :class="type == 2 ? 'selected' : ''"  @click="clickHeadItem(2)">组合素材</view>
+    <view class = "banner" >
+      <scroll-view class = "sv" scroll-x="true">
+        <view v-for="(item, index) in tags" :key="index" @tap="selectTag(index)" class="b-item" :class="selectedTag == index ? 'selected' : ''">
+          {{item}}
+        </view>
+      </scroll-view>
     </view>
     <view class="content">
-      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.name)">
-        <video :src="item.video" class="ct-video" v-if="item.type == 2" />
-        <image class="ct-img" :class="item.type == 2 ? 'group' : ''" :src="item.logo" />
-        <view class="tit">{{item.name}}</view>
+      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.materialName)">
+        <video :src="item.video" class="ct-video" v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5" />
+        <image class="ct-img" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
+        <view class="tit">{{item.materialName}}</view>
       </view>
     </view>
 
@@ -35,45 +38,86 @@ export default {
       load_more: false,    //加载更多图案
       no_more: true,       //没有更多数据
       is_empty: true,     //无数据，显示空页面
-      page: 1,
-      contentList: [
-        {
-          id: 0,
-          name: '标题标题',
-          type: 1,
-          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5'
-        },
-        {
-          id: 1,
-          name: '标题标题',
-          type: 1,
-          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5'
-        },
-        {
-          id: 3,
-          name: '标题标题',
-          type: 2,
-          video: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/1dbced70d86811e9b15d91b335f928c5',
-          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5',
-        },
-        {
-          id: 4,
-          name: '标题标题',
-          type: 2,
-          video: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/1dbced70d86811e9b15d91b335f928c5',
-          logo: 'http://mblock-how-tos.oss-cn-shenzhen.aliyuncs.com/41d26fc0daa511e9b15d91b335f928c5',
-        }
-      ],    //页面列表数据
-      type: 1, 
+      start: 0,
+      offset: 10,
+      contentList: [],    //页面列表数据
+      type: 0,
+      selectedTag: 0,
+      tags: ['全部素材', '竖屏图片', '横屏图片', '竖屏视频', '横屏视频', '组合素材']
     }
   },
+  onShow() {
+    this.getMatterList(0, true);
+  },
   methods: {
+    clickMatterAdd(e){
+      this.$CommonJs.pathTo('/pages-matter/addMatter?type='+this.type)
+    },
     clickHeadItem (type) {
       this.type = type
     },
     clickChooseIt (id, name) {
-      console.log(id, name)
-    }
+      let matter = {id, name}
+      uni.setStorageSync('matter',matter);
+      uni.navigateBack();
+    },
+    selectTag(index) {
+      this.selectedTag = index;
+      this.type = index;
+      this.start = 0
+      this.getMatterList(0, true);
+    },
+    async getMatterList(start, refresh) {
+      const payload = {
+        materialType: this.type,
+        start,
+        offset: this.offset
+      }
+      try {
+        const response = await this.$server.getMaterialsList(payload)
+        this.load_more = false;
+        if (refresh) {
+          this.contentList = response.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...response.data.data.item];
+        }
+        if(response.data.data.isNext === 0){
+          //没有更多数据
+          this.no_more = true;
+        }else{			
+          this.no_more = false;
+        }
+        if (this.start === 0 && response.data.data.isNext == 0) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
+        console.log(res)
+      } catch (error) {
+        this.is_empty = this.start === 0 && this.contentList.length === 0;
+        this.no_more = !this.is_empty;
+        this.load_more = false;
+        return;
+      }
+    },
+  },
+  onPullDownRefresh() {
+    this.start = 0;
+    this.getMatterList(0, true);
+    setTimeout(() => {
+      uni.stopPullDownRefresh();
+    }, 1000);  
+  },
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+  onReachBottom() {
+    if ((!this.no_more) && (!this.is_empty)) {
+        this.start += 1;
+        this.getMatterList(this.start, false);
+      }
   },
   components: {
     Placeholder,
@@ -89,21 +133,31 @@ export default {
   box-sizing: border-box;
 
   .banner{
-    width: 100%;
-    height: 80rpx;
-    background:rgba(255,255,255,1);
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 0 45rpx;
-    box-sizing: border-box;
+    width:100%;
+    height:80rpx;
+    background:#fff;
     position: fixed;
-    top: 0rpx;
-    left: 0;
-    z-index: 999;
+    top:0rpx;
+    left:0;
+    white-space: nowrap;
+    overflow:hidden; 
+    z-index: 500;
+    .sv{
+      padding: 0 10rpx 0  40rpx;
+      box-sizing: border-box;
+    }
     .b-item{
-      font-size: 28rpx;
+      width:140rpx;
+      height:80rpx;
+      line-height:80rpx;
+      font-size:28rpx;
       color:rgba(153,153,153,1);
+      display: inline-block;
+    }
+    ::-webkit-scrollbar{
+      width: 0;
+      height: 0;
+      color: transparent;
     }
     .selected{
       color:rgba(20,20,20,1);

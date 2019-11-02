@@ -59,6 +59,23 @@ export default {
       to_dates: [] //选择的日期
     }
   },
+  onShow() {
+    let matter = uni.getStorageSync('matter') || null;
+    if (matter) {
+      console.log(matter)
+      this.material_id = matter.id || '';
+      this.material_name = matter.name || '';
+      uni.removeStorageSync('matter');
+    }
+    // let selectDate = wepy.getStorageSync('selectDate') || null;
+    // if (selectDate) {
+    //   this.to_dates = selectDate;
+    //   this.$apply();
+    //   wepy.removeStorageSync('selectDate');
+    // }
+    // //获取我的广告机购物车
+    // this.getMachineCart();
+  },
   methods: {
     //选择素材
     clickChooseMatter () {

@@ -87,7 +87,8 @@ export default {
       load_more: false,    //加载更多图案
       no_more: false,       //没有更多数据
       is_empty: false,     //无数据，显示空页面
-      page:1,
+      start:0,
+      offset: 10,
       contentList:[],    //页面列表数据
       advertise_machine_label_type_id:'',
       address:'',
@@ -103,14 +104,28 @@ export default {
       }
     }
   },
+  onLoad() {
+    let position = uni.getStorageSync('position') || null;
+    if(position){
+      this.address = position.site;
+      this.longitude = position.longitude;
+      this.latitude = position.latitude;
+    }
+    //获取机器分类
+    this.getMachineType();
+  },
+  onShow(){
+    this.start = 0;
+    this.getMachineList(0,true);
+  },
   methods: {
     //头部筛选
     clickSx(e){
       console.log(e)
       let id = e.currentTarget.dataset.id;
       this.advertise_machine_label_type_id = id;
-      this.page = 1;
-      this.getMachineList(1, true);
+      this.start = 0;
+      this.getMachineList(0, true);
     },
     provinceChange(e) {
       console.log(e)
@@ -135,13 +150,32 @@ export default {
           this.address = res.address;
           this.longitude = res.longitude;
           this.latitude = res.latitude;
-          this.page = 1;
+          this.start = 1;
           this.getMachineList(1,true);
         }
       })
     },
-    async getMachineList (page,refresh) {
-      console.log(page,refresh)
+    getMachineList () {
+      
+    }
+  },
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+    this.start = 0;
+    this.getMachineList(0, true);
+    setTimeout(() => {
+      uni.stopPullDownRefresh();
+    }, 1000);  
+  },
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+    if ((!this.no_more) && (!this.is_empty)) {
+      this.start += 1;
+      this.getMachineList(this.start, false);
     }
   },
   components: {
