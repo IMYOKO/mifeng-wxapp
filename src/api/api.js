@@ -141,8 +141,8 @@ class Api extends BasicRequest {
   /**
    * 银行卡列表
    */
-  getUseBankList (payload) {
-    return this.POST('/api/user/getUseBankList', payload)
+  getUserBankList (payload) {
+    return this.POST('/api/user/getUserBankList', payload)
   }
 
   /**
