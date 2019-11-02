@@ -247,6 +247,68 @@ class Api extends BasicRequest {
   getCode (payload) {
     return this.POST('/api/user/getCode', payload);
   }
+
+  /**
+   * 广告机标签查询
+   */
+  getMachineLabels () {
+    return this.POST('/api/machines/getMachineLabels');
+  }
+
+  /**
+   * 查询不可发布日期
+   * @param {String[]} machineIds [1, 2, 3]
+   */
+  checkDate (payload) {
+    return this.POST('/api/publishAd/checkDate', payload);
+  }
+
+  /**
+   * 生成广告订单
+   * @param {String[]} machineIds [1, 2, 3]
+   * @param {Number} materialId 
+   * @param {String[]} putDays  发布日期集合 例如: 2019-11-02,2019-11-03,2019-11-04
+   * @param {number} dictId 霸屏选项ID 不设置霸屏,则传值0
+   */
+  addMaterialOrder (payload) {
+    return this.POST('/api/publishAd/addMaterialOrder', payload);
+  }
+
+  /**
+   * 订单支付查询
+   * @param {Number} orderId
+   */
+  orderPaySearch (payload) {
+    return this.POST('/api/publishAd/orderPaySearch', payload);
+  }
+
+  /**
+   * 订单支付
+   * @param {Number} orderId
+   * @param {Number} payType 1-微信、2-余额、3-积分
+   * @param {String} paypwd 当选择余额或积分支付时必填
+   */
+  orderPay (payload) {
+    return this.POST('/api/publishAd/orderPay', payload);
+  }
+
+  /**
+   * 查询订单列表
+   * @param {Number} status 0-待支付、1-待投放、2-投放中、3-投放结束、4-已关闭
+   * @param {Number} start 0
+   * @param {Number} offset 10
+   */
+  getMaterialsOrderList (payload) {
+    return this.POST('/api/publishAd/getMaterialsOrderList', payload);
+  }
+
+  /**
+   * 查询订单详情
+   * @param {Number} orderId
+   */
+  getMaterialsOrderDetail (payload) {
+    return this.POST('/api/publishAd/getMaterialsOrderDetail', payload);
+  }
 }
 
 export default new Api()
