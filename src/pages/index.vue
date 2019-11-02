@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex';
+import {checkRole} from '../utils/user';
 export default {
 	data () {
 		return {
@@ -60,11 +61,8 @@ export default {
 			const res = await this.$server.getBanner(payload)
 			this.bannerItem = res.data.data.banner
 		},
-		clickPostAd () {
-			if (!this.userInfo) {
-				this.$CommonJs.pathTo('/pages/login')
-				return
-			}
+		async clickPostAd () {
+			await checkRole(true);
 			this.$CommonJs.pathTo('/pages-home/postAd')
 		},
 		clickAddMatter () {
