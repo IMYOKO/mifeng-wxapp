@@ -125,7 +125,7 @@ export default {
     },
     clickXieyi() {
       uni.navigateTo({
-        url: "/pages-matter/adRulse?adtype=1&&adxieyitype=rule"
+        url: "/pages-user/serveRule"
       });
     }
   }

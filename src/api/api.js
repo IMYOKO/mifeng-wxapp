@@ -1,63 +1,63 @@
-import BasicRequest from './index'
+import BasicRequest from './index';
 
 class Api extends BasicRequest {
   constructor() {
-    super()
+    super();
   }
 
   /**
    * 登录
-   * @param {String} code 
+   * @param {String} code
    */
-  login (payload) {
-    return this.POST('/login', payload)
+  login(payload) {
+    return this.POST('/login', payload);
   }
 
   /**
    * 注册
-   * @param {String} code 
+   * @param {String} code
    */
-  register (payload) {
-    return this.POST('/api/user/register', payload)
+  register(payload) {
+    return this.POST('/api/user/register', payload);
   }
 
   /**
    * 设置用户信息
-   * @param {String} nickName 
-   * @param {String} avatarUrl 
-   * @param {Number} gender 
-   * @param {String} country 
-   * @param {String} province 
-   * @param {String} city 
+   * @param {String} nickName
+   * @param {String} avatarUrl
+   * @param {Number} gender
+   * @param {String} country
+   * @param {String} province
+   * @param {String} city
    */
-  setUserInfo (payload) {
-    return this.POST('/api/user/setUserInfo', payload)
+  setUserInfo(payload) {
+    return this.POST('/api/user/setUserInfo', payload);
   }
-  
+
   /**
    * 设置手机号码
-   * @param {String} code 
-   * @param {String} iv 
-   * @param {String} encryptedData 
+   * @param {String} code
+   * @param {String} iv
+   * @param {String} encryptedData
    */
-  setUserPhone (payload) {
-    return this.POST('/api/user/setUserPhone', payload)
+  setUserPhone(payload) {
+    return this.POST('/api/user/setUserPhone', payload);
   }
 
   /**
    * banner查询
    * @param {Number} type // 1-首页、2-合作申请
    */
-  getBanner (payload) {
-    return this.POST('/api/info/getBanner', payload)
+  getBanner(payload) {
+    return this.POST('/api/info/getBanner', payload);
   }
 
   /**
    * 文章查询
    * @param {Number} type // 1-关于我们、2-注册服务协议、3-广告发布规则、4-文章、5-充值说明
    */
-  getArticle (payload) {
-    return this.POST('/api/info/getArticle', payload)
+  getArticle(payload) {
+    return this.POST('/api/info/getArticle', payload);
   }
 
   /**
@@ -65,15 +65,15 @@ class Api extends BasicRequest {
    * @param {String} userName
    * @param {Number} userPhone
    */
-  addCollaboratesApply (payload) {
-    return this.POST('/api/user/addCollaboratesApply', payload)
+  addCollaboratesApply(payload) {
+    return this.POST('/api/user/addCollaboratesApply', payload);
   }
 
   /**
    * 广告机查询
    */
-  getMachinesList (payload) {
-    return this.POST('/api/machines/getMachinesList', payload)
+  getMachinesList(payload) {
+    return this.POST('/api/machines/getMachinesList', payload);
   }
 
   /**
@@ -82,8 +82,8 @@ class Api extends BasicRequest {
    * @param {Number} start // 第几页 从0开始
    * @param {Number} offset // 每页大小
    */
-  getMaterialsList (payload) {
-    return this.POST('/api/materials/getMaterialsList', payload)
+  getMaterialsList(payload) {
+    return this.POST('/api/materials/getMaterialsList', payload);
   }
 
   /**
@@ -93,23 +93,23 @@ class Api extends BasicRequest {
    * @param {String} logo // 图片地址
    * @param {String} video // 视频地址
    */
-  addMaterials (payload) {
-    return this.POST('/api/materials/addMaterials', payload)
+  addMaterials(payload) {
+    return this.POST('/api/materials/addMaterials', payload);
   }
 
   /**
    * 删除素材
    * @param {String} ids
    */
-  delMaterials (payload) {
-    return this.POST('/api/materials/delMaterials', payload)
+  delMaterials(payload) {
+    return this.POST('/api/materials/delMaterials', payload);
   }
 
   /**
    * 用户信息查询
    */
-  getUserInfo (payload) {
-    return this.POST('/api/user/getUserInfo', payload)
+  getUserInfo(payload) {
+    return this.POST('/api/user/getUserInfo', payload);
   }
 
   /**
@@ -117,32 +117,32 @@ class Api extends BasicRequest {
    * @param {String} opinion
    * @param {String} imagePath
    */
-  addUserOpinion (payload) {
-    return this.POST('/api/user/addUserOpinion', payload)
+  addUserOpinion(payload) {
+    return this.POST('/api/user/addUserOpinion', payload);
   }
 
   /**
    * 用户资产查询
    */
-  getUserAssets (payload) {
-    return this.POST('/api/user/getUserAssets', payload)
+  getUserAssets(payload) {
+    return this.POST('/api/user/getUserAssets', payload);
   }
 
   /**
    * 余额明细
    * @param {Number} szlx 收支类型
    * @param {Number} start 第几页
-   * @param {Number} offset 
+   * @param {Number} offset
    */
-  getUserAssetsBillList (payload) {
-    return this.POST('/api/user/getUserAssetsBillList', payload)
+  getUserAssetsBillList(payload) {
+    return this.POST('/api/user/getUserAssetsBillList', payload);
   }
 
   /**
    * 银行卡列表
    */
-  getUserBankList (payload) {
-    return this.POST('/api/user/getUserBankList', payload)
+  getUserBankList(payload) {
+    return this.POST('/api/user/getUserBankList', payload);
   }
 
   /**
@@ -154,16 +154,16 @@ class Api extends BasicRequest {
    * @param {String} userName
    * @param {String} verifyCode
    */
-  addUserBank (payload) {
-    return this.POST('/api/user/addUserBank', payload)
+  addUserBank(payload) {
+    return this.POST('/api/user/addUserBank', payload);
   }
 
   /**
    * 查询银行卡
    * @param {Number} id
    */
-  getUseBank (payload) {
-    return this.POST('/api/user/getUseBank', payload)
+  getUseBank(payload) {
+    return this.POST('/api/user/getUseBank', payload);
   }
 
   /**
@@ -176,8 +176,8 @@ class Api extends BasicRequest {
    * @param {String} userName
    * @param {String} verifyCode
    */
-  updateUserBank (payload) {
-    return this.POST('/api/user/updateUserBank', payload)
+  updateUserBank(payload) {
+    return this.POST('/api/user/updateUserBank', payload);
   }
 
   /**
@@ -185,15 +185,15 @@ class Api extends BasicRequest {
    * @param {Number} id
    * @param {String} verifyCode
    */
-  delUserBank (payload) {
-    return this.POST('/api/user/delUserBank', payload)
+  delUserBank(payload) {
+    return this.POST('/api/user/delUserBank', payload);
   }
 
   /**
    * 用户提现查询
    */
-  userCashSearch (payload) {
-    return this.POST('/api/user/userCashSearch', payload)
+  userCashSearch(payload) {
+    return this.POST('/api/user/userCashSearch', payload);
   }
 
   /**
@@ -202,16 +202,16 @@ class Api extends BasicRequest {
    * @param {Number} bankId
    * @param {String} paypwd
    */
-  userCash (payload) {
-    return this.POST('/api/user/userCash', payload)
+  userCash(payload) {
+    return this.POST('/api/user/userCash', payload);
   }
 
   /**
    * 用户充值
    * @param {Number} amount
    */
-  userRecharge (payload) {
-    return this.POST('/api/user/userRecharge', payload)
+  userRecharge(payload) {
+    return this.POST('/api/user/userRecharge', payload);
   }
 
   /**
@@ -219,39 +219,39 @@ class Api extends BasicRequest {
    * @param {String} newPwd
    * @param {String} verifyCode
    */
-  updatePaypwd (payload) {
-    return this.POST('/api/user/updatePaypwd', payload)
+  updatePaypwd(payload) {
+    return this.POST('/api/user/updatePaypwd', payload);
   }
 
   /**
    * 用户积分查询
    */
-  getUserIntegral (payload) {
-    return this.POST('/api/user/getUserIntegral', payload)
+  getUserIntegral(payload) {
+    return this.POST('/api/user/getUserIntegral', payload);
   }
 
   /**
    * 积分明细
    * @param {Number} szlx 收支类型
    * @param {Number} start 第几页
-   * @param {Number} offset 
+   * @param {Number} offset
    */
-  getUserIntegralBillList (payload) {
-    return this.POST('/api/user/getUserIntegralBillList', payload)
+  getUserIntegralBillList(payload) {
+    return this.POST('/api/user/getUserIntegralBillList', payload);
   }
 
   /**
    * 验证码
-   * @param {*} payload 
+   * @param {*} payload
    */
-  getCode (payload) {
+  getCode(payload) {
     return this.POST('/api/user/getCode', payload);
   }
 
   /**
    * 广告机标签查询
    */
-  getMachineLabels () {
+  getMachineLabels() {
     return this.POST('/api/machines/getMachineLabels');
   }
 
@@ -259,18 +259,18 @@ class Api extends BasicRequest {
    * 查询不可发布日期
    * @param {String[]} machineIds [1, 2, 3]
    */
-  checkDate (payload) {
+  checkDate(payload) {
     return this.POST('/api/publishAd/checkDate', payload);
   }
 
   /**
    * 生成广告订单
    * @param {String[]} machineIds [1, 2, 3]
-   * @param {Number} materialId 
+   * @param {Number} materialId
    * @param {String[]} putDays  发布日期集合 例如: 2019-11-02,2019-11-03,2019-11-04
    * @param {number} dictId 霸屏选项ID 不设置霸屏,则传值0
    */
-  addMaterialOrder (payload) {
+  addMaterialOrder(payload) {
     return this.POST('/api/publishAd/addMaterialOrder', payload);
   }
 
@@ -278,7 +278,7 @@ class Api extends BasicRequest {
    * 订单支付查询
    * @param {Number} orderId
    */
-  orderPaySearch (payload) {
+  orderPaySearch(payload) {
     return this.POST('/api/publishAd/orderPaySearch', payload);
   }
 
@@ -288,7 +288,7 @@ class Api extends BasicRequest {
    * @param {Number} payType 1-微信、2-余额、3-积分
    * @param {String} paypwd 当选择余额或积分支付时必填
    */
-  orderPay (payload) {
+  orderPay(payload) {
     return this.POST('/api/publishAd/orderPay', payload);
   }
 
@@ -298,7 +298,7 @@ class Api extends BasicRequest {
    * @param {Number} start 0
    * @param {Number} offset 10
    */
-  getMaterialsOrderList (payload) {
+  getMaterialsOrderList(payload) {
     return this.POST('/api/publishAd/getMaterialsOrderList', payload);
   }
 
@@ -306,9 +306,15 @@ class Api extends BasicRequest {
    * 查询订单详情
    * @param {Number} orderId
    */
-  getMaterialsOrderDetail (payload) {
+  getMaterialsOrderDetail(payload) {
     return this.POST('/api/publishAd/getMaterialsOrderDetail', payload);
+  }
+  /**
+   * 校验手机验证码
+   */
+  checkPaypwdCode(payload) {
+    return this.POST('/api/user/checkPaypwdCode', payload);
   }
 }
 
-export default new Api()
+export default new Api();
