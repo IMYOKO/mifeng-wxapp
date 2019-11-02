@@ -84,6 +84,9 @@ export default {
         uni.setStorageSync("token", res.header.Authorization)
         this.userInfo = e.detail.userInfo
         await this.$server.setUserInfo(this.userInfo)
+        if (res.data.data.phone != '') {
+          this.userInfo.phone = res.data.data.phone
+        }
         uni.setStorageSync('userInfo', this.userInfo)
         this.SETUSERINFO(this.userInfo)
         this.$CommonJs.showToast('登录成功')

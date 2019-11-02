@@ -43,21 +43,24 @@ export default {
     },
     async getPhoneNumber(e) {
       console.log(e)
-      const loginres = await this.login()
-      if (loginres.code) {
+      // 调用一次注册
+      try {
+        const loginRes = await this.login()
+        const { code } = loginRes
+        await this.$server.register({code})
         const payload = {
           encryptedData: e.detail.encryptedData,
           iv: e.detail.iv,
-          code: loginres.code
         }
-        console.log(payload)
-        // const res = await this.$server.setUserPhone(payload)
-        // if (res.data.status !== 0) {
-        //   await tip.error('绑定失败')
-        //   return false;
-        // }
-        // await tip.success('绑定成功');
-        // uni.navigateBack();
+        const setUserPhoneRes = await this.$server.setUserPhone(payload)
+        const userInfo = uni.getStorageSync('userInfo')
+        userInfo.phone = setUserPhoneRes.phone
+        uni.setStorageSync('userInfo', userInfo)
+        // console.log(uni.getStorageSync('userInfo'))
+        tip.success('绑定成功');
+        uni.navigateBack();
+      } catch (error) {
+        tip.error('绑定失败')
       }
     }
   }
