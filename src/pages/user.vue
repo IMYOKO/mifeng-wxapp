@@ -1,15 +1,15 @@
 <template>
   <view class="user">
-    <image class="top-bg" src="../static/images/pic_my_background.png"/>
+    <image class="top-bg" src="../static/images/pic_my_background.png" />
     <view class="user">
-      <image class="tx" :src="userInfo.avatarUrl"/>
+      <image class="tx" :src="userInfo.avatarUrl" />
       <view class="name">{{userInfo.nickName}}</view>
       <view class="sf">{{userInfo.userLevelName}}</view>
     </view>
     <view @tap="clickMyAd">
       <formidTaker>
         <view class="item" v-if="userInfo.userLevel > 0">
-          <image class="item-icon" src="../static/images/ic_my_advertising_machine.png"/>
+          <image class="item-icon" src="../static/images/ic_my_advertising_machine.png" />
           <view class="item-text">我的广告机</view>
         </view>
       </formidTaker>
@@ -17,7 +17,7 @@
     <view @tap="clickMyWalllet">
       <formidTaker>
         <view class="item">
-          <image class="item-icon" src="../static/images/ic_my_wallet.png"/>
+          <image class="item-icon" src="../static/images/ic_my_wallet.png" />
           <view class="item-text">我的钱包</view>
         </view>
       </formidTaker>
@@ -25,7 +25,7 @@
     <view @tap="clickMyPoint">
       <formidTaker>
         <view class="item">
-          <image class="item-icon" src="../static/images/ic_my_integral.png"/>
+          <image class="item-icon" src="../static/images/ic_my_integral.png" />
           <view class="item-text">我的积分</view>
         </view>
       </formidTaker>
@@ -33,7 +33,7 @@
     <view @tap="clickEarningDetail">
       <formidTaker>
         <view class="item" v-if="userInfo.userLevel != 'general'">
-          <image class="item-icon" src="../static/images/ic_my_profit.png"/>
+          <image class="item-icon" src="../static/images/ic_my_profit.png" />
           <view class="item-text">收益明细</view>
         </view>
       </formidTaker>
@@ -41,7 +41,7 @@
     <view @tap="clickFeedback">
       <formidTaker>
         <view class="item">
-          <image class="item-icon" src="../static/images/ic_my_opinion.png"/>
+          <image class="item-icon" src="../static/images/ic_my_opinion.png" />
           <view class="item-text">意见反馈</view>
         </view>
       </formidTaker>
@@ -49,7 +49,7 @@
     <view @tap="clickAboutUs">
       <formidTaker>
         <view class="item">
-          <image class="item-icon" src="../static/images/ic_my_about_us.png"/>
+          <image class="item-icon" src="../static/images/ic_my_about_us.png" />
           <view class="item-text">关于我们</view>
         </view>
       </formidTaker>
@@ -57,7 +57,7 @@
     <view @tap="clickXieyi">
       <formidTaker>
         <view class="item">
-          <image class="item-icon" src="../static/images/fuwuxieyi.png"/>
+          <image class="item-icon" src="../static/images/fuwuxieyi.png" />
           <view class="item-text">服务协议</view>
         </view>
       </formidTaker>
@@ -66,29 +66,29 @@
 </template>
 
 <script>
-import {getUserInfo, updateUserInfo, checkRole} from '../utils/user';
+import { getUserInfo, updateUserInfo, checkRole } from "../utils/user";
 const userMap = {
-  0: '一般用户',
-  1: '机主',
-  2: '经销商',
-  3: '区代理',
-  4: '市代理',
-  5: '省代理',
-  6: '合伙人'
-}
+  0: "一般用户",
+  1: "机主",
+  2: "经销商",
+  3: "区代理",
+  4: "市代理",
+  5: "省代理",
+  6: "合伙人"
+};
 export default {
-  data () {
+  data() {
     return {
-      userInfo: null,
-    }
+      userInfo: null
+    };
   },
-  async onShow () {
+  async onShow() {
     await checkRole();
     await this.requestUserInfo();
     this.userInfo = getUserInfo();
   },
   methods: {
-    async requestUserInfo () {
+    async requestUserInfo() {
       try {
         const res = await this.$server.getUserInfo();
         const userInfo = res.data.data.userInfo;
@@ -97,44 +97,45 @@ export default {
       } catch (err) {}
     },
     clickMyAd() {
-      this.$CommonJs.pathTo('/pages-user/myAdMachine')
+      this.$CommonJs.pathTo("/pages-user/myAdMachine");
     },
     async clickMyWalllet() {
-      this.$CommonJs.pathTo('/pages-user/myWallet')
+      await checkRole(true);
+      this.$CommonJs.pathTo("/pages-user/myWallet");
     },
     clickMyPoint() {
       uni.navigateTo({
-        url: '/pages-user/myPoint'
-      })
+        url: "/pages-user/myPoint"
+      });
     },
     clickEarningDetail() {
       uni.navigateTo({
-        url: '/pages-user/earningDetail'
-      })
+        url: "/pages-user/earningDetail"
+      });
     },
     clickFeedback() {
       uni.navigateTo({
-        url: '/pages-user/feedback'
-      })
+        url: "/pages-user/feedback"
+      });
     },
     clickAboutUs() {
       uni.navigateTo({
-        url: '/pages-user/aboutUs'
-      })
+        url: "/pages-user/aboutUs"
+      });
     },
     clickXieyi() {
       uni.navigateTo({
-        url: '/pages-matter/adRulse?adtype=1&&adxieyitype=rule'
-      })
+        url: "/pages-matter/adRulse?adtype=1&&adxieyitype=rule"
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="less">
 page {
-	height: 100%;
-	background: #fff;
+  height: 100%;
+  background: #fff;
 }
 </style>
 

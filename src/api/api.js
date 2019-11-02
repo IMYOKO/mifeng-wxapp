@@ -240,7 +240,13 @@ class Api extends BasicRequest {
     return this.POST('/api/user/getUserIntegralBillList', payload)
   }
 
-
+  /**
+   * 验证码
+   * @param {*} payload 
+   */
+  getCode (payload) {
+    return this.POST('/api/user/getCode', payload);
+  }
 }
 
 export default new Api()
