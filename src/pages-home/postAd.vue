@@ -67,12 +67,11 @@ export default {
       this.material_name = matter.name || '';
       uni.removeStorageSync('matter');
     }
-    // let selectDate = wepy.getStorageSync('selectDate') || null;
-    // if (selectDate) {
-    //   this.to_dates = selectDate;
-    //   this.$apply();
-    //   wepy.removeStorageSync('selectDate');
-    // }
+    let selectDate = uni.getStorageSync('selectDate') || null;
+    if (selectDate) {
+      this.to_dates = selectDate;
+      uni.removeStorageSync('selectDate');
+    }
     // //获取我的广告机购物车
     // this.getMachineCart();
   },

@@ -29,10 +29,11 @@
         </view>
       </view>
       <view class="date-box">
-        <!-- <view v-for="(item, index) in dateArr" :key="index"  :class="isToday == item.isToday ? 'nowDay' : ''" data-date="{{item.isToday}}">			
-          <view class="date-head {{item.unUse?'un-use':''}} {{item.isSelected?'selected':''}}" data-dateLine = "{{item.dateLine}}" data-index = "{{index}}" @tap = "{{item.unUse?'':'clickDateNum'}}">{{item.dateNum}}</view>
+        <view v-for="(item, index) in dateArr" :key="index"  :class="isToday == item.isToday ? 'nowDay' : ''" :data-date="item.isToday">			
+          <view class="date-head" :class="item.unUse?'un-use':'' || item.isSelected?'selected':''" :data-dateLine = "item.dateLine" :data-index = "index"  v-if="item.unUse">{{item.dateNum}}</view>
+          <view class="date-head" :class="item.unUse?'un-use':'' || item.isSelected?'selected':''" :data-dateLine = "item.dateLine" :data-index = "index" @tap = "clickDateNum" v-else>{{item.dateNum}}</view>
           <view class='date-weight'></view>
-        </view>-->
+        </view>
       </view>
     </view>
     <view class="tip">
@@ -51,6 +52,8 @@
 </template>
 
 <script>
+import tip from '../utils/tip';
+import util from '../utils/util';
 export default {
   data() {
     return {
@@ -108,11 +111,10 @@ export default {
     },
     async lastMonth() {
       //全部时间的月份都是按0~11基准，显示月份才+1
-      let year = this.data.month - 2 < 0 ? this.data.year - 1 : this.data.year;
-      let month = this.data.month - 2 < 0 ? 11 : this.data.month - 2;
+      let year = this.month - 2 < 0 ? this.year - 1 : this.year;
+      let month = this.month - 2 < 0 ? 11 : this.month - 2;
       this.year = year;
       this.month = month + 1;
-      this.$apply();
       let this_month_day =
         "" +
         this.year +
@@ -120,16 +122,16 @@ export default {
         (this.month < 10 ? "0" + this.month : this.month) +
         "-" +
         "01";
+        console.log(this_month_day)
       await this.getUnuseDate(this_month_day);
       this.dateInit(year, month);
     },
     async nextMonth() {
       //全部时间的月份都是按0~11基准，显示月份才+1
-      let year = this.data.month > 11 ? this.data.year + 1 : this.data.year;
-      let month = this.data.month > 11 ? 0 : this.data.month;
+      let year = this.month > 11 ? this.year + 1 : this.year;
+      let month = this.month > 11 ? 0 : this.month;
       this.year = year;
       this.month = month + 1;
-      this.$apply();
       let this_month_day =
         "" +
         this.year +
@@ -142,22 +144,31 @@ export default {
     },
     //确定
     clickSure() {
-      wepy.setStorageSync("selectDate", this.selectDate);
-      wepy.navigateBack();
+      uni.setStorageSync("selectDate", this.selectDate);
+      uni.navigateBack();
     },
     //获取不可以使用的日期
     async getUnuseDate(this_month_day, free = 0, advertise_machine_id = 0) {
-      const json = await request({
-        url: "advertise_machine_cart_items/no_allow_dates",
-        methd: "GET",
-        loading: "",
-        data: {
-          this_month_day: this_month_day,
-          advertise_machine_id: advertise_machine_id,
-          free: free
+      // const json = await request({
+      //   url: "advertise_machine_cart_items/no_allow_dates",
+      //   methd: "GET",
+      //   loading: "",
+      //   data: {
+      //     this_month_day: this_month_day,
+      //     advertise_machine_id: advertise_machine_id,
+      //     free: free
+      //   }
+      // });
+      // this.unUseDate = json.data;
+      try {
+        const payload = {
+          machineIds: `${advertise_machine_id}`
         }
-      });
-      this.unUseDate = json.data;
+        const res = await this.$server.checkDate(payload)
+        this.unUseDate = res.data.data.dataList;
+      } catch (error) {
+        
+      }
     },
     dateInit(setYear, setMonth) {
       //全部时间的月份都是按0~11基准，显示月份才+1
@@ -205,7 +216,6 @@ export default {
         dateArr[i] = obj;
       }
       this.dateArr = dateArr;
-      this.$apply();
       let tempDateArr = this.dateArr;
       for (var i in tempDateArr) {
         if (tempDateArr[i].dateLine) {
@@ -243,11 +253,9 @@ export default {
       if (nowYear == getYear && nowMonth == getMonth) {
         this.isTodayWeek = true;
         this.todayIndex = nowWeek;
-        this.$apply();
       } else {
         this.isTodayWeek = false;
         this.todayIndex = -1;
-        this.$apply();
       }
     }
   }

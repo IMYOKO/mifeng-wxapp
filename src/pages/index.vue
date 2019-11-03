@@ -18,6 +18,7 @@
       <image class = "img2" src = "../static/images/pic_application_24.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
+
 	</view>
 </template>
 
@@ -35,6 +36,16 @@ export default {
 			bannerItem: []
 		}
 	},
+	onLoad () {
+		uni.getLocation({
+      type: 'wgs84',
+      success: res => {
+        let latitude = res.latitude;
+        let longitude = res.longitude;
+        this.loadCity(longitude, latitude);
+      }
+  	})
+	},
 	onShow () {
 		this.getBanner({type: 1})
 	},
@@ -42,6 +53,13 @@ export default {
 		...mapState('User/User', ['userInfo']),
 	},
 	methods: {
+		loadCity (longitude, latitude) {
+			let position  = {
+				latitude:latitude,
+				longitude:longitude,
+			}
+			uni.setStorageSync('position',position);
+		},
 		goWebView (item) {
 			if (item.linkType === 0) {
 				return

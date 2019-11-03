@@ -4,7 +4,8 @@
       <view class  ="icon">
         <image class = "search-icon" src = "../static/images/ic_home_search_2.png" />
       </view>
-      <input type="text"  placeholder="请输入广告机名称"  placeholder-class = "input-placeholder" @input="inputSearch"/>
+      <!-- <input type="text"  placeholder="请输入广告机名称"  placeholder-class = "input-placeholder" @input="inputSearch"/> -->
+      <input type="text"  placeholder="请输入广告机名称"  placeholder-class = "input-placeholder" v-model="name"/>
       <view class = "search" @tap="clickSearch">搜索</view>
     </view>
     <block v-if="isSearch">
@@ -68,7 +69,8 @@ export default {
       load_more: false,    //加载更多图案
       no_more: false,       //没有更多数据
       is_empty: false,     //无数据，显示空页面
-      page:1,
+      start:0,
+      offset: 10,
       contentList:[],    //页面列表数据
       hotList:[],
       name:'',
@@ -89,9 +91,9 @@ export default {
     //点击热门
     clickHotItem(e){
       this.name = e.currentTarget.dataset.name;
-      this.page = 1;
+      this.start = 0;
       this.isSearch = true;
-      this.getMachineList(1,true);
+      this.getMachineList(0,true);
     },
     //输入搜索内容
     inputSearch(e){
@@ -99,7 +101,30 @@ export default {
     },
     //点击搜索
     clickSearch(){
-      
+      if(!this.name){
+        return;
+      }
+      this.isSearch = true;
+      let history = uni.getStorageSync('history') || [];
+      let isRepeat = false;
+      for(var i in history){
+        if(this.name === history[i]){
+          //已有搜索历史
+          history.splice(i,1);
+          history.unshift(this.name);
+          isRepeat = true;
+          break;
+        }
+      }
+      if(!isRepeat){
+        if(history.length >= this.historyLength){
+          history.splice(0,1);
+        }
+        history.unshift(this.name);
+      }
+      uni.setStorageSync('history',history);
+      this.start = 0;
+      this.getMachineList(0,true);
     },
     //清空搜索历史
     clickClearHistory(){
@@ -142,13 +167,13 @@ export default {
       this.$apply();
     },
     //获取广告机列表
-    async getMachineList(page,refresh){
+    async getMachineList(start,refresh){
       const json = await request({
         url:'advertise_machines',
         method:'GET',
         data:{
           name:this.name,
-          page:page || 1,
+          start:start || 0,
           advertise_machine_label_type_id:'',
         }
       });
@@ -163,7 +188,7 @@ export default {
       }else{			
         this.no_more = false;
       }
-      if (this.page == 1 && json.data.data.length == 0) {
+      if (this.start === 0 && json.data.data.length === 0) {
       //暂无数据
       this.is_empty = true;
       } else {

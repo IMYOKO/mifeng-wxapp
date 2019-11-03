@@ -13,16 +13,16 @@
       <scroll-view class="sv" scroll-x="true">
         <view
           class="item"
-          :class="advertise_machine_label_type_id==''?'selected':''"
-          @tap="clickSx"
+          :class="advertise_machine_label_type_index === -1 ?'selected':''"
+          @tap="clickSx(-1)"
         >全部</view>
         <view
           class="item"
-          :class="advertise_machine_label_type_id==item.id?'selected':''"
+          :class="advertise_machine_label_type_index === index?'selected':''"
           v-for="(item, index) in machineType"
           :key="index"
-          @tap="clickSx(item.id)"
-        >{{item.name}}</view>
+          @tap="clickSx(index)"
+        >{{item}}</view>
       </scroll-view>
       <view class="more" @tap="clickShow">
         <image class="banner-img" src="../static/images/ic_more_2.png" />
@@ -105,16 +105,16 @@
       <view class="classify-ct">
         <view
           class="classify-item"
-          :class="advertise_machine_label_type_id==''?'selected':''"
+          :class="advertise_machine_label_type_index=== -1?'selected':''"
           @tap="clickSx"
         >全部</view>
         <view
           class="classify-item"
-          :class="advertise_machine_label_type_id==item.id?'selected':''"
+          :class="advertise_machine_label_type_index===index?'selected':''"
           :key="index"
           v-for="(item, index) in machineType"
-          @tap="clickSx(item.id)"
-        >{{item.name}}</view>
+          @tap="clickSx(index)"
+        >{{item}}</view>
       </view>
     </view>
     <view
@@ -130,6 +130,8 @@
 import Placeholder from "../component/common/placeholder";
 import BottomNoMore from "../component/common/bottomNoMore";
 import BottomLoadMore from "../component/common/bottomLoadMore";
+import ChinaAddress from '../utils/chinaAddress.js'
+console.log(ChinaAddress)
 export default {
   data() {
     return {
@@ -140,7 +142,7 @@ export default {
       start:0,
       offset: 10,
       contentList:[],    //页面列表数据
-      advertise_machine_label_type_id:'',
+      advertise_machine_label_type_index: -1,
       address:'',
       longitude:'',
       latitude:'',
@@ -148,7 +150,7 @@ export default {
       machineType:[],     //广告机类别
       province: 0,
       mapFilter: {
-        provinces: ["请选择", "广东", "湖南", "江西"],
+        provinces: ChinaAddress[0],
         cities: ["请选择", "深圳", "长沙", "南昌"],
         areas: ["请选择", "宝安", "中心"]
       }
@@ -170,10 +172,8 @@ export default {
   },
   methods: {
     //头部筛选
-    clickSx(e) {
-      console.log(e);
-      let id = e.currentTarget.dataset.id;
-      this.advertise_machine_label_type_id = id;
+    clickSx(index) {
+      this.advertise_machine_label_type_index = index;
       this.start = 0;
       this.getMachineList(0, true);
     },
@@ -193,20 +193,41 @@ export default {
     },
     //地图选点
     clickSite() {
-      let that = this;
       wx.chooseLocation({
         success: res => {
           console.log(res);
           this.address = res.address;
           this.longitude = res.longitude;
           this.latitude = res.latitude;
-           this.start = 1;
-          this.getMachineList(1,true);
+          this.start = 0;
+          this.getMachineList(0,true);
         }
       });
     },
-    getMachineList () {
-      
+    async getMachineType () {
+      try {
+        const res = await this.$server.getMachineLabels()
+        this.machineType = res.data.data.machineLabels
+      } catch (error) {}
+    },
+    async getMachineList (start) {
+      try {
+        const payload = {
+          longitude: this.longitude,
+          latitude: this.latitude,
+          labelType: this.advertise_machine_label_type_index > 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
+          machineName: '',
+          screenType: '',
+          province: '',
+          city: '',
+          district: '',
+          start,
+          offset: this.offset,
+        }
+        const res = await this.$server.getMachinesList(payload)
+      } catch (error) {
+        
+      }
     }
   },
   /**
@@ -231,14 +252,14 @@ export default {
   components: {
     Placeholder,
     BottomNoMore,
-    BottomLoadMore
+    BottomLoadMore,
   }
 };
 </script>
 
 <style lang="less" scoped>
 .chooseAdMachine {
-  padding-top: 160rpx;
+  padding-top: 240rpx;
   padding-bottom: 110rpx;
   box-sizing: border-box;
 

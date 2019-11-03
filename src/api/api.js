@@ -251,8 +251,8 @@ class Api extends BasicRequest {
   /**
    * 广告机标签查询
    */
-  getMachineLabels() {
-    return this.POST('/api/machines/getMachineLabels');
+  getMachineLabels () {
+    return this.POST('/api/machines/getMachineLabels', {});
   }
 
   /**
