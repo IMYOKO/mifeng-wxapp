@@ -63,6 +63,7 @@
 import Placeholder from '../component/common/placeholder'
 import BottomNoMore from '../component/common/bottomNoMore'
 import BottomLoadMore from '../component/common/bottomLoadMore'
+import tip from '../utils/tip';
 export default {
   data () {
     return {
@@ -144,14 +145,14 @@ export default {
         tip.toast('请选择广告机');
         return;
       }
-      const json = await request({
-        url:'advertise_machine_cart_items/store',
-        method:'POST',
-        data:{ids:this.adMachineId}
-      })
+      // const json = await request({
+      //   url:'advertise_machine_cart_items/store',
+      //   method:'POST',
+      //   data:{ids:this.adMachineId}
+      // })
       wepy.setStorageSync('selectDate',[]); 
       await tip.success('添加成功');
-      wepy.navigateBack();
+      uni.navigateBack();
     },
     //获取购物车的广告机
     async getCartList(){
@@ -167,32 +168,51 @@ export default {
       this.$apply();
     },
     //获取广告机列表
-    async getMachineList(start,refresh){
-      const json = await request({
-        url:'advertise_machines',
-        method:'GET',
-        data:{
-          name:this.name,
-          start:start || 0,
-          advertise_machine_label_type_id:'',
+    async getMachineList (start, refresh) {
+      try {
+        const payload = {
+          longitude: this.longitude,
+          latitude: this.latitude,
+          labelType: '',
+          machineName: this.name,
+          screenType: '',
+          province: '',
+          city: '',
+          district: '',
+          start,
+          offset: this.offset,
         }
-      });
-      if (refresh) {
-        this.contentList = json.data.data;
-      } else {
-        this.contentList = [...this.contentList, ...json.data.data];
-      }
-      if(json.data.data.length < json.data.per_page  && json.data.data.length != 0){
-        //没有更多数据
-        this.no_more = true;
-      }else{			
-        this.no_more = false;
-      }
-      if (this.start === 0 && json.data.data.length === 0) {
-      //暂无数据
-      this.is_empty = true;
-      } else {
-        this.is_empty = false;
+        console.log(payload)
+        const res = await this.$server.getMachinesList(payload)
+        if(this.advertise_machine_label_type_index === -1){
+          //全部的时候取出所有已选择的广告机id
+          for(var i in res.data.data.item){
+            if(res.data.data.item[i].my_cart === 1){
+              if(this.adMachineId.indexOf(res.data.data.item[i].id) === -1){
+                this.adMachineId.push(res.data.data.item[i].id);
+              }
+            }
+          }
+        }
+        if (refresh) {
+          this.contentList = res.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...res.data.data.item];
+        }
+        if(res.data.data.isNext === 0){
+          //没有更多数据
+          this.no_more = true;
+        }else{			
+          this.no_more = false;
+        }
+        if (this.start === 0 && res.data.data.isNext === 0 && response.data.data.item.length === 0) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
+      } catch (error) {
+        
       }
     },
     //获取热门

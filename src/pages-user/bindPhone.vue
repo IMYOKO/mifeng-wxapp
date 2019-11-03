@@ -1,7 +1,7 @@
 <template>
   <view class = "container">
     <view class="section top">
-      <image class="icon_logo" src="../static/images/pic_sign_in_logo_1.png"></image>
+      <image class="icon_logo" src="../static/images/pic_sign_in_logo_1.png" />
       <view class="text">蜜蜂广告</view>
       <view class = "company">深圳市天青色网络科技有限公司</view>
     </view>

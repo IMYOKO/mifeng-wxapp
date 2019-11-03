@@ -126,7 +126,7 @@ export default {
         }else{			
           this.no_more = false;
         }
-        if (this.start === 0 && response.data.data.isNext == 0) {
+        if (this.start === 0 && response.data.data.isNext === 0 && response.data.data.item.length === 0) {
           //暂无数据
           this.is_empty = true;
         } else {

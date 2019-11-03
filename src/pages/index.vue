@@ -18,7 +18,6 @@
       <image class = "img2" src = "../static/images/pic_application_24.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
-
 	</view>
 </template>
 
@@ -40,9 +39,11 @@ export default {
 		uni.getLocation({
       type: 'wgs84',
       success: res => {
+				console.log(res)
+        let site = res.address;
         let latitude = res.latitude;
         let longitude = res.longitude;
-        this.loadCity(longitude, latitude);
+        this.loadCity(longitude, latitude, site);
       }
   	})
 	},
@@ -53,10 +54,11 @@ export default {
 		...mapState('User/User', ['userInfo']),
 	},
 	methods: {
-		loadCity (longitude, latitude) {
+		loadCity (longitude, latitude, site) {
 			let position  = {
-				latitude:latitude,
-				longitude:longitude,
+				latitude,
+				longitude,
+				site
 			}
 			uni.setStorageSync('position',position);
 		},

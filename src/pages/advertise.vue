@@ -1,41 +1,37 @@
 <template>
   <view>
     <view class = "banner">
-      <view class = "item" :class="select_tag == ''?'selected':''" @tap = "clickTypeItem('')">全部</view>
-      <view class = "item" :class="select_tag == 'wait_pay'?'selected':''" @tap = "clickTypeItem('wait_pay')">待支付</view>
-      <view class = "item" :class="select_tag == 'wait_market'?'selected':''" @tap = "clickTypeItem('wait_market')">待投放</view>
-      <view class = "item" :class="select_tag == 'market_process'?'selected':''" @tap = "clickTypeItem('market_process')">投放中</view>
-      <view class = "item" :class="select_tag == 'complete'?'selected':''" @tap = "clickTypeItem('complete')">已完成</view>
+      <view class = "item" :class="status === -1?'selected':''" @tap ="clickTypeItem(-1)">全部</view>
+      <view class = "item" :class="status === 0?'selected':''" @tap ="clickTypeItem(0)">待支付</view>
+      <view class = "item" :class="status === 1?'selected':''" @tap ="clickTypeItem(1)">待投放</view>
+      <view class = "item" :class="status === 2?'selected':''" @tap ="clickTypeItem(2)">投放中</view>
+      <view class = "item" :class="status === 3?'selected':''" @tap ="clickTypeItem(3)">已完成</view>
+      <view class = "item" :class="status === 4?'selected':''" @tap ="clickTypeItem(4)">已关闭</view>
     </view>
     <view class = "ct-item" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" @tap = "clickDetail">
       <view class = "top">
-        <view class = "type" v-if="item.material.type == 1">广告类型：图片</view>
-        <view class = "type" v-if = "item.material.type == 2">广告类型：组合</view>
+        <view class = "type">广告类型：{{item.materialType === 1 ? '竖屏图片' : item.materialType === 2 ? '横屏图片' : item.materialType === 3 ? '竖屏视频' : item.materialType === 4 ? '横屏视频' : '组合素材'}}</view>
         <view class = "dot"></view>
-        <view class = "status" v-if = "item.order_show_status == 'wait_pay'">待支付</view>
-        <view class = "status" v-if = "item.order_show_status == 'wait_market'">待投放</view>
-        <view class = "status" v-if = "item.order_show_status == 'market_process'">投放中</view>
-        <view class = "status" v-if = "item.order_show_status == 'market_finish'">投放结束</view>
-        <view class = "status" v-if = "item.order_show_status == 'is_closed'">已关闭</view>
+        <view class = "status">{{item.status === 0 ? '待支付' : item.status === 1 ? '待投放' : item.status === 2 ? '投放中' : item.status === 3 ? '已完成' : '已关闭'}}待支付</view>
       </view>
       <view class = "middle">
-        <image class  = "img" :src="item.material.logo"></image>
+        <image class  = "img" :src="item.logo" />
         <view class = "m-ct">
           <view class = "m-ct-top">
-            <view class = "name">{{item.name}}</view>
-            <view class = "mark">{{item.order_items[0].advertise_machine.advertise_machine_label_type.name}}</view>
+            <view class = "name">{{item.materialName}}</view>
+            <!-- <view class = "mark">{{item.order_items[0].advertise_machine.advertise_machine_label_type.name}}</view> -->
           </view>
           <view  class = "m-ct-middle">
             <view class = "text">总投放天数</view>
-            <view class = "day">{{item.market_days_number}}</view>
+            <view class = "day">{{item.putDays}}</view>
           </view>
           <view class = "m-ct-bottom">
             <view class = "text">合计</view>
-            <view class = "pri">¥{{item.total_amount}}</view>
+            <view class = "pri">¥{{item.amount}}</view>
           </view>
         </view>
       </view>
-      <button class = "btn" v-if = "item.order_show_status == 'wait_pay'" :data-money = "item.total_amount" :data-id = "item.id" @tap.stop = "clickPay">立即支付</button>
+      <button class = "btn" v-if ="item.order_show_status === 0" :data-money = "item.amount" :data-id = "item.orderId" @tap.stop = "clickPay">立即支付</button>
     </view>
     <!--加载更多时动画-->
     <bottomLoadMore :show.sync="load_more" message="正在加载"></bottomLoadMore>
@@ -45,23 +41,23 @@
     <placeholder :show.sync="is_empty"></placeholder>
 
     <view class = "pop" v-if = "showPop1">
-      <image class = "del" src = "../static/images/ic_home_advertising_machine_close.png"  @tap = "clickHidden"></image>
+      <image class = "del" src = "../static/images/ic_home_advertising_machine_close.png"  @tap = "clickHidden" />
       <view class = "title">付款详情</view>
       <view class = "item" @tap = "clickSelectPayWay">
         <view class = "ll">付款方式</view>
         <block v-if = "pay_type == 3">
-          <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png"></image>
+          <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png" />
           <view class = "pay-text">微信支付</view>
         </block>
         <block v-if = "pay_type == 2">
-          <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png"></image>
+          <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png" />
           <view class = "pay-text">余额支付</view>
         </block>
         <block v-if = "pay_type == 4">
-          <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png"></image>
+          <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png" />
           <view class = "pay-text">积分支付</view>
         </block>
-        <image class = "arrow" src = "../static/images/ic_home_open_1.png"></image>
+        <image class = "arrow" src = "../static/images/ic_home_open_1.png" />
       </view>
       <view class = "item">
         <view class = "ll">需付款</view>
@@ -71,19 +67,19 @@
     </view>
     <view class = "pop" v-if = "showPop2">
       <view class  ="top">
-        <image class = "back" src = "../static/images/ic_my_payment_return_3.png" @tap = "clickPopBack"></image>
+        <image class = "back" src = "../static/images/ic_my_payment_return_3.png" @tap = "clickPopBack" />
         <view class = "tit">选择付款方式</view>
       </view>
       <view class = "ct" @tap = "clickPayWay(3)">
-        <image class = "ct-icon" src = "../static/images/ic_home_payment_wechat.png"></image>
+        <image class = "ct-icon" src = "../static/images/ic_home_payment_wechat.png" />
         <view class = "ct-text">微信支付</view>
       </view>
       <view class = "ct" :class="payMoney>userInfo.money?'grey':''" @tap = "clickPayWay(2)">
-        <image class = "ct-icon" src = "../static/images/ic_home_payment_wallet.png"></image>
+        <image class = "ct-icon" src = "../static/images/ic_home_payment_wallet.png" />
         <view class = "ct-text">余额支付（余额：¥{{userInfo.money}}）</view>
       </view>
       <view class = "ct" :class="payMoney>userInfo.integral?'grey':''" @tap = "clickPayWay(4)">
-        <image class = "ct-icon" src = "../static/images/ic_home_payment_integral.png"></image>
+        <image class = "ct-icon" src = "../static/images/ic_home_payment_integral.png" />
         <view class = "ct-text">积分支付（积分：{{userInfo.integral}}）</view>
       </view>
     </view>
@@ -92,11 +88,11 @@
     <view class = "pop-pay" v-if="showPay">
       <view class = "top">
         <view class = "name">请输入支付密码</view>
-        <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap = "clickHidden"></image>
+        <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap = "clickHidden" />
       </view>
       <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password :maxlength = "passLength"  :value = "payPassValue"  :focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass"></input>
         <view class = "num">
-          <block v-for = "(item, index) in passLength" :key = "unique">
+          <block v-for = "(item, index) in passLength" :key = "index">
             <input class = "num-item" password cursor-spacing = "150rpx" :value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput"></input>
           </block>
         </view>
@@ -127,35 +123,14 @@ export default {
 
   data() {
     return {
+      status: -1,
       load_more: false,    //加载更多图案
       no_more: false,       //没有更多数据
       is_empty: false,     //无数据，显示空页面
-      page:1,
+      start:0,
+      offset: 10,
       //页面列表数据
-      contentList:[
-        {
-          material: {
-            type: 1,
-            logo: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7',
-          },
-          order_items: [
-            {
-              advertise_machine: {
-                advertise_machine_label_type: {
-                  name: '餐饮'
-                }
-              }
-            }
-          ],
-          id: '01',
-          name: '广告1',
-          market_days_number: 10,
-          total_amount: 500,
-          order_show_status: 'wait_pay',
-          
-        }
-      ],
-      select_tag:'',
+      contentList:[],
       payId:'',         //需要支付的订单id
       payMoney:0,       //需要支付的钱
       showPop1:false,
@@ -173,37 +148,40 @@ export default {
     await checkRole();
     //用户信息
     this.userInfo = uni.getStorageSync(USER_INFO) || null;
-    this.page = 1;
-    this.getOrderList(1,true);
+    this.start = 0;
+    this.getOrderList(0,true);
   },
 
   methods: {
-    async getOrderList(page,refresh){
-      let that = this;
-      const json = await request({
-        url:'orders',
-        method:'GET',
-        data:{
-          page:page || 1,
-          select_tag:this.select_tag
+    async getOrderList(start,refresh){
+      try {
+        const payload = {
+          start,
+          offset: this.offset
         }
-      });
-      if (refresh) {
-        that.contentList = json.data.data;
-      } else {
-        that.contentList = [...that.contentList, ...json.data.data];
-      }
-      if(json.data.data.length < json.data.per_page  && json.data.data.length != 0){
-        //没有更多数据
-        that.no_more = true;
-      }else{
-        that.no_more = false;
-      }
-      if (that.page == 1 && json.data.data.length == 0) {
-      //暂无数据
-      that.is_empty = true;
-      } else {
-        that.is_empty = false;
+        if (this.status >= 0) {
+          payload.status = this.status
+        }
+        const res = await this.$server.getMaterialsOrderList(payload)
+        if (refresh) {
+          this.contentList = res.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...res.data.data.item];
+        }
+        if(res.data.data.isNext === 0){
+          //没有更多数据
+          this.no_more = true;
+        }else{
+          this.no_more = false;
+        }
+        if (this.start === 0 && res.data.data.item.length === 0) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
+      } catch (error) {
+        
       }
     },
     inputPayPass(e){
@@ -219,13 +197,11 @@ export default {
     },
     //失去焦点
     blurPayPass(){
-      let that = this;
-      that.isFocus = false;
+      this.isFocus = false;
     },
     //点击聚焦
     clickPassInput(){
-      let that = this;
-      that.isFocus = true;
+      this.isFocus = true;
     },
     clickHidden(){
       this.showPop1 = false;
@@ -268,7 +244,6 @@ export default {
         tip.toast('请选择支付方式');
         return;
       }
-      let that  = this;
       //没有密码
       if(this.pay_type == 2 || this.pay_type == 4){   //余额  积分支付
         if(!this.userInfo.has_password){
@@ -290,7 +265,7 @@ export default {
             password:this.payPassValue
           }
         }).then(res => {
-            that.payPassValue = '';
+            this.payPassValue = '';
              wx.requestPayment({
               'timeStamp': res.data.timeStamp,
               'nonceStr': res.data.nonceStr,
@@ -299,7 +274,7 @@ export default {
               'paySign': res.data.paySign,
               'success': function (res) {
                 uni.redirectTo({
-                  url:'/pages-advert/paySuccess?id='+that.payId,
+                  url:'/pages-advert/paySuccess?id='+this.payId,
                 })
               },
               'fail': function (res) {
@@ -310,17 +285,17 @@ export default {
           })
           .catch(err=>{
             if(err.code != 0){
-              that.inputBan = false;
-              that.payPassValue = '';
+              this.inputBan = false;
+              this.payPassValue = '';
             }
           });
       }
     },
     //选择头部分类
-    clickTypeItem(select_tag){
-      this.select_tag = select_tag;
-      this.page = 1;
-      this.getOrderList(1,true);
+    clickTypeItem(status){
+      this.status = status;
+      this.start = 0;
+      this.getOrderList(0,true);
     },
     //点击进入详情
     clickDetail(e){
@@ -337,7 +312,6 @@ export default {
     }
   },
   async callPayOut(){
-    let that  = this;
     //发起支付通信
     const json =  await request({
       url:'orders/pay',
@@ -349,15 +323,15 @@ export default {
         password:this.payPassValue
       }
     }).then(res => {
-        that.payPassValue = '';
+        this.payPassValue = '';
         uni.redirectTo({
           url:'/pages-advert/paySuccess?id='+this.payId,
         })
       })
       .catch(err=>{
         if(err.code != 0){
-          that.inputBan = false;
-          that.payPassValue = '';
+          this.inputBan = false;
+          this.payPassValue = '';
           if(err.code == 40301002){
             //密码错误
             wx.showModal({
@@ -387,8 +361,8 @@ export default {
       * 页面相关事件处理函数--监听用户下拉动作
       */
     onPullDownRefresh() {
-      this.page = 1;
-      this.getOrderList(1,true);
+      this.start = 0;
+      this.getOrderList(0,true);
       setTimeout(() => {
         uni.stopPullDownRefresh();
       }, 1000);
@@ -398,10 +372,9 @@ export default {
       * 页面上拉触底事件的处理函数
       */
     onReachBottom() {
-      let that = this;
-      if ((!that.no_more) && (!that.is_empty)) {
-          that.page += 1;
-          that.getOrderList(that.page,false);
+      if ((!this.no_more) && (!this.is_empty)) {
+          this.start += 1;
+          this.getOrderList(this.start,false);
         }
     }
   }

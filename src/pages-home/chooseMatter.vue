@@ -69,6 +69,7 @@ export default {
     },
     async getMatterList(start, refresh) {
       const payload = {
+        auditStatus: 1,
         materialType: this.type,
         start,
         offset: this.offset

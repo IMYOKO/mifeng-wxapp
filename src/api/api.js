@@ -309,11 +309,19 @@ class Api extends BasicRequest {
   getMaterialsOrderDetail(payload) {
     return this.POST('/api/publishAd/getMaterialsOrderDetail', payload);
   }
+
   /**
    * 校验手机验证码
    */
   checkPaypwdCode(payload) {
     return this.POST('/api/user/checkPaypwdCode', payload);
+  }
+
+  /**
+   * 字典查询
+   */
+  getDictData() {
+    return this.POST('/api/dictData/getDictData', {dictType: 'ad_machine_bppz'});
   }
 }
 

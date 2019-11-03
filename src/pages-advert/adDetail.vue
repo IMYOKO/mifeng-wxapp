@@ -1,20 +1,20 @@
 <template>
   <view>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_paid.png" v-if = "orderInfo.order_show_status == 'wait_pay'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_put_on.png" v-if = "orderInfo.order_show_status == 'wait_market'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-if = "orderInfo.order_show_status == 'market_process'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-if = "orderInfo.order_show_status == 'market_finish'"></image>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-if = "orderInfo.order_show_status == 'is_closed'"></image>
+    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_paid.png" v-if = "orderInfo.order_show_status == 'wait_pay'" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_put_on.png" v-if = "orderInfo.order_show_status == 'wait_market'" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-if = "orderInfo.order_show_status == 'market_process'" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-if = "orderInfo.order_show_status == 'market_finish'" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-if = "orderInfo.order_show_status == 'is_closed'" />
     <view class = "tit">{{orderInfo.name}}</view>
     <view class = "time">
       <view class = "time-selectet" @tap  ="clickDate">
         <view class = "text">投放时间</view>
         <view class ="num">总天数（{{orderInfo.to_dates.length}}）</view>
-        <image class = "icon" src = "../static/images/ic_home_launch_time_1.png" v-if = "dateOpen"></image>
-        <image class = "icon" src = "../static/images/ic_home_launch_time_2.png" v-else></image>
+        <image class = "icon" src = "../static/images/ic_home_launch_time_1.png" v-if = "dateOpen" />
+        <image class = "icon" src = "../static/images/ic_home_launch_time_2.png" v-else />
       </view>
       <view class = "time-view" v-if = "dateOpen">
-        <view class = "time-item" v-for="(item,index) in orderInfo.to_dates" :key = "unique">{{item}}</view>
+        <view class = "time-item" v-for="(item,index) in orderInfo.to_dates" :key = "index">{{item}}</view>
       </view>
     </view>
     <view class = "matter">
@@ -23,12 +23,12 @@
         <view class = "text">{{orderInfo.material.name}}</view>
       </view>
       <video src="orderInfo.material.video" class = "video" v-if = "orderInfo.material.type == 2"></video>
-      <image class = "img" src= "orderInfo.material.logo"></image>
+      <image class = "img" src= "orderInfo.material.logo" />
     </view>
     <view class = "machine">
       <view class = "name">广告机</view>
-      <view class = "item" v-for = "(item, index) in orderInfo.order_items" :key = "unique">
-        <image class = "logo" src = "item.advertise_machine.logo"></image>
+      <view class = "item" v-for = "(item, index) in orderInfo.order_items" :key = "index">
+        <image class = "logo" src = "item.advertise_machine.logo" />
         <view class = "ct">
           <view class = "top">{{item.advertise_machine.name}}</view>
           <view class = "middle">
@@ -93,23 +93,23 @@
       <view class = "btn" @tap = "clickPay">立即支付</view>
     </view>
     <view class = "pop" v-if = "showPop1">
-      <image class = "del" src = "../static/images/ic_home_advertising_machine_close.png"  @tap = "clickHidden"></image>
+      <image class = "del" src = "../static/images/ic_home_advertising_machine_close.png"  @tap = "clickHidden" />
       <view class = "title">付款详情</view>
       <view class = "item" @tap = "clickSelectPayWay">
         <view class = "ll">付款方式</view>
         <block v-if = "pay_type == 3">
-          <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png"></image>
+          <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png" />
           <view class = "pay-text">微信支付</view>
         </block>
         <block v-if = "pay_type == 2">
-          <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png"></image>
+          <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png" />
           <view class = "pay-text">余额支付</view>
         </block>
         <block v-if = "pay_type == 4">
-          <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png"></image>
+          <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png" />
           <view class = "pay-text">积分支付</view>
         </block>
-        <image class = "arrow" src = "../static/images/ic_home_open_1.png"></image>
+        <image class = "arrow" src = "../static/images/ic_home_open_1.png" />
       </view>
       <view class = "item">
         <view class = "ll">需付款</view>
@@ -119,19 +119,19 @@
     </view>
     <view class = "pop" v-if = "showPop2">
       <view class  ="top">
-        <image class = "back" src = "../static/images/ic_my_payment_return_3.png" @tap = "clickPopBack"></image>
+        <image class = "back" src = "../static/images/ic_my_payment_return_3.png" @tap = "clickPopBack" />
         <view class = "top-tit">选择付款方式</view>
       </view>
       <view class = "ct" @tap = "clickPayWay(3)">
-        <image class = "ct-icon" src = "../static/images/ic_home_payment_wechat.png"></image>
+        <image class = "ct-icon" src = "../static/images/ic_home_payment_wechat.png" />
         <view class = "ct-text">微信支付</view>
       </view>
       <view class = "ct" :class="orderInfo.total_amount>userInfo.money?'grey':''" @tap = "clickPayWay(2)">
-        <image class = "ct-icon" src = "../static/images/ic_home_payment_wallet.png"></image>
+        <image class = "ct-icon" src = "../static/images/ic_home_payment_wallet.png" />
         <view class = "ct-text">余额支付（余额：¥{{userInfo.money}}）</view>
       </view>
       <view class = "ct" :class="orderInfo.total_amount>userInfo.integral?'grey':''" @tap = "clickPayWay(4)">
-        <image class = "ct-icon" src = "../static/images/ic_home_payment_integral.png"></image>
+        <image class = "ct-icon" src = "../static/images/ic_home_payment_integral.png" />
         <view class = "ct-text">积分支付（积分：{{userInfo.integral}}）</view>
       </view>
 
@@ -141,12 +141,12 @@
     <view class = "pop-pay" v-if="showPay">
       <view class = "top">
         <view class = "name">请输入支付密码</view>
-        <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap = "clickHidden"></image>
+        <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap = "clickHidden" />
       </view>
-      <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password maxlength = "passLength"  value = "payPassValue"  focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass"></input>
+      <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password maxlength = "passLength"  value = "payPassValue"  focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass" />
         <view class = "num">
-          <block v-for = "(item, index) in passLength" :key = "unique">
-            <input class = "num-item" password cursor-spacing = "150rpx" value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput"></input>
+          <block v-for = "(item, index) in passLength" :key ="index">
+            <input class = "num-item" password cursor-spacing = "150rpx" value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput" />
           </block>
         </view>
       <view class = "forget">忘记支付密码？</view>

@@ -29,55 +29,41 @@
       </view>
     </view>
     <view class="banner area-picker">
-      <view class="item" @tap="clickSx">全选</view>
-      <picker
-        class="picker"
-        mode="selector"
-        :range="mapFilter.provinces"
-        :value="province"
-        @change="provinceChange"
-      >选择省</picker>
-      <picker
-        class="picker"
-        mode="selector"
-        :range="mapFilter.cities"
-        :value="province"
-        @change="provinceChange"
-      >选择市</picker>
-      <picker
-        class="picker"
-        mode="selector"
-        :range="mapFilter.areas"
-        :value="province"
-        @change="provinceChange"
-      >选择区</picker>
+      <view class="item" @tap="clickAll">全选</view>
+      <view class="addresss" @click="showMulLinkageThreePicker">
+        {{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}
+      </view>
     </view>
     <view
       class="ct-view"
       v-for="(item, index) in contentList"
       :key="index"
-      @tap="clickItem(item.id, index, item.my_cart)"
+      @tap="clickItem(item.mac, index, item.my_cart, item)"
     >
       <view class="ct">
         <image class="logo" :src="item.logo" />
         <view class="content">
           <view class="top">
-            <view class="name">{{item.name}}</view>
-            <view class="mark">{{item.advertise_machine_label_type.name}}</view>
+            <view class="name">机器编号:{{item.mac}}</view>
+            <view class="mark">{{item.labelType}}</view>
           </view>
           <view class="middle">
             <view class="text">图片价格/天</view>
-            <view class="pri">¥{{item.image_price}}</view>
+            <view class="pri">¥{{item.imagePrice}}</view>
+          </view>
+          <view class="bottom">
+            <view class="text">视频价格/天</view>
+            <view class="pri">¥{{item.videoPrice}}</view>
           </view>
           <view class="bottom">
             <view class="text">视频组合价格/15s/天</view>
-            <view class="pri">¥{{item.combine_price}}</view>
+            <view class="pri">¥{{item.combinePrice}}</view>
           </view>
         </view>
       </view>
       <view class="place">
         <image class="site-icon" src="../static/images/ic_home_location_2.png" />
-        <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.site}}</view>
+        <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
         <image class="select-icon" src="../static/images/ic_home_select.png" v-if="item.my_cart" />
         <image class="select-icon" src="../static/images/ic_home_not_select.png" v-else />
       </view>
@@ -123,15 +109,18 @@
       catchtouchmove="preventTouchMove"
       v-if="showClassify"
     ></view>
+
+    <mpvue-city-picker :themeColor="themeColor" ref="mpvueCityPicker" :pickerValueDefault="cityPickerValueDefault"
+		 @onCancel="onCancel" @onConfirm="onConfirm"></mpvue-city-picker>
   </view>
 </template>
 
 <script>
-import Placeholder from "../component/common/placeholder";
+import Placeholder from '../component/common/placeholder';
 import BottomNoMore from "../component/common/bottomNoMore";
 import BottomLoadMore from "../component/common/bottomLoadMore";
-import ChinaAddress from '../utils/chinaAddress.js'
-console.log(ChinaAddress)
+import mpvueCityPicker from '../component/mpvue-citypicker/mpvueCityPicker.vue'
+import tip from '../utils/tip';
 export default {
   data() {
     return {
@@ -148,12 +137,12 @@ export default {
       latitude:'',
       adMachineId:[],     //选择的广告机id
       machineType:[],     //广告机类别
-      province: 0,
-      mapFilter: {
-        provinces: ChinaAddress[0],
-        cities: ["请选择", "深圳", "长沙", "南昌"],
-        areas: ["请选择", "宝安", "中心"]
-      }
+      provincesCitiesDistrict: '',
+      province: '',
+      city: '',
+      district: '',
+      themeColor: '#007AFF',
+      cityPickerValueDefault: [0, 0, 1],
     };
   },
   onLoad() {
@@ -171,14 +160,34 @@ export default {
     this.getMachineList(0,true);
   },
   methods: {
+    onCancel (e) {},
+    onConfirm (e) {
+      this.provincesCitiesDistrict = e.label
+      const cityArr = e.label.split('-')
+      this.provinces = cityArr[0]
+      this.city = cityArr[1]
+      this.district = cityArr[2] || ''
+      this.cityPickerValueDefault = e.value
+      this.start = 0;
+      this.getMachineList(0, true);
+    },
+    clickAll () {
+      this.provincesCitiesDistrict = ''
+      this.province = ''
+      this.city = ''
+      this.district = ''
+      this.cityPickerValueDefault = [0, 0, 1]
+      this.start = 0;
+      this.getMachineList(0, true);
+    },
+    showMulLinkageThreePicker() {
+			this.$refs.mpvueCityPicker.show()
+		},
     //头部筛选
     clickSx(index) {
       this.advertise_machine_label_type_index = index;
       this.start = 0;
       this.getMachineList(0, true);
-    },
-    provinceChange(e) {
-      console.log(e);
     },
     clickShow() {
       this.showClassify = true;
@@ -188,14 +197,12 @@ export default {
     },
     //点击搜索
     clickSearch() {
-      console.log("clickSearch");
       this.$CommonJs.pathTo("/pages-home/search");
     },
     //地图选点
     clickSite() {
       wx.chooseLocation({
         success: res => {
-          console.log(res);
           this.address = res.address;
           this.longitude = res.longitude;
           this.latitude = res.latitude;
@@ -204,27 +211,77 @@ export default {
         }
       });
     },
+    async clickSure () {
+      // const json = await request({
+      //   url:'advertise_machine_cart_items/store',
+      //   method:'POST',
+      //   data:{ids:this.adMachineId}
+      // })
+      uni.setStorageSync('adMachineId', this.adMachineId); 
+      uni.setStorageSync('selectDate',[]); 
+      await tip.success('添加成功');
+      uni.navigateBack();
+    },
+    clickItem(mac, index, mycart, item){
+      if(mycart == 1){
+        //已选取
+        let flagIndex = this.adMachineId.indexOf(mac);
+        this.adMachineId.splice(flagIndex,1);
+        this.contentList[index].my_cart = 0;
+      }else{
+        this.adMachineId.push(item);
+        this.contentList[index].my_cart = 1;
+      }
+    },
     async getMachineType () {
       try {
         const res = await this.$server.getMachineLabels()
         this.machineType = res.data.data.machineLabels
       } catch (error) {}
     },
-    async getMachineList (start) {
+    async getMachineList (start, refresh) {
       try {
         const payload = {
           longitude: this.longitude,
           latitude: this.latitude,
-          labelType: this.advertise_machine_label_type_index > 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
+          labelType: this.advertise_machine_label_type_index >= 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
           machineName: '',
           screenType: '',
-          province: '',
-          city: '',
-          district: '',
+          province: this.province,
+          city: this.city,
+          district: this.district,
           start,
           offset: this.offset,
         }
+        console.log(payload)
         const res = await this.$server.getMachinesList(payload)
+        if(this.advertise_machine_label_type_index === -1){
+          //全部的时候取出所有已选择的广告机id
+          for(var i in res.data.data.item){
+            if(res.data.data.item[i].my_cart === 1){
+              if(this.adMachineId.indexOf(res.data.data.item[i].id) === -1){
+                this.adMachineId.push(res.data.data.item[i].id);
+              }
+            }
+          }
+        }
+        if (refresh) {
+          this.contentList = res.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...res.data.data.item];
+        }
+        if(res.data.data.isNext === 0){
+          //没有更多数据
+          this.no_more = true;
+        }else{			
+          this.no_more = false;
+        }
+        if (this.start === 0 && res.data.data.isNext === 0 && response.data.data.item.length === 0) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
       } catch (error) {
         
       }
@@ -253,6 +310,7 @@ export default {
     Placeholder,
     BottomNoMore,
     BottomLoadMore,
+    mpvueCityPicker
   }
 };
 </script>
@@ -512,6 +570,13 @@ export default {
     padding: 0 40rpx;
     display: flex;
     align-items: center;
+    .addresss {
+      flex: 1;
+      height: 80rpx;
+      line-height: 80rpx;
+      font-size: 28rpx;
+      color: #666666;
+    }
   }
   .picker {
     font-size: 28rpx;

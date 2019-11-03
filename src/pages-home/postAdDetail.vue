@@ -1,63 +1,63 @@
 <template>
   <view class="postAdDetail">
-    <view class = "tit">{{orderInfo.name}}</view>
+    <!-- <view class = "tit">{{orderInfo.name}}</view> -->
     <view class = "time">
       <view class = "time-selectet" @tap ="clickDate">
         <view class = "text">投放时间</view>
-        <view class ="num">总天数（{{orderInfo.to_dates.length}}）</view>
+        <view class ="num">总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
         <image class = "icon" src = "../static/images/ic_home_launch_time_1.png" v-if="dateOpen" />
         <image class = "icon" src = "../static/images/ic_home_launch_time_2.png" v-else />
       </view>
       <view class = "time-view" v-if="dateOpen">
-        <view class = "time-item" v-for="(item, index) in orderInfo.to_dates" :key="index">{{item}}</view>
+        <view class = "time-item" v-for="(item, index) in orderInfo.putDay" :key="index">{{item}}</view>
       </view>
     </view>
     <view class = "matter">
       <view class ="top">
         <view class = "name">广告素材</view>
-        <view class = "text">{{orderInfo.material.name}}</view>
+        <view class = "text">{{orderInfo.materialName}}</view>
       </view>
-      <video :src="orderInfo.material.video" class = "video" v-if="orderInfo.material.type == 2"></video>
-      <image class = "img" :src="orderInfo.material.logo" />
+      <video :src="orderInfo.video" class = "video" v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4 || orderInfo.materialType === 5"></video>
+      <image class = "img" :src="orderInfo.logo" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5" />
     </view>
     <view class = "machine">
       <view class = "name">广告机</view>
-      <view class = "item" v-for="(item, index) in orderInfo.order_items" :key="index">
-        <image class = "logo" :src='item.advertise_machine.logo' />
+      <view class = "item" v-for="(item, index) in machineList" :key="index">
+        <image class = "logo" :src='item.logo' />
         <view class = "ct">
-          <view class = "top">{{item.advertise_machine.name}}</view>
+          <view class = "top">机器编号：{{item.mac}}</view>
           <view class = "middle">
-            <view class = "place">{{item.advertise_machine.province}}{{item.advertise_machine.city}}{{item.advertise_machine.district}}{{item.advertise_machine.site}}广告机</view>
-            <view class = "pri" v-if="orderInfo.material.type == 1">¥{{item.advertise_machine.image_price}}／天</view>
-            <view class = "pri" v-if="orderInfo.material.type == 2">¥{{item.advertise_machine.combine_price}}／15s／天</view>
+            <view class = "place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
+            <view class = "pri" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5">¥{{item.price}}／天</view>
+            <view class = "pri" v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4">¥{{item.price}}／15s／天</view>
           </view>
           <view class = "bottom">
-            <view class ="mark">{{item.advertise_machine.advertise_machine_label_type.name}}</view>
-            <view class = "num">×{{item.amount}}</view>
+            <view class ="mark">{{item.lableType}}</view>
+            <view class = "num">×{{item.price}}</view>
           </view>
         </view>
       </view>
       <view class = "total">
         <view class = "text">合计</view>
-        <view class = "pri">¥{{orderInfo.total_amount}}</view>
+        <view class = "pri">¥{{orderInfo.amount ? orderInfo.amount : 0}}</view>
       </view>
     </view>
     <view class = "pay">
       <view class = "name">支付方式</view>
       <view class = "pay-view">
-        <view class = "item" :class="pay_type == 2 ? 'balance' : ''" @tap="clickPayType(2)">
+        <view class = "item" :class="pay_type === 2 ? 'balance' : ''" @tap="clickPayType(2)">
           <image class ="pay-icon" src = "../static/images/ic_home_payment_wallet.png" />
           <view class = "text">余额支付</view>
-          <view class = "pri">（余额：¥{{userInfo.money}}）</view>
+          <view class = "pri">（余额：¥{{amountYe}}）</view>
         </view>
-        <view class = "item" :class="pay_type == 3 ? 'balance' : ''" @tap = "clickPayType(3)">
+        <view class = "item" :class="pay_type === 1 ? 'balance' : ''" @tap ="clickPayType(1)">
           <image class ="pay-icon wx" src = "../static/images/ic_home_payment_wechat.png" />
           <view class = "text">微信支付</view>
         </view>
-        <view class = "item" :class="pay_type == 4?'balance':''" @tap = "clickPayType(4)">
+        <view class = "item" :class="pay_type === 3?'balance':''" @tap ="clickPayType(3)">
           <image class ="pay-icon jf" src = "../static/images/ic_home_payment_integral.png" />
           <view class = "text">积分支付</view>
-          <view class = "pri">（积分：{{userInfo.integral}}）</view>
+          <view class = "pri">（积分：{{amountKy}}）</view>
         </view>
       </view>
     </view>
@@ -88,11 +88,165 @@ export default {
       passLength: 6,
       payPassValue: '',   //支付密码输入内容
       inputBan: false,
-      id: '',
+      id: null,
       orderInfo: null,
       dateOpen: false,   //日期折叠
-      pay_type: 2,      // 支付类型，1为未选， 2，3，4为余额，微信，积分
-      userInfo: null
+      pay_type: 2,      // 支付类型，0为未选 1-微信、2-余额、3-积分
+      userInfo: null,
+      machineList: [],
+      amountYe: 0,
+      amountKy: 0,
+    }
+  },
+  async onLoad(options) {
+    this.id = options.id;
+    //获取页面信息
+    await this.getUserAssets()
+    await this.getUserIntegral()
+    this.getOrderInfo();
+
+  },
+  methods: {
+    //获取用户信息
+    async getUserAssets() {
+      const res = await this.$server.getUserAssets();
+      this.amountYe = res.data.data.amountYe;
+    },
+    //获取用户信息
+    async getUserIntegral() {
+      const res = await this.$server.getUserIntegral();
+      this.amountKy = res.data.data.amountKy;
+    },
+    clickDate () {
+      this.dateOpen = !this.dateOpen;
+    },
+    //选择支付方式
+    clickPayType(pay_type){
+      this.pay_type = pay_type;
+    },
+    //忘记支付密码
+    clickForget(){
+      this.$CommonJs.pathTo('/pages-home/updatePayPass')
+    },
+    inputPayPass(e){
+      this.payPassValue = e.detail.value;
+      if(e.detail.value.length === 6){
+        if(this.inputBan){
+          return;
+        }
+        this.inputBan = true;
+        this.callPayOut();
+      }
+    },
+    //失去焦点
+    blurPayPass(){
+      this.isFocus = false;
+      this.$apply();
+    },
+    //点击聚焦
+    clickPassInput(){
+      this.isFocus = true;
+      this.$apply();
+    },
+    clickHidden(){
+      this.showPay = false;
+      this.payPassValue = '';
+      this.$apply();
+    },
+    //获取页面信息
+    async getOrderInfo(){
+      try {
+        const res = await this.$server.getMaterialsOrderDetail({orderId: this.id})
+        const orderInfo = res.data.data.materialDetail
+        orderInfo.putDay = orderInfo.putDay.split(',')
+        this.orderInfo = orderInfo
+        this.machineList = res.data.data.machineList
+      } catch (error) {
+        
+      }
+    },
+    async clickSureOrder(){
+      //没有密码
+      if(this.pay_type === 1|| this.pay_type === 3){   //余额  积分支付
+        if(!this.userInfo.has_password){
+          this.$CommonJs.pathTo('/pages-user/setPayPass')
+          return;
+        }
+        this.showPay = true;
+      }else if(this.pay_type === 2){     // 微信支付
+        //发起支付通信
+        const payload = {
+          orderId: this.id,
+          payType: 1,
+        }
+        await this.$server.orderPay(payload).then(res => {
+          this.payPassValue = '';
+            wx.requestPayment({
+            'timeStamp': res.data.timeStamp,
+            'nonceStr': res.data.nonceStr,
+            'package': res.data.package,
+            'signType': res.data.signType,
+            'paySign': res.data.paySign,
+            'success': function (res) {
+              uni.redirectTo({
+                url:'/pages-home/paySuccess?id='+this.id,
+              })
+            },
+            'fail': function (res) {
+              // tip.toast('支付取消');
+              console.log(res)
+            }
+          });
+        })
+        .catch(err=>{
+          if(err.code != 0){
+            this.inputBan = false;
+            this.payPassValue = '';
+          }
+        });
+      }
+    },
+    async callPayOut(){
+      //发起支付通信
+      const payload = {
+        orderId: this.id,
+        payType: this.pay_type,
+        paypwd: this.payPassValue
+      }
+      await this.$server.orderPay(payload).then(res => {
+        this.payPassValue = '';
+        uni.redirectTo({
+          url:'./paySuccess?id='+this.id,
+        })
+      })
+      .catch(err=>{
+        if(err.code != 0){
+          this.inputBan = false;
+          this.payPassValue = '';
+          this.$apply();
+          if(err.code == 40301002){
+            //密码错误
+            wx.showModal({
+              title:'密码输入错误',
+              content:'',
+              cancelText:'忘记密码',
+              confirmText:'重新输入',
+              confirmColor:'#000000',
+              cancelColor:'#000000',
+              success: function(res) {
+                if(res.confirm){
+                  //重新输入
+                }else if(res.cancel){
+                  //忘记密码
+                  uni.navigateTo({
+                    url:'updatePayPass'
+                  })
+                }
+              }
+            })
+          }
+        }
+      });
     }
   }
 }
