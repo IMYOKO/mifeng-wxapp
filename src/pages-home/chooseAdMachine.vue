@@ -44,7 +44,7 @@
         <image class="logo" :src="item.logo" />
         <view class="content">
           <view class="top">
-            <view class="name">机器编号:{{item.mac}}</view>
+            <view class="name">{{item.machineName}}</view>
             <view class="mark">{{item.labelType}}</view>
           </view>
           <view class="middle">

@@ -48,7 +48,7 @@
         <view class = "item" :class="pay_type === 2 ? 'balance' : ''" @tap="clickPayType(2)">
           <image class ="pay-icon" src = "../static/images/ic_home_payment_wallet.png" />
           <view class = "text">余额支付</view>
-          <view class = "pri">（余额：¥{{amountYe}}）</view>
+          <view class = "pri">（余额：¥{{money}}）</view>
         </view>
         <view class = "item" :class="pay_type === 1 ? 'balance' : ''" @tap ="clickPayType(1)">
           <image class ="pay-icon wx" src = "../static/images/ic_home_payment_wechat.png" />
@@ -57,7 +57,7 @@
         <view class = "item" :class="pay_type === 3?'balance':''" @tap ="clickPayType(3)">
           <image class ="pay-icon jf" src = "../static/images/ic_home_payment_integral.png" />
           <view class = "text">积分支付</view>
-          <view class = "pri">（积分：{{amountKy}}）</view>
+          <view class = "pri">（积分：{{integral}}）</view>
         </view>
       </view>
     </view>
@@ -94,8 +94,8 @@ export default {
       pay_type: 2,      // 支付类型，0为未选 1-微信、2-余额、3-积分
       userInfo: null,
       machineList: [],
-      amountYe: 0,
-      amountKy: 0,
+      money: 0,
+      integral: 0,
     }
   },
   async onLoad(options) {
@@ -104,18 +104,17 @@ export default {
     await this.getUserAssets()
     await this.getUserIntegral()
     this.getOrderInfo();
-
   },
   methods: {
     //获取用户信息
     async getUserAssets() {
       const res = await this.$server.getUserAssets();
-      this.amountYe = res.data.data.amountYe;
+      this.money = res.data.data.amountKy;
     },
     //获取用户信息
     async getUserIntegral() {
       const res = await this.$server.getUserIntegral();
-      this.amountKy = res.data.data.amountKy;
+      this.integral = res.data.data.amountKy;
     },
     clickDate () {
       this.dateOpen = !this.dateOpen;
@@ -167,13 +166,13 @@ export default {
     },
     async clickSureOrder(){
       //没有密码
-      if(this.pay_type === 1|| this.pay_type === 3){   //余额  积分支付
+      if(this.pay_type === 2|| this.pay_type === 3){   //余额  积分支付
         if(!this.userInfo.has_password){
           this.$CommonJs.pathTo('/pages-user/setPayPass')
           return;
         }
         this.showPay = true;
-      }else if(this.pay_type === 2){     // 微信支付
+      }else if(this.pay_type === 1){     // 微信支付
         //发起支付通信
         const payload = {
           orderId: this.id,
