@@ -176,6 +176,10 @@
         {
           "path": "serveRule",
           "style": { "navigationBarTitleText": "服务协议" }
+        },
+        {
+          "path": "chooseCard",
+          "style": { "navigationBarTitleText": "选择银行卡" }
         }
       ]
     }

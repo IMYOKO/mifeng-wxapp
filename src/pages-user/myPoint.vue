@@ -42,14 +42,14 @@ export default {
       load_more: false, //加载更多图案
       no_more: false, //没有更多数据
       is_empty: false, //无数据，显示空页面
-      page: 1,
+      page: 0,
       contentList: [], //页面列表数据
       integral: 0
     };
   },
   async onShow() {
-    this.page = 1;
-    this.getPointList(1, true);
+    this.page = 0;
+    this.getPointList(0, true);
     await this.getUserInfo();
   },
   methods: {
@@ -70,7 +70,7 @@ export default {
       } else {
         this.no_more = false;
       }
-      if (this.page == 1 && list.length == 0) {
+      if (this.page == 0 && list.length == 0) {
         //暂无数据
         this.is_empty = true;
       } else {
@@ -88,8 +88,8 @@ export default {
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    this.page = 1;
-    this.getPointList(1, true);
+    this.page = 0;
+    this.getPointList(0, true);
     setTimeout(() => {
       uni.stopPullDownRefresh();
     }, 1000);
