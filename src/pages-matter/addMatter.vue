@@ -51,18 +51,16 @@
         <image class="image" style="z-index: 10" :src="logo" />
       </view>
       <view class="placeholderContent" v-if="type === 2">
-        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder.png" />
+        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder2.png" />
         <image class="image" style="z-index: 10" :src="logo" />
       </view>
       <view class="placeholderContent" v-if="type === 3 ">
-        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
+        <image class="image video" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder3.png" />
         <video v-if="video" :src="video"></video>
-        <image class="videoImg" :src="logo" />
       </view>
       <view class="placeholderContent" v-if="type === 4 ">
-        <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
+        <image class="image video" style="z-index: 0" src="../static/images/pic_addmatter_image_placeholder4.png" />
         <video v-if="video" :src="video"></video>
-        <image class="videoImg" :src="logo" />
       </view>
       <view class="placeholderContent" v-if="type === 5 ">
         <image class="image" style="z-index: 0" src="../static/images/pic_addmatter_group_placeholder.png" />
@@ -137,7 +135,6 @@
       },
       //选择类型
       typeChange(e) {
-        console.log(e.detail.value)
         this.type = Number(e.detail.value) + 1;
       },
       //上传照片
@@ -255,11 +252,22 @@
         const payload = {
           materialName: this.name,
           materialType: this.type,
-          logo: this.logo,
-          video: this.video,
+        }
+        if (this.type === 1 || this.type === 2) {
+          payload.logo = this.logo
+          payload.video = ''
+        }
+        if (this.type === 3 || this.type === 4) {
+          payload.logo = ''
+          payload.video = this.video
+        }
+        if (this.type === 5) {
+          payload.logo = this.logo
+          payload.video = this.video
         }
         try {
           await this.$server.addMaterials(payload)
+          await tip.success('添加成功')
           this.$CommonJs.pathTo('/pages-matter/addMatterSuccess')
         } catch (error) {}
       }
@@ -492,6 +500,11 @@
       height: 100%;
       position: absolute;
       left: 0;
+
+      &.video {
+        width: 100%;
+        height: calc(50vw * 608/1080);
+      }
     }
 
     video {

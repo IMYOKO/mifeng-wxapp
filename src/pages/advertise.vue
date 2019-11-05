@@ -90,10 +90,10 @@
         <view class = "name">请输入支付密码</view>
         <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap = "clickHidden" />
       </view>
-      <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password :maxlength = "passLength"  :value = "payPassValue"  :focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass"></input>
+      <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password :maxlength = "passLength"  :value = "payPassValue"  :focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass"/ >
         <view class = "num">
           <block v-for = "(item, index) in passLength" :key = "index">
-            <input class = "num-item" password cursor-spacing = "150rpx" :value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput"></input>
+            <input class = "num-item" password cursor-spacing = "150rpx" :value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput"/ >
           </block>
         </view>
       <view class = "forget">忘记支付密码？</view>

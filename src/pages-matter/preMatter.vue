@@ -1,29 +1,15 @@
 <template>
   <view>
-    <view class = "img" v-if="type == 1">
+    <view class = "img" v-if="type === 1 || type === 2">
       <image class = "images" :src="logo" :style = "windowHeight" />
-      <!--<image class = "images" src=  "{{logo}}" mode="widthFix" />-->
-      <!-- <image class = "img-logo" v-if = "{{logoImg}}" src=  "{{logoImg}}" /> -->
-      <!-- <image class = "img-code" v-if = "{{codeImg}}" src=  "{{codeImg}}" /> -->
     </view>
-    <view class = "video" v-if="type == 2">
+    <view class = "group" v-if="type === 5">
       <video :src="video"></video>
-      <!-- <cover-image class = "img-logo" v-if = "{{logoImg}}" src=  "{{logoImg}}"></cover-image> -->
-      <!-- <cover-image class = "img-code" v-if = "{{codeImg}}" src=  "{{codeImg}}"></cover-image> -->
-      <image class = "images" :src="logo">
-        <!-- <view class="rollCon" style="{{type == 2?'width:662rpx;':''}}">
-          <view class='box'>
-            <view class='text' style="left:{{offsetLeft}}px" >{{name}}</view>
-          </view>
-        </view> -->
-      </image>
+      <image class = "images" :src="logo" />
     </view>
-
-    <!-- <view class="rollCon" v-if = "{{type == 1}}">
-      <view class='box'>
-        <view class='text' style="left:{{offsetLeft}}px" >{{name}}</view>
-      </view>
-    </view> -->
+    <view class = "video" v-if="type === 3 || type === 4">
+      <video :src="video"></video>
+    </view>
   </view>
 
 </template>
@@ -153,7 +139,21 @@ page{
     display: block;
   }
 }
-.video{
+.video {
+  video{
+    width:662rpx;
+    height:350rpx;
+    background:rgba(20,20,20,1);
+    border-radius:7rpx 7rpx 0px 0px;
+    opacity:0.6;
+    display: block;
+    margin:0 auto;
+    margin-top:20rpx;
+    position: relative;
+    z-index:999;
+  }
+}
+.group{
   video{
     width:662rpx;
     height:350rpx;

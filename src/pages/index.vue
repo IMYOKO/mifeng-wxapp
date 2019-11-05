@@ -18,15 +18,22 @@
       <image class = "img2" src = "../static/images/pic_application_24.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
+
+		<!-- <avatar selWidth="300upx" selHeight="300upx" @upload="myUpload" :avatarSrc="url" avatarStyle="width: 50vw;height: calc(50vw * 1920/1080);border-radius: 0;margin:0;"></avatar> -->
 	</view>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex';
 import {checkRole} from '../utils/user';
+import avatar from '../component/corp';
 export default {
+	components: {
+		avatar
+	},
 	data () {
 		return {
+			url: './../static/images/pic_addmatter_group_placeholder.png',
 			weixinCode: '',
 			indicatorDots: true,
 			autoplay: true,
@@ -54,6 +61,9 @@ export default {
 		...mapState('User/User', ['userInfo']),
 	},
 	methods: {
+		myUpload (option) {
+			console.log(option)
+		},
 		loadCity (longitude, latitude, site) {
 			let position  = {
 				latitude,

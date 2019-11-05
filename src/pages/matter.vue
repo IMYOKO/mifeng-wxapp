@@ -15,7 +15,7 @@
     </view>
     <view class = "content">
       <view class = "ct-view" v-for ="(item, index) in contentList" :key ="index" @tap="clickPre(item)">
-        <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.type === 2" />
+        <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.materialType === 5" />
         <image class = "status" src = "../static/images/pic_material_audit.png" v-if ="item.auditStatus  === 0" />
         <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if ="item.auditStatus === 2" />
         <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
