@@ -180,7 +180,6 @@ export default {
       inputBan:false,
     }
   },
-
   onLoad(options) {
     this.id = options.id;
     this.getOrderInfo();
@@ -191,7 +190,10 @@ export default {
   methods: {
     async getOrderInfo(){
       try {
-        const res = await this.$server.getMaterialsOrderDetail({orderId: this.id})
+        const payload = {
+          orderId: this.id
+        }
+        const res = await this.$server.getMaterialsOrderDetail(payload)
         const orderInfo = res.data.data.materialDetail
         orderInfo.putDay = orderInfo.putDay.split(',')
         this.orderInfo = orderInfo

@@ -68,10 +68,10 @@
         <view class = "name">请输入支付密码</view>
         <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap="clickHidden" />
       </view>
-      <!-- <input type="number" style="min-height: 0; max-height: 0; color: #fff;" cursor-spacing = "150rpx"  password :maxlength="passLength" v-model="payPassValue"  @focus="isFocus" @input="inputPayPass" @blur="blurPayPass" /> -->
+      <input type="number" style="min-height: 0; max-height: 0; color: #fff;" cursor-spacing = "150rpx"  password :maxlength="passLength" v-model="payPassValue"  @focus="isFocus" @input="inputPayPass" @blur="blurPayPass" />
         <view class = "num">
           <block v-for="(item, index) in passLength" :key="index">
-            <!-- <input class = "num-item" password cursor-spacing="150rpx" value="{{payPassValue.length>=index+1?payPassValue[index]:''}}" disabled  @tap.stop ="clickPassInput" /> -->
+            <input class = "num-item" password cursor-spacing="150rpx" value="{{payPassValue.length>=index+1?payPassValue[index]:''}}" disabled  @tap.stop ="clickPassInput" />
           </block>
         </view>
       <view class = "forget" @tap="clickForget">忘记支付密码？</view>
@@ -80,6 +80,9 @@
 </template>
 
 <script>
+import {
+  USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
+} from '../utils/constant';
 export default {
   data () {
     return {
@@ -100,6 +103,7 @@ export default {
   },
   async onLoad(options) {
     this.id = options.id;
+    this.userInfo = uni.getStorageSync(USER_INFO) || null;
     //获取页面信息
     await this.getUserAssets()
     await this.getUserIntegral()
@@ -140,17 +144,14 @@ export default {
     //失去焦点
     blurPayPass(){
       this.isFocus = false;
-      this.$apply();
     },
     //点击聚焦
     clickPassInput(){
       this.isFocus = true;
-      this.$apply();
     },
     clickHidden(){
       this.showPay = false;
       this.payPassValue = '';
-      this.$apply();
     },
     //获取页面信息
     async getOrderInfo(){
@@ -215,14 +216,13 @@ export default {
       await this.$server.orderPay(payload).then(res => {
         this.payPassValue = '';
         uni.redirectTo({
-          url:'./paySuccess?id='+this.id,
+          url:'/pages-home/paySuccess?id='+this.id,
         })
       })
       .catch(err=>{
         if(err.code != 0){
           this.inputBan = false;
           this.payPassValue = '';
-          this.$apply();
           if(err.code == 40301002){
             //密码错误
             wx.showModal({
@@ -238,7 +238,7 @@ export default {
                 }else if(res.cancel){
                   //忘记密码
                   uni.navigateTo({
-                    url:'updatePayPass'
+                    url:'/pages-home/updatePayPass'
                   })
                 }
               }
