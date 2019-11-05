@@ -251,7 +251,7 @@ class Api extends BasicRequest {
   /**
    * 广告机标签查询
    */
-  getMachineLabels () {
+  getMachineLabels() {
     return this.POST('/api/machines/getMachineLabels', {});
   }
 
@@ -321,7 +321,23 @@ class Api extends BasicRequest {
    * 字典查询
    */
   getDictData() {
-    return this.POST('/api/dictData/getDictData', {dictType: 'ad_machine_bppz'});
+    return this.POST('/api/dictData/getDictData', {
+      dictType: 'ad_machine_bppz'
+    });
+  }
+
+  /**
+   * 收益统计
+   */
+  getUserAdIncome(payload) {
+    return this.POST('/api/user/getUserAdIncome', payload);
+  }
+
+  /**
+   * 收益明细
+   */
+  getUserAdIncomeList(payload) {
+    return this.POST('/api/user/getUserAdIncomeList', payload);
   }
 }
 

@@ -120,7 +120,6 @@ export default {
         card.typeText = info.cardTypeName;
         return card;
       });
-      console.log(json.data.data.item);
     },
     async callDel() {
       try {

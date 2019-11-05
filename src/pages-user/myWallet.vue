@@ -43,7 +43,7 @@ export default {
       this.$CommonJs.pathTo("/pages-user/recharge");
     },
     clickTx() {
-      this.$CommonJs.pathTo("/pages-user/earningDetail");
+      this.$CommonJs.pathTo("/pages-user/earningWithdraw");
     },
     clickMycard() {
       this.$CommonJs.pathTo("/pages-user/myCard");
