@@ -95,11 +95,8 @@ export default {
 			await checkRole(true);
 			this.$CommonJs.pathTo('/pages-home/postAd')
 		},
-		clickAddMatter () {
-			if (!this.userInfo) {
-				this.$CommonJs.pathTo('/pages/login')
-				return
-			}
+		async clickAddMatter () {
+			await checkRole(true);
 			this.$CommonJs.pathTo('/pages-matter/addMatter')
 		},
 		clickFindUs () {

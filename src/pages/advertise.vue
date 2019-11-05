@@ -8,7 +8,7 @@
       <view class = "item" :class="status === 3?'selected':''" @tap ="clickTypeItem(3)">已完成</view>
       <view class = "item" :class="status === 4?'selected':''" @tap ="clickTypeItem(4)">已关闭</view>
     </view>
-    <view class = "ct-item" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" @tap = "clickDetail">
+    <view class = "ct-item" v-for = "(item, index) in contentList" :key = "index" @click ="clickDetail(item.orderId)">
       <view class = "top">
         <view class = "type">广告类型：{{item.materialType === 1 ? '竖屏图片' : item.materialType === 2 ? '横屏图片' : item.materialType === 3 ? '竖屏视频' : item.materialType === 4 ? '横屏视频' : '组合素材'}}</view>
         <view class = "dot"></view>
@@ -271,31 +271,32 @@ export default {
           orderId: this.payId,
           payType: 1,
         }
-        await this.$server.orderPay(payload).then(res => {
-            this.payPassValue = '';
-             wx.requestPayment({
-              'timeStamp': res.data.timeStamp,
-              'nonceStr': res.data.nonceStr,
-              'package': res.data.package,
-              'signType': res.data.signType,
-              'paySign': res.data.paySign,
-              'success': function (res) {
-                uni.redirectTo({
-                  url:'/pages-home/paySuccess?id=' + this.payId,
-                })
-              },
-              'fail': function (res) {
-                // tip.toast('支付取消');
-                console.log(res)
-              }
-            });
-          })
-          .catch(err=>{
-            if(err.code != 0){
-              this.inputBan = false;
-              this.payPassValue = '';
+        await this.$server.orderPay(payload)
+        .then(res => {
+          this.payPassValue = '';
+            wx.requestPayment({
+            'timeStamp': res.data.timeStamp,
+            'nonceStr': res.data.nonceStr,
+            'package': res.data.package,
+            'signType': res.data.signType,
+            'paySign': res.data.paySign,
+            'success': function (res) {
+              uni.redirectTo({
+                url:'/pages-home/paySuccess?id=' + this.payId,
+              })
+            },
+            'fail': function (res) {
+              // tip.toast('支付取消');
+              console.log(res)
             }
           });
+        })
+        .catch(err=>{
+          if(err.code != 0){
+            this.inputBan = false;
+            this.payPassValue = '';
+          }
+        });
       }
     },
     //选择头部分类
@@ -305,10 +306,9 @@ export default {
       this.getOrderList(0,true);
     },
     //点击进入详情
-    clickDetail(e){
-      let id = e.currentTarget.dataset.id;
+    clickDetail(orderId){
       uni.navigateTo({
-        url:'/pages-advert/adDetail?id='+id
+        url:'/pages-advert/adDetail?id='+orderId
       })
     },
     //立即支付
@@ -327,7 +327,7 @@ export default {
       await this.$server.orderPay(payload).then(res => {
         this.payPassValue = '';
         uni.redirectTo({
-          url:'/pages-advert/paySuccess?id='+this.payId,
+          url:'/pages-home/paySuccess?id='+this.payId,
         })
       })
       .catch(err=>{
