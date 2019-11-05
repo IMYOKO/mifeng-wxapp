@@ -26,7 +26,7 @@ export default {
     };
   },
   onShow() {
-    this.getBackList();
+    this.getBankList();
   },
   methods: {
     //添加银行卡
