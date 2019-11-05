@@ -15,22 +15,26 @@
         <image class="logo" :src="item.logo" />
         <view class="content">
           <view class="top">
-            <view class="name">{{item.name}}</view>
-            <view class="mark">{{item.advertise_machine_label_type.name}}</view>
+            <view class="name">{{item.machineName}}</view>
+            <view class="mark">{{item.labelType}}</view>
           </view>
           <view class="middle">
             <view class="text">图片价格/天</view>
-            <view class="pri">¥{{item.image_price}}</view>
+            <view class="pri">¥{{item.imagePrice}}</view>
+          </view>
+          <view class="bottom">
+            <view class="text">视频价格/天</view>
+            <view class="pri">¥{{item.videoPrice}}</view>
           </view>
           <view class="bottom">
             <view class="text">视频组合价格/15s/天</view>
-            <view class="pri">¥{{item.combine_price}}</view>
+            <view class="pri">¥{{item.combinePrice}}</view>
           </view>
         </view>
       </view>
       <view class="place">
         <image class="site-icon" src="../static/images/ic_home_location_2.png" />
-        <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.site}}</view>
+        <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
       </view>
     </view>
 
@@ -55,7 +59,8 @@ export default {
       load_more: false, //加载更多图案
       no_more: false, //没有更多数据
       is_empty: false, //无数据，显示空页面
-      page: 0,
+      start: 0,
+      offset:10,
       contentList: [] //页面列表数据
     };
   },
@@ -66,43 +71,79 @@ export default {
   },
   onShow() {
     this.page = 0;
-    this.getAdMachineList(1, true);
+    this.getAdMachineList(0, true);
   },
   methods: {
-    async getAdMachineList(page, refresh) {
-      let list = [];
+    async getAdMachineList(start, refresh) {
       try {
-        const json = await this.$server.getMachinesList({
-          start: page || 0,
-          offset: 10
-        });
-        list = json.data.data.item;
-      } catch (err) {
-        list = [];
+        const payload = {
+          longitude: '',
+          latitude: '',
+          labelType: '',
+          machineName: '',
+          screenType: '',
+          province: '',
+          city: '',
+          district: '',
+          start,
+          offset: this.offset,
+        }
+        console.log(payload)
+        const res = await this.$server.getMachinesList(payload)
+
+        if (refresh) {
+          this.contentList = res.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...res.data.data.item];
+        }
+        if(res.data.data.isNext === 0){
+          //没有更多数据
+          this.no_more = true;
+        }else{			
+          this.no_more = false;
+        }
+        if (this.start === 0 && res.data.data.isNext === 0 && response.data.data.item.length === 0) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
+      } catch (error) {
+        
       }
-      if (refresh) {
-        this.contentList = list;
-      } else {
-        this.contentList = [...this.contentList, ...list];
-      }
-      if (list.length < 10 && list.length != 0) {
-        //没有更多数据
-        this.no_more = true;
-      } else {
-        this.no_more = false;
-      }
-      if (this.page == 0 && list.length == 0) {
-        //暂无数据
-        this.is_empty = true;
-      } else {
-        this.is_empty = false;
-      }
+      // let list = [];
+      // try {
+      //   const json = await this.$server.getMachinesList({
+      //     start: page || 0,
+      //     offset: 10
+      //   });
+      //   list = json.data.data.item;
+      // } catch (err) {
+      //   list = [];
+      // }
+      // if (refresh) {
+      //   this.contentList = list;
+      // } else {
+      //   this.contentList = [...this.contentList, ...list];
+      // }
+      // if (list.length < 10 && list.length != 0) {
+      //   //没有更多数据
+      //   this.no_more = true;
+      // } else {
+      //   this.no_more = false;
+      // }
+      // if (this.page == 0 && list.length == 0) {
+      //   //暂无数据
+      //   this.is_empty = true;
+      // } else {
+      //   this.is_empty = false;
+      // }
     },
     /**
      * 页面相关事件处理函数--监听用户下拉动作
      */
     onPullDownRefresh() {
-      this.page = 0;
+      this.start = 0;
       this.getAdMachineList(0, true);
       setTimeout(() => {
         uni.stopPullDownRefresh();
@@ -114,8 +155,8 @@ export default {
      */
     onReachBottom() {
       if (!this.no_more && !this.is_empty) {
-        this.page += 1;
-        this.getAdMachineList(this.page, false);
+        this.start += 1;
+        this.getAdMachineList(this.start, false);
       }
     }
   }

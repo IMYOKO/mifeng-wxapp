@@ -19,7 +19,7 @@
         <view class = "m-ct">
           <view class = "m-ct-top">
             <view class = "name">{{item.materialName}}</view>
-            <!-- <view class = "mark">{{item.order_items[0].advertise_machine.advertise_machine_label_type.name}}</view> -->
+            <view class = "mark">{{item.labelType}}</view>
           </view>
           <view  class = "m-ct-middle">
             <view class = "text">总投放天数</view>
@@ -260,10 +260,10 @@ export default {
       }
       //没有密码
       if(this.pay_type === 2 || this.pay_type == 3){   //余额  积分支付
-        if(!this.userInfo.has_password){
-            this.$CommonJs.pathTo('/pages-user/setPayPass')
-            return;
-          }
+        // if(!this.userInfo.has_password){
+        //   this.$CommonJs.pathTo('/pages-user/setPayPass')
+        //   return;
+        // }
         this.showPay = true;
       }else if(this.pay_type === 1){     // 微信支付
         //发起支付通信

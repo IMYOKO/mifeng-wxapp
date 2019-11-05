@@ -25,7 +25,7 @@
       <view class = "item" v-for="(item, index) in machineList" :key="index">
         <image class = "logo" :src='item.logo' />
         <view class = "ct">
-          <view class = "top">机器编号：{{item.mac}}</view>
+          <view class = "top">{{item.materialName}}</view>
           <view class = "middle">
             <view class = "place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
             <view class = "pri" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5">¥{{item.price}}／天</view>
@@ -71,7 +71,7 @@
       <input type="number" style="min-height: 0; max-height: 0; color: #fff;" cursor-spacing = "150rpx"  password :maxlength="passLength" v-model="payPassValue"  @focus="isFocus" @input="inputPayPass" @blur="blurPayPass" />
         <view class = "num">
           <block v-for="(item, index) in passLength" :key="index">
-            <input class = "num-item" password cursor-spacing="150rpx" value="{{payPassValue.length>=index+1?payPassValue[index]:''}}" disabled  @tap.stop ="clickPassInput" />
+            <input class = "num-item" password cursor-spacing="150rpx" :value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop ="clickPassInput" />
           </block>
         </view>
       <view class = "forget" @tap="clickForget">忘记支付密码？</view>
@@ -147,6 +147,7 @@ export default {
     },
     //点击聚焦
     clickPassInput(){
+      console.log('sdsd');
       this.isFocus = true;
     },
     clickHidden(){
@@ -168,10 +169,10 @@ export default {
     async clickSureOrder(){
       //没有密码
       if(this.pay_type === 2|| this.pay_type === 3){   //余额  积分支付
-        if(!this.userInfo.has_password){
-          this.$CommonJs.pathTo('/pages-user/setPayPass')
-          return;
-        }
+        // if(!this.userInfo.has_password){
+        //   this.$CommonJs.pathTo('/pages-user/setPayPass')
+        //   return;
+        // }
         this.showPay = true;
       }else if(this.pay_type === 1){     // 微信支付
         //发起支付通信

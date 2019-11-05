@@ -29,7 +29,9 @@ export default {
     },
     //返回首页
     clickBack(){
-      this.$CommonJs.pathTo('/pages/index')
+      uni.switchTab({
+        url:'/pages/index'
+      })
     }
   }
 }

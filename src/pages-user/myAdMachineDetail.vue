@@ -8,22 +8,26 @@
           <image class = "logo" :src="adInfo.logo" />
           <view class = "content">
             <view class = "top">
-              <view class = "name">{{adInfo.name}}</view>
-              <view class = "mark">{{adInfo.advertise_machine_label_type.name}}</view>
+              <view class = "name">{{adInfo.materialName}}</view>
+              <view class = "mark">{{adInfo.labelType}}</view>
             </view>
             <view class = "middle">
               <view class = "text">图片价格/天</view>
-              <view class = "pri">¥{{adInfo.image_price}}</view>
+              <view class = "pri">¥{{adInfo.imagePrice}}</view>
+            </view>
+            <view class="bottom">
+              <view class="text">视频价格/天</view>
+              <view class="pri">¥{{item.videoPrice}}</view>
             </view>
             <view class ="bottom">
               <view class = "text">视频组合价格/15s/天</view>
-              <view class = "pri">¥{{adInfo.combine_price}}</view>
+              <view class = "pri">¥{{adInfo.combinePrice}}</view>
             </view>
           </view>
         </view>
         <view class = "place">
           <image class  = "site-icon" src = "../static/images/ic_home_location_2.png" />
-          <view class = "place">{{adInfo.province}}{{adInfo.city}}{{adInfo.district}}{{adInfo.site}}</view>
+          <view class = "place">{{adInfo.province}}{{adInfo.city}}{{adInfo.district}}{{adInfo.address}}</view>
         </view>
       </view>
       <view class = "note">在播广告</view>
