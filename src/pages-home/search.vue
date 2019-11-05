@@ -28,22 +28,22 @@
         <image class = "logo" :src='item.logo' />
         <view class = "content">
           <view class = "top">
-            <view class = "name">{{item.name}}</view>
-            <view class = "mark">{{item.advertise_machine_label_type.name}}</view>
+            <view class = "name">{{item.machineName}}</view>
+            <view class = "mark">{{item.labelType}}</view>
           </view>
           <view class = "middle">
             <view class = "text">图片价格/天</view>
-            <view class = "pri">¥{{item.image_price}}</view>
+            <view class = "pri">¥{{item.imagePrice}}</view>
           </view>
           <view class ="bottom">
             <view class = "text">视频组合价格/15s/天</view>
-            <view class = "pri">¥{{item.combine_price}}</view>
+            <view class = "pri">¥{{item.videoPrice}}</view>
           </view>
         </view>
       </view>
       <view class = "place">
         <image class  = "site-icon" src = "../static/images/ic_home_location_2.png" />
-        <view class = "place">{{item.province}}{{item.city}}{{item.district}}{{item.site}}</view>
+        <view class = "place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
         <image class = "select-icon" src = "../static/images/ic_home_select.png" v-if="item.my_cart" />
         <image class = "select-icon" src = "../static/images/ic_home_not_select.png" v-else />
       </view>
@@ -81,13 +81,22 @@ export default {
       adMachineId:[],     //选择的广告机id
     }
   },
+  onShow() {
+    this.getCartList();
+  },
   methods: {
     //点击广告机
-    clickItem(e){
-      console.log(e);
-      let id = e.currentTarget.dataset.id;
-      let index = e.currentTarget.dataset.index;
-      let mycart = e.currentTarget.dataset.mycart;
+    clickItem(id, index, my_cart){
+      let mycart = my_cart;
+      if(mycart === 1){
+        //已选取
+        let flagIndex = this.adMachineId.indexOf(id);
+        this.adMachineId.splice(flagIndex,1);
+        this.contentList[index].my_cart = 0;
+      }else{
+        this.adMachineId.push(id);
+        this.contentList[index].my_cart = 1;
+      }
     },
     //点击热门
     clickHotItem(e){
@@ -134,10 +143,11 @@ export default {
       // wx.setStorageSync('history',history);
     },
     //点击搜索历史列表
-    clickHistoryItem(e){
+    clickHistoryItem(item){
+      console.log(e)
       this.isSearch = true;
-      this.name = e.currentTarget.dataset.name;
-      this.getMachineList(1,true);
+      this.name = item.machineName;
+      this.getMachineList(0,true);
     },
     //确定
     async clickSure(){
@@ -150,29 +160,38 @@ export default {
       //   method:'POST',
       //   data:{ids:this.adMachineId}
       // })
-      wepy.setStorageSync('selectDate',[]); 
+      uni.setStorageSync('adMachineId', this.adMachineId);
+      uni.setStorageSync('selectDate',[]); 
       await tip.success('添加成功');
       uni.navigateBack();
     },
     //获取购物车的广告机
     async getCartList(){
-      const json = await request({
-        url:'users/advertise_machine_cart_items',
-        method:'GET',
+      const contentList = uni.getStorageSync('adMachineId') || [];
+      this.contentList = contentList;
+
+      contentList.map(item => {
+        if(this.adMachineId.indexOf(item.id) == -1) {
+          this.adMachineId.push(item.id);
+        }
       })
-      for(var i in json.data){
-        if(this.adMachineId.indexOf(json.data[i].id) == -1){
-            this.adMachineId.push(json.data[i].id);
-          }
-      }
-      this.$apply();
+      // const json = await request({
+      //   url:'users/advertise_machine_cart_items',
+      //   method:'GET',
+      // })
+      // for(var i in json.data){
+      //   if(this.adMachineId.indexOf(json.data[i].id) == -1){
+      //       this.adMachineId.push(json.data[i].id);
+      //     }
+      // }
+      // this.$apply();
     },
     //获取广告机列表
     async getMachineList (start, refresh) {
       try {
         const payload = {
-          longitude: this.longitude,
-          latitude: this.latitude,
+          longitude: '',
+          latitude: '',
           labelType: '',
           machineName: this.name,
           screenType: '',
@@ -184,16 +203,6 @@ export default {
         }
         console.log(payload)
         const res = await this.$server.getMachinesList(payload)
-        if(this.advertise_machine_label_type_index === -1){
-          //全部的时候取出所有已选择的广告机id
-          for(var i in res.data.data.item){
-            if(res.data.data.item[i].my_cart === 1){
-              if(this.adMachineId.indexOf(res.data.data.item[i].id) === -1){
-                this.adMachineId.push(res.data.data.item[i].id);
-              }
-            }
-          }
-        }
         if (refresh) {
           this.contentList = res.data.data.item;
         } else {
@@ -217,11 +226,7 @@ export default {
     },
     //获取热门
     async getHostList(){
-      const json = await request({
-        url:'search_values',
-        method:'GET'
-      })
-      this.hotList = json.data;
+      this.hotList = []
     }
   },
   components: {

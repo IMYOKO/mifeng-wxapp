@@ -16,7 +16,7 @@
       <view class="item-ct bd-bt" v-for="(item, index) in machineCartList" :key="index">
         <image class="logo" :src="item.logo" />
         <view class="middle">
-          <view class="name">机器编号:{{item.mac}}</view>
+          <view class="name">{{item.machineName}}</view>
           <view class="place">
             {{item.province}}{{item.city}}{{item.district}}{{item.address}}
           </view>

@@ -1,27 +1,29 @@
 <template>
   <view class="applyCoop">
-    <view class="banner-wrapper">
-			<swiper class="swiper"
-				:indicator-dots="indicatorDots"
-				:indicator-active-color="'#FFD602'"
-				:autoplay="autoplay"
-				:interval="interval"
-				:duration="duration"
-			>
-				<swiper-item class="swiper-item" v-for="(item, index) in bannerItem" :key='index' @click="goWebView(item.img_path)">
-					<image :src="item.img_path" class="image" />
-				</swiper-item>
-			</swiper>
-		</view>
-    <view class="item">
-      <view class="tit">联系人</view>
-      <input type="text" maxlength="6" name="linkman"/>
-    </view>
-    <view class="item">
-      <view class="tit">联系电话</view>
-      <input type="number"  maxlength="11" name="phone"/>
-    </view>
-    <button class="btn"  @click="submit">提交申请</button>
+    <form bindsubmit="formSubmit" bindreset="formReset">
+      <view class="banner-wrapper">
+        <swiper class="swiper"
+          :indicator-dots="indicatorDots"
+          :indicator-active-color="'#FFD602'"
+          :autoplay="autoplay"
+          :interval="interval"
+          :duration="duration"
+        >
+          <swiper-item class="swiper-item" v-for="(item, index) in bannerItem" :key='index' @click="goWebView(item)">
+            <image :src="item.imageUrl" class="image" />
+          </swiper-item>
+        </swiper>
+      </view>
+      <view class="item">
+        <view class="tit">联系人</view>
+        <input type="text" maxlength="6" name="linkman"/>
+      </view>
+      <view class="item">
+        <view class="tit">联系电话</view>
+        <input type="number"  maxlength="11" name="phone"/>
+      </view>
+      <button class="btn"  form-type="submit">提交申请</button>
+    </form>
   </view>
 </template>
 
@@ -34,20 +36,52 @@ export default {
 			autoplay: true,
 			interval: 3000,
 			duration: 500,
-			bannerItem: [
-				{
-					img_path: 'http://howtos.makeblock.com/945d9a60ca4411e9a54effa3ca0c4aa7'
-				},
-				{
-					img_path: 'http://howtos.makeblock.com/9a37bd60ca4111e9a54effa3ca0c4aa7'
-				}
-			]
+			bannerItem: []
 		}
   },
+  onLoad() {
+    //获取轮播图
+    this.getBanner();
+  },
   methods: {
-    submit () {
+    goWebView (item) {
+			if (item.linkType === 0) {
+				return
+			}
+			if (item.linkType === 1) {
+				this.$CommonJs.pathTo('/pages-home/webView?src=' + item.linkUrl)
+				return
+			}
+			if (item.linkType === 2) {
+				return
+			}
+			if (item.linkType === 3) {
+				return
+			}
+		},
+    async getBanner (payload) {
+			const res = await this.$server.getBanner(payload)
+			this.bannerItem = res.data.data.banner
+		},
+    async formSubmit(e) {
+      let linkman = e.detail.value.linkman;
+      let phone = e.detail.value.phone;
+      let myreg = /^[1][0-9]{10}$/;
+      if(!linkman){
+        tip.toast('请输入联系人');
+        return;
+      }
+      if(!myreg.test(phone)){
+        tip.toast('请输入合法的手机号码');
+        return;
+      }
+      const payload = {
+        userName: linkman,
+        userPhone: phone,
+      }
+      await this.$server.addCollaboratesApply(payload)
       this.$CommonJs.pathTo('/pages-home/applySuccess')
-    }
+    },
   }
 }
 </script>

@@ -12,12 +12,20 @@
 
 <script>
 export default {
+  data () {
+    return {
+      id: -1
+    }
+  },
+  onLoad(options) {
+    this.id = options.id;
+  },
   methods: {
     //查看订单
     clickSee(){
-      // wepy.navigateTo({
-      //   url:'./adDetail?id='+this.id
-      // })
+      uni.navigateTo({
+        url:'/pages-advert/adDetail?id='+this.id
+      })
     },
     //返回首页
     clickBack(){

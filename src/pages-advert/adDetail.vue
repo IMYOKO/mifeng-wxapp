@@ -5,46 +5,46 @@
     <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-if = "orderInfo.order_show_status == 'market_process'" />
     <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-if = "orderInfo.order_show_status == 'market_finish'" />
     <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-if = "orderInfo.order_show_status == 'is_closed'" />
-    <view class = "tit">{{orderInfo.name}}</view>
+    <!-- <view class = "tit">{{orderInfo.name}}</view> -->
     <view class = "time">
       <view class = "time-selectet" @tap  ="clickDate">
         <view class = "text">投放时间</view>
-        <view class ="num">总天数（{{orderInfo.to_dates.length}}）</view>
+        <view class ="num">总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
         <image class = "icon" src = "../static/images/ic_home_launch_time_1.png" v-if = "dateOpen" />
         <image class = "icon" src = "../static/images/ic_home_launch_time_2.png" v-else />
       </view>
-      <view class = "time-view" v-if = "dateOpen">
-        <view class = "time-item" v-for="(item,index) in orderInfo.to_dates" :key = "index">{{item}}</view>
+      <view class = "time-view" v-if ="dateOpen">
+        <view class = "time-item" v-for="(item,index) in orderInfo.putDay" :key ="index">{{item}}</view>
       </view>
     </view>
     <view class = "matter">
       <view class ="top">
         <view class = "name">广告素材</view>
-        <view class = "text">{{orderInfo.material.name}}</view>
+        <view class = "text">{{orderInfo.materialName}}</view>
       </view>
-      <video src="orderInfo.material.video" class = "video" v-if = "orderInfo.material.type == 2"></video>
-      <image class = "img" src= "orderInfo.material.logo" />
+      <video :src="orderInfo.video" class = "video" v-if ="orderInfo.materialType === 3 || orderInfo.materialType === 4 || orderInfo.materialType === 5"></video>
+      <image class = "img" :src="orderInfo.logo" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5" />
     </view>
     <view class = "machine">
       <view class = "name">广告机</view>
-      <view class = "item" v-for = "(item, index) in orderInfo.order_items" :key = "index">
-        <image class = "logo" src = "item.advertise_machine.logo" />
+      <view class = "item" v-for ="(item, index) in machineList" :key ="index">
+        <image class = "logo" :src='item.logo' />
         <view class = "ct">
-          <view class = "top">{{item.advertise_machine.name}}</view>
+          <view class = "top">机器编号：{{item.mac}}</view>
           <view class = "middle">
-            <view class = "place">{{item.advertise_machine.province}}{{item.advertise_machine.city}}{{item.advertise_machine.district}}{{item.advertise_machine.site}}广告机</view>
-            <view class = "pri" v-if = "orderInfo.material.type == 1">¥{{item.advertise_machine.image_price}}／天</view>
-            <view class = "pri" v-if = "orderInfo.material.type == 2">¥{{item.advertise_machine.combine_price}}／15s／天</view>
+            <view class = "place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
+            <view class = "pri" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5">¥{{item.price}}／天</view>
+            <view class = "pri" v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4">¥{{item.price}}／15s／天</view>
           </view>
           <view class = "bottom">
-            <view class ="mark">{{item.advertise_machine.advertise_machine_label_type.name}}</view>
-            <view class = "num">×{{item.amount}}</view>
+            <view class ="mark">{{item.lableType}}</view>
+            <view class = "num">×{{item.price}}</view>
           </view>
         </view>
       </view>
       <view class = "total">
         <view class = "text">合计</view>
-        <view class = "pri">¥{{orderInfo.total_amount}}</view>
+        <view class = "pri">¥{{orderInfo.amount ? orderInfo.amount : 0}}</view>
       </view>
     </view>
     <view class = "order-info">
@@ -58,37 +58,37 @@
         <view class = "line none"></view>
         <view class = "item">
           <view class = "info-tit">订单编号</view>
-          <view class = "text">{{orderInfo.no}}</view>
+          <view class = "text">{{orderInfo.orderno}}</view>
         </view>
       </view>
       <view class = "info">
         <view class = "line none"></view>
         <view class = "item">
           <view class = "info-tit">创建时间</view>
-          <view class = "text">{{orderInfo.created_at}}</view>
+          <view class = "text">{{orderInfo.createTime}}</view>
         </view>
       </view>
-      <block v-if = "orderInfo.order_show_status == 'wait_market' || orderInfo.order_show_status == 'market_process' || orderInfo.order_show_status == 'market_finish'">
+      <block v-if ="orderInfo.status == 0 || orderInfo.status == 2 || orderInfo.status == 3">
         <view class = "info">
           <view class = "line none"></view>
           <view class = "item">
             <view class = "info-tit">支付时间</view>
-            <view class = "text">{{orderInfo.paid_at}}</view>
+            <view class = "text">{{orderInfo.payTime}}</view>
           </view>
         </view>
         <view class = "info">
           <view class = "line none"></view>
           <view class = "item">
             <view class = "info-tit">支付方式</view>
-            <view class = "text" v-if = "orderInfo.pay_type == 2">余额支付</view>
-            <view class = "text" v-if = "orderInfo.pay_type == 3">微信支付</view>
-            <view class = "text" v-if = "orderInfo.pay_type == 4">积分支付</view>
+            <view class = "text" v-if="orderInfo.payType === 2">余额支付</view>
+            <view class = "text" v-if="orderInfo.payType === 1">微信支付</view>
+            <view class = "text" v-if="orderInfo.payType === 3">积分支付</view>
           </view>
         </view>
       </block>
     </view>
-    <view class = "blank" v-if = "orderInfo.order_show_status == 'wait_pay'"></view>
-    <view class = "btn-view" v-if = "orderInfo.order_show_status == 'wait_pay'">
+    <view class = "blank" v-if ="orderInfo.status === 0"></view>
+    <view class = "btn-view" v-if ="orderInfo.order_show_status === 0">
       <view class = "btn cancel" @tap = "clickCancel">取消订单</view>
       <view class = "btn" @tap = "clickPay">立即支付</view>
     </view>
@@ -171,7 +171,7 @@ export default {
       dateOpen:false,
       showPop1:false,
       showPop2:false,
-      pay_type:3,       //支付类型，1为未选， 2，3，4为余额，微信，积分
+      pay_type:2,       // 支付类型，0为未选 1-微信、2-余额、3-积分
       userInfo:null,
       showPay:false,
       isFocus:true,
@@ -180,7 +180,6 @@ export default {
       inputBan:false,
     }
   },
-
   onLoad(options) {
     this.id = options.id;
     this.getOrderInfo();
@@ -190,14 +189,18 @@ export default {
   },
   methods: {
     async getOrderInfo(){
-      const json = await request({
-        url:'orders/show',
-        method:'GET',
-        data:{
-          id:this.id
+      try {
+        const payload = {
+          orderId: this.id
         }
-      })
-      this.orderInfo = json.data;
+        const res = await this.$server.getMaterialsOrderDetail(payload)
+        const orderInfo = res.data.data.materialDetail
+        orderInfo.putDay = orderInfo.putDay.split(',')
+        this.orderInfo = orderInfo
+        this.machineList = res.data.data.machineList
+      } catch (error) {
+        
+      }
     },
     //取消订单
     async clickCancel(){
@@ -215,7 +218,7 @@ export default {
     inputPayPass(e){
       this.payPassValue = e.detail.value;
       let length = e.detail.value.length
-      if(length == 6){
+      if(length === 6){
         if(this.inputBan){
           return;
         }
@@ -225,13 +228,11 @@ export default {
     },
     //失去焦点
     blurPayPass(){
-      let that = this;
-      that.isFocus = false;
+      this.isFocus = false;
     },
     //点击聚焦
     clickPassInput(){
-      let that = this;
-      that.isFocus = true;
+      this.isFocus = true;
     },
     clickHidden(){
       this.showPop1 = false;

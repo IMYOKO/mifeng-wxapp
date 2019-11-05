@@ -48,7 +48,7 @@
         <view class = "item" :class="pay_type === 2 ? 'balance' : ''" @tap="clickPayType(2)">
           <image class ="pay-icon" src = "../static/images/ic_home_payment_wallet.png" />
           <view class = "text">余额支付</view>
-          <view class = "pri">（余额：¥{{amountYe}}）</view>
+          <view class = "pri">（余额：¥{{money}}）</view>
         </view>
         <view class = "item" :class="pay_type === 1 ? 'balance' : ''" @tap ="clickPayType(1)">
           <image class ="pay-icon wx" src = "../static/images/ic_home_payment_wechat.png" />
@@ -57,7 +57,7 @@
         <view class = "item" :class="pay_type === 3?'balance':''" @tap ="clickPayType(3)">
           <image class ="pay-icon jf" src = "../static/images/ic_home_payment_integral.png" />
           <view class = "text">积分支付</view>
-          <view class = "pri">（积分：{{amountKy}}）</view>
+          <view class = "pri">（积分：{{integral}}）</view>
         </view>
       </view>
     </view>
@@ -68,10 +68,10 @@
         <view class = "name">请输入支付密码</view>
         <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap="clickHidden" />
       </view>
-      <!-- <input type="number" style="min-height: 0; max-height: 0; color: #fff;" cursor-spacing = "150rpx"  password :maxlength="passLength" v-model="payPassValue"  @focus="isFocus" @input="inputPayPass" @blur="blurPayPass" /> -->
+      <input type="number" style="min-height: 0; max-height: 0; color: #fff;" cursor-spacing = "150rpx"  password :maxlength="passLength" v-model="payPassValue"  @focus="isFocus" @input="inputPayPass" @blur="blurPayPass" />
         <view class = "num">
           <block v-for="(item, index) in passLength" :key="index">
-            <!-- <input class = "num-item" password cursor-spacing="150rpx" value="{{payPassValue.length>=index+1?payPassValue[index]:''}}" disabled  @tap.stop ="clickPassInput" /> -->
+            <input class = "num-item" password cursor-spacing="150rpx" value="{{payPassValue.length>=index+1?payPassValue[index]:''}}" disabled  @tap.stop ="clickPassInput" />
           </block>
         </view>
       <view class = "forget" @tap="clickForget">忘记支付密码？</view>
@@ -80,6 +80,9 @@
 </template>
 
 <script>
+import {
+  USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
+} from '../utils/constant';
 export default {
   data () {
     return {
@@ -94,28 +97,28 @@ export default {
       pay_type: 2,      // 支付类型，0为未选 1-微信、2-余额、3-积分
       userInfo: null,
       machineList: [],
-      amountYe: 0,
-      amountKy: 0,
+      money: 0,
+      integral: 0,
     }
   },
   async onLoad(options) {
     this.id = options.id;
+    this.userInfo = uni.getStorageSync(USER_INFO) || null;
     //获取页面信息
     await this.getUserAssets()
     await this.getUserIntegral()
     this.getOrderInfo();
-
   },
   methods: {
     //获取用户信息
     async getUserAssets() {
       const res = await this.$server.getUserAssets();
-      this.amountYe = res.data.data.amountYe;
+      this.money = res.data.data.amountKy;
     },
     //获取用户信息
     async getUserIntegral() {
       const res = await this.$server.getUserIntegral();
-      this.amountKy = res.data.data.amountKy;
+      this.integral = res.data.data.amountKy;
     },
     clickDate () {
       this.dateOpen = !this.dateOpen;
@@ -167,13 +170,13 @@ export default {
     },
     async clickSureOrder(){
       //没有密码
-      if(this.pay_type === 1|| this.pay_type === 3){   //余额  积分支付
+      if(this.pay_type === 2|| this.pay_type === 3){   //余额  积分支付
         if(!this.userInfo.has_password){
           this.$CommonJs.pathTo('/pages-user/setPayPass')
           return;
         }
         this.showPay = true;
-      }else if(this.pay_type === 2){     // 微信支付
+      }else if(this.pay_type === 1){     // 微信支付
         //发起支付通信
         const payload = {
           orderId: this.id,
@@ -216,7 +219,7 @@ export default {
       await this.$server.orderPay(payload).then(res => {
         this.payPassValue = '';
         uni.redirectTo({
-          url:'./paySuccess?id='+this.id,
+          url:'/pages-home/paySuccess?id='+this.id,
         })
       })
       .catch(err=>{
@@ -239,7 +242,7 @@ export default {
                 }else if(res.cancel){
                   //忘记密码
                   uni.navigateTo({
-                    url:'updatePayPass'
+                    url:'/pages-home/updatePayPass'
                   })
                 }
               }
