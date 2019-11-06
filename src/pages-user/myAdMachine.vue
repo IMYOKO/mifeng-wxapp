@@ -4,12 +4,12 @@
       <image
         class="status"
         src="../static/images/pic_my_advertising_machine_on_line.png"
-        v-if="item.online_status == 'online'"
+        v-if="item.onlineStatus === 0"
       />
       <image
         class="status"
         src="../static/images/pic_my_advertising_machine_off_line.png"
-        v-else-if="item.online_status == 'offline'"
+        v-else-if="item.onlineStatus === 1"
       />
       <view class="ct">
         <image class="logo" :src="item.logo" />
@@ -77,19 +77,10 @@ export default {
     async getAdMachineList(start, refresh) {
       try {
         const payload = {
-          longitude: '',
-          latitude: '',
-          labelType: '',
-          machineName: '',
-          screenType: '',
-          province: '',
-          city: '',
-          district: '',
           start,
           offset: this.offset,
         }
-        console.log(payload)
-        const res = await this.$server.getMachinesList(payload)
+        const res = await this.$server.getMyMachinesList(payload)
 
         if (refresh) {
           this.contentList = res.data.data.item;
@@ -111,33 +102,6 @@ export default {
       } catch (error) {
         
       }
-      // let list = [];
-      // try {
-      //   const json = await this.$server.getMachinesList({
-      //     start: page || 0,
-      //     offset: 10
-      //   });
-      //   list = json.data.data.item;
-      // } catch (err) {
-      //   list = [];
-      // }
-      // if (refresh) {
-      //   this.contentList = list;
-      // } else {
-      //   this.contentList = [...this.contentList, ...list];
-      // }
-      // if (list.length < 10 && list.length != 0) {
-      //   //没有更多数据
-      //   this.no_more = true;
-      // } else {
-      //   this.no_more = false;
-      // }
-      // if (this.page == 0 && list.length == 0) {
-      //   //暂无数据
-      //   this.is_empty = true;
-      // } else {
-      //   this.is_empty = false;
-      // }
     },
     /**
      * 页面相关事件处理函数--监听用户下拉动作

@@ -1,10 +1,10 @@
 <template>
   <view>
-    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_paid.png" v-if = "orderInfo.order_show_status == 'wait_pay'" />
-    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_put_on.png" v-if = "orderInfo.order_show_status == 'wait_market'" />
-    <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-if = "orderInfo.order_show_status == 'market_process'" />
-    <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-if = "orderInfo.order_show_status == 'market_finish'" />
-    <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-if = "orderInfo.order_show_status == 'is_closed'" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_paid.png" v-if = "orderInfo.status === 0" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_to_be_put_on.png" v-if = "orderInfo.status === 1" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_In_the_launch.png" v-if = "orderInfo.status === 2" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_put_to_the_end.png" v-if = "orderInfo.status === 3" />
+    <image class = "top-img"  src = "../static/images/pic_advertisement_closed.png" v-if = "orderInfo.status === 4" />
     <!-- <view class = "tit">{{orderInfo.name}}</view> -->
     <view class = "time">
       <view class = "time-selectet" @tap  ="clickDate">
@@ -88,7 +88,7 @@
       </block>
     </view>
     <view class = "blank" v-if ="orderInfo.status === 0"></view>
-    <view class = "btn-view" v-if ="orderInfo.order_show_status === 0">
+    <view class = "btn-view" v-if ="orderInfo.status === 0">
       <view class = "btn cancel" @tap = "clickCancel">取消订单</view>
       <view class = "btn" @tap = "clickPay">立即支付</view>
     </view>
@@ -97,15 +97,15 @@
       <view class = "title">付款详情</view>
       <view class = "item" @tap = "clickSelectPayWay">
         <view class = "ll">付款方式</view>
-        <block v-if = "pay_type == 3">
+        <block v-if = "pay_type === 1">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_wechat.png" />
           <view class = "pay-text">微信支付</view>
         </block>
-        <block v-if = "pay_type == 2">
+        <block v-if = "pay_type === 2">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_wallet.png" />
           <view class = "pay-text">余额支付</view>
         </block>
-        <block v-if = "pay_type == 4">
+        <block v-if = "pay_type === 3">
           <image class = "pay-icon" src= "../static/images/ic_home_payment_integral.png" />
           <view class = "pay-text">积分支付</view>
         </block>
@@ -113,7 +113,7 @@
       </view>
       <view class = "item">
         <view class = "ll">需付款</view>
-        <view class = "pri">{{orderInfo.total_amount}}元</view>
+        <view class = "pri">{{orderInfo.amount}}元</view>
       </view>
       <button class = "btn" @tap = "clickConfirmPay">确认付款</button>
     </view>
@@ -122,17 +122,17 @@
         <image class = "back" src = "../static/images/ic_my_payment_return_3.png" @tap = "clickPopBack" />
         <view class = "top-tit">选择付款方式</view>
       </view>
-      <view class = "ct" @tap = "clickPayWay(3)">
+      <view class = "ct" @tap = "clickPayWay(1)">
         <image class = "ct-icon" src = "../static/images/ic_home_payment_wechat.png" />
         <view class = "ct-text">微信支付</view>
       </view>
-      <view class = "ct" :class="orderInfo.total_amount>userInfo.money?'grey':''" @tap = "clickPayWay(2)">
+      <view class = "ct" :class="orderInfo.amount>money?'grey':''" @tap = "clickPayWay(2)">
         <image class = "ct-icon" src = "../static/images/ic_home_payment_wallet.png" />
-        <view class = "ct-text">余额支付（余额：¥{{userInfo.money}}）</view>
+        <view class = "ct-text">余额支付（余额：¥{{money}}）</view>
       </view>
-      <view class = "ct" :class="orderInfo.total_amount>userInfo.integral?'grey':''" @tap = "clickPayWay(4)">
+      <view class = "ct" :class="orderInfo.amount>integral?'grey':''" @tap = "clickPayWay(3)">
         <image class = "ct-icon" src = "../static/images/ic_home_payment_integral.png" />
-        <view class = "ct-text">积分支付（积分：{{userInfo.integral}}）</view>
+        <view class = "ct-text">积分支付（积分：{{integral}}）</view>
       </view>
 
     </view>
@@ -143,10 +143,10 @@
         <view class = "name">请输入支付密码</view>
         <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap = "clickHidden" />
       </view>
-      <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password maxlength = "passLength"  value = "payPassValue"  focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass" />
+      <input type="number" style="min-height: 0;max-height: 0;color: #fff;" cursor-spacing = "150rpx"  password :maxlength = "passLength"  :value = "payPassValue"  :focus = "isFocus" @input = "inputPayPass" @blur = "blurPayPass"/>
         <view class = "num">
           <block v-for = "(item, index) in passLength" :key ="index">
-            <input class = "num-item" password cursor-spacing = "150rpx" value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput" />
+            <input class = "num-item" password cursor-spacing = "150rpx" :value="payPassValue.length>=index+1?payPassValue[index]:''" disabled  @tap.stop = "clickPassInput" />
           </block>
         </view>
       <view class = "forget">忘记支付密码？</view>
@@ -178,16 +178,30 @@ export default {
       passLength:6,
       payPassValue:'',   //支付密码输入内容
       inputBan:false,
+      money: 0, // 余额
+      integral: 0, // 积分
     }
   },
   onLoad(options) {
     this.id = options.id;
     this.getOrderInfo();
   },
-  onShow(){
+  async onShow(){
     this.userInfo = uni.getStorageSync(USER_INFO) || null;
+    await this.getUserAssets()
+    await this.getUserIntegral()
   },
   methods: {
+    //获取用户余额
+    async getUserAssets() {
+      const res = await this.$server.getUserAssets();
+      this.money = res.data.data.amountKy;
+    },
+    //获取用户积分
+    async getUserIntegral() {
+      const res = await this.$server.getUserIntegral();
+      this.integral = res.data.data.amountKy;
+    },
     async getOrderInfo(){
       try {
         const payload = {
@@ -205,14 +219,13 @@ export default {
     //取消订单
     async clickCancel(){
       await tip.confirm('确定要取消该订单?');
-      const json = await request({
-        url:'orders/close',
-        method:'POST',
-        data:{id:this.id}
-      })
+      const payload = {
+        orderId: this.id
+      }
+      await this.$server.orderClose(payload)
       await tip.success('已取消该订单');
       uni.switchTab({
-        url:'./advertise'
+        url:'/pages/advertise'
       })
     },
     inputPayPass(e){
@@ -245,16 +258,16 @@ export default {
     },
     //选择支付方式
     clickPayWay(pay_type){
-      if(pay_type == 2){
+      if(pay_type === 2){
         //余额支付
-        if(this.orderInfo.total_amount > this.userInfo.money){
+        if(this.orderInfo.amount > this.money){
           tip.toast('可支付余额不足');
           return;
         }
       }
-      if(pay_type == 4){
+      if(pay_type === 3){
         //积分支付
-        if(this.orderInfo.total_amount > this.userInfo.integral){
+        if(this.orderInfo.amount > this.integral){
           tip.toast('可支付积分不足');
           return;
         }
@@ -270,33 +283,28 @@ export default {
     },
     //确认付款
     async clickConfirmPay(){
-      if(this.pay_type == 1){
+      if(this.pay_type === 0){
         tip.toast('请选择支付方式');
         return;
       }
-      let that  = this;
       //没有密码
-      if(this.pay_type == 2 || this.pay_type == 4){   //余额  积分支付
-        if(!this.userInfo.has_password){
-            uni.navigateTo({
-              url:'./setPayPass'
-            })
-            return;
-          }
+      if(this.pay_type === 2 || this.pay_type == 3){   //余额  积分支付
+        // if(!this.userInfo.has_password){
+        //     uni.navigateTo({
+        //       url:'./setPayPass'
+        //     })
+        //     return;
+        //   }
         this.showPay = true;
-      }else if(this.pay_type == 3){     // 微信支付
+      }else if(this.pay_type === 1){     // 微信支付
         //发起支付通信
-        const json =  await request({
-          url:'orders/pay',
-          method:'POST',
-          loading:'',
-          data:{
-            id:this.id,
-            pay_type:this.pay_type,
-            password:this.payPassValue
-          }
-        }).then(res => {
-            that.payPassValue = '';
+        const payload = {
+          orderId: this.id,
+          payType: 1,
+        }
+        await this.$server.orderPay(payload)
+        .then(res => {
+            this.payPassValue = '';
              wx.requestPayment({
               'timeStamp': res.data.timeStamp,
               'nonceStr': res.data.nonceStr,
@@ -305,7 +313,7 @@ export default {
               'paySign': res.data.paySign,
               'success': function (res) {
                 uni.redirectTo({
-                  url:'./paySuccess?id='+that.id,
+                  url:'/pages-home/paySuccess?id='+this.id,
                 })
               },
               'fail': function (res) {
@@ -316,8 +324,8 @@ export default {
           })
           .catch(err=>{
             if(err.code != 0){
-              that.inputBan = false;
-              that.payPassValue = '';
+              this.inputBan = false;
+              this.payPassValue = '';
             }
           });
       }
@@ -332,27 +340,28 @@ export default {
     },
   },
   async callPayOut(){
-    let that  = this;
     //发起支付通信
-    const json =  await request({
-      url:'orders/pay',
-      method:'POST',
-      loading:'',
-      data:{
-        id:this.id,
-        pay_type:this.pay_type,
-        password:this.payPassValue
+    const payload = {
+        orderId: this.id,
+        payType: this.pay_type,
+        paypwd: this.payPassValue
       }
-    }).then(res => {
-        that.payPassValue = '';
+      await this.$server.orderPay(payload).then(res => {
+        this.payPassValue = '';
         uni.redirectTo({
-          url:'./paySuccess?id='+this.id,
+          url:'/pages-home/paySuccess?id='+this.payId,
+        })
+      })
+    .then(res => {
+        this.payPassValue = '';
+        uni.redirectTo({
+          url:'/pages-home/paySuccess?id='+this.id,
         })
       })
       .catch(err=>{
         if(err.code != 0){
-          that.inputBan = false;
-          that.payPassValue = '';
+          this.inputBan = false;
+          this.payPassValue = '';
           if(err.code == 40301002){
             //密码错误
             wx.showModal({
@@ -368,7 +377,7 @@ export default {
                 }else if(res.cancel){
                   //忘记密码
                   uni.navigateTo({
-                    url:'updatePayPass'
+                    url:'/pages-home/updatePayPass'
                   })
                 }
               }

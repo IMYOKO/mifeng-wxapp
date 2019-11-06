@@ -31,8 +31,6 @@
       <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">
         <view class="itembtn" :class="{'no-select': type === 0}">{{typeRange[type]}}</view>
       </picker>
-      <!-- <view class="leixing">按天投放</view>
-      <view class="leixing">霸屏投放</view> -->
     </view>
     <block v-if="type === 1 || type === 2">
       <view class="item pd mt" @click="clickChooseDate">
@@ -117,16 +115,14 @@ export default {
     },
     //选择广告机
     clickChooseMachine (option) {
-      console.log(option)
       this.$CommonJs.pathTo('/pages-home/chooseAdMachine')
     },
     //选择时间
     clickChooseDate () {
-      this.$CommonJs.pathTo('/pages-home/chooseDate')
+      this.$CommonJs.pathTo('/pages-home/chooseDate?to_dates=' + this.to_dates)
     },
     // 确认投放
     clickSubmit () {
-      console.log('clickSubmit')
       this.$CommonJs.pathTo('/pages-home/postAdDetail')
     },
     getMachineCart () {

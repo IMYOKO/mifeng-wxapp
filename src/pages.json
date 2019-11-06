@@ -22,6 +22,7 @@
     {
       "root": "pages-home",
       "pages": [
+        { "path": "corp", "style": { "navigationBarTitleText": "图片裁剪" } },
         { "path": "webView", "style": { "navigationBarTitleText": "" } },
         { "path": "fxUs", "style": { "navigationBarTitleText": "发现我们" } },
         {
@@ -36,6 +37,10 @@
         {
           "path": "postAdDetail",
           "style": { "navigationBarTitleText": "发布广告详情" }
+        },
+        {
+          "path": "postFreeAd",
+          "style": { "navigationBarTitleText": "发布广告" }
         },
         {
           "path": "paySuccess",

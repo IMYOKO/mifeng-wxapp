@@ -339,6 +339,21 @@ class Api extends BasicRequest {
   getUserAdIncomeList(payload) {
     return this.POST('/api/user/getUserAdIncomeList', payload);
   }
+
+  /**
+   * 订单关闭
+   * @param {number} orderId
+   */
+  orderClose(payload) {
+    return this.POST('/api/publishAd/orderClose', payload);
+  }
+
+  /**
+   * 七牛文件上传参数
+   */
+  getQiniuParam() {
+    return this.POST('/api/dictData/getQiniuParam', {});
+  }
 }
 
 export default new Api();

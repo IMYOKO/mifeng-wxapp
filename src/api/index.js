@@ -29,6 +29,13 @@ class BasicRequest {
                 duration: 2000
               });
             }
+            if (res.data.status === 10003) {
+              uni.removeStorageSync('token')
+              uni.removeStorageSync('userInfo')
+              uni.navigateTo({
+                url:'/pages/login'
+              })
+            }
             reject(res)
           }
         },

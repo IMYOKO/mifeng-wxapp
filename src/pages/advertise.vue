@@ -349,7 +349,7 @@ export default {
                 }else if(res.cancel){
                   //忘记密码
                   uni.navigateTo({
-                    url:'updatePayPass'
+                    url:'/pages-home/updatePayPass'
                   })
                 }
               }

@@ -32,10 +32,10 @@
       </view>
       <view class = "note">在播广告</view>
       <view class = "content">
-        <view class = "ct-view" v-for="(item, index) in adInfo.materials" :key="index">
-          <video :src="item.video" class = "ct-video" v-if="item.type == 2"></video>
-          <image class = "ct-img" :class="item.type == 2 ? 'group' : ''" :src="item.logo" />
-          <view class = "tit">{{item.name}}</view>
+        <view class = "ct-view" v-for="(item, index) in materials" :key="index">
+          <video :src="item.video" class = "ct-video" v-if="item.materialType === 5"></video>
+          <image class = "ct-img" :class="item.materialType == 1 || item.materialType == 2 || item.materialType == 5 ? 'group' : ''" :src="item.logo" />
+          <view class = "tit">{{item.materialName}}</view>
         </view>
       </view>
     </scroll-view>
@@ -50,6 +50,26 @@ export default {
       id: '',
       adInfo: null,
       windowHeight: '',
+      materials: []
+    }
+  },
+  onLoad(options) {
+    this.id = options.id;
+    this.getAdInfo();
+    let systemInfo = uni.getSystemInfoSync();
+    this.windowHeight = Math.ceil(systemInfo.windowHeight/(systemInfo.windowWidth/750))
+  },
+  methods: {
+    clickPostAd(){
+      uni.navigateTo({
+        url:'/pages-home/postFreeAd?id='+this.id
+      })
+    },
+    async getAdInfo(){
+      const payload = { id: this.id }
+      const res = await this.$server.getMyMachineDetail(payload)
+      this.adInfo = res.data.machine;
+      this.materials = res.data.materialList;
     }
   }
 }

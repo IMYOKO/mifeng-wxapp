@@ -18,7 +18,7 @@
       <image class = "img2" src = "../static/images/pic_application_24.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
-
+		
 		<!-- <avatar selWidth="300upx" selHeight="300upx" @upload="myUpload" :avatarSrc="url" avatarStyle="width: 50vw;height: calc(50vw * 1920/1080);border-radius: 0;margin:0;"></avatar> -->
 	</view>
 </template>
@@ -27,6 +27,7 @@
 import { mapState, mapMutations } from 'vuex';
 import {checkRole} from '../utils/user';
 import avatar from '../component/corp';
+import qiniuUpload from '../utils/qiniuUpload';
 export default {
 	components: {
 		avatar
@@ -39,7 +40,8 @@ export default {
 			autoplay: true,
 			interval: 3000,
 			duration: 500,
-			bannerItem: []
+			bannerItem: [],
+			logo: ''
 		}
 	},
 	onLoad () {
@@ -63,6 +65,10 @@ export default {
 	methods: {
 		myUpload (option) {
 			console.log(option)
+			qiniuUpload(option.path, async (res) => {
+				this.logo = res.imageURL;
+				console.log(this.logo)
+			})
 		},
 		loadCity (longitude, latitude, site) {
 			let position  = {
