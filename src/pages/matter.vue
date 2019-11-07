@@ -18,7 +18,8 @@
         <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.materialType === 5" />
         <image class = "status" src = "../static/images/pic_material_audit.png" v-if ="item.auditStatus  === 0" />
         <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if ="item.auditStatus === 2" />
-        <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
+        <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" v-if="item.materialType === 5 || item.materialType === 1 || item.materialType === 2" :src="item.logo" />
+        <image class = "ct-img" v-if="item.materialType === 3 || item.materialType === 4" src="../static/images/pic_zhanwei_2.png" />
         <view class = "tit">{{item.materialName}}</view>
       </view>
       

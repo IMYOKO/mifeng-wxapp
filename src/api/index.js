@@ -1,4 +1,5 @@
 import configData from '../config/index'
+import tip from '../utils/tip'
 
 const defaultheader = () => {
   const token = uni.getStorageSync("token") || null
@@ -12,6 +13,7 @@ const defaultheader = () => {
 
 class BasicRequest {
   request (method, url, data = {}, headers = defaultheader()) {
+    tip.loading('请求中');
     return new Promise((reslove, reject) => {
       uni.request({
         method,
@@ -41,6 +43,9 @@ class BasicRequest {
         },
         fail: err => {
           reject(err)
+        },
+        complete: () => {
+          tip.loaded();
         }
       })
     })

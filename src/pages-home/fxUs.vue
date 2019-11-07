@@ -3,12 +3,12 @@
     <map
       class="fxUs-map"
       id="map"
-      :longitude="longitude"
-      :latitude="latitude"
+      :longitude="position.longitude"
+      :latitude="position.latitude"
       scale="11"
       :markers="markers"
       show-location
-      :style="{height: windowHeight}"
+      :style="{height: windowHeight + 'rpx'}"
     >
     </map>
   </view>
@@ -26,6 +26,7 @@ export default {
   async onLoad() {
     let systemInfo = uni.getSystemInfoSync();
     this.windowHeight = Math.ceil(systemInfo.windowHeight / (systemInfo.windowWidth / 750))
+    console.log(this.windowHeight)
     uni.getLocation({
       type: 'wgs84',
       success: (res) => {
@@ -58,20 +59,20 @@ export default {
         start: 0,
         offset: 50,
       }
-      console.log(payload)
       const res = await this.$server.getMachinesList(payload)
       const contentList = res.data.data.item;
       let arr = []
-      contentList.forEach(item => {
-        arr.push({
-          iconPath: "/images/ic_location_1.png",
-          id: i,
-          latitude: item.latitude,
-          longitude: item.longitude,
-          width: 25,
-          height: 40
-        })
-      })
+      // contentList.forEach((item, index) => {
+      //   arr.push({
+      //     iconPath: "/images/ic_location_1.png",
+      //     id: index,
+      //     latitude: item.latitude,
+      //     longitude: item.longitude,
+      //     width: 25,
+      //     height: 40
+      //   })
+      // })
+       this.markers = arr;
     }
   }
 }

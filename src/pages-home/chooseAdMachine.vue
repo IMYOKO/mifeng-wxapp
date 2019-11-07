@@ -29,7 +29,8 @@
       </view>
     </view>
     <view class="banner area-picker">
-      <view class="item" @tap="clickAll">全选</view>
+      <view class="item" @tap="clickAllNot" v-if="selectItemlength === adMachineId.length && adMachineId.length > 0">取消全选</view>
+      <view class="item" @tap="clickAll" v-else>全选</view>
       <view class="addresss" @click="showMulLinkageThreePicker">
         {{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}
       </view>
@@ -143,6 +144,7 @@ export default {
       district: '',
       themeColor: '#007AFF',
       cityPickerValueDefault: [0, 0, 1],
+      selectItemlength: 0
     };
   },
   onLoad() {
@@ -173,6 +175,12 @@ export default {
     },
     clickAll () {
       this.adMachineId = this.contentList.map(item => item.my_cart = 1)
+      this.selectItemlength = this.adMachineId.length
+    },
+    clickAllNot () {
+      this.contentList.map(item => item.my_cart = 0)
+      this.adMachineId = []
+      this.selectItemlength = 0
     },
     showMulLinkageThreePicker() {
 			this.$refs.mpvueCityPicker.show()
@@ -211,6 +219,10 @@ export default {
       //   method:'POST',
       //   data:{ids:this.adMachineId}
       // })
+      if (this.adMachineId.length === 0) {
+        tip.error('请先选择广告机');
+        return
+      }
       uni.setStorageSync('adMachineId', this.adMachineId); 
       uni.setStorageSync('selectDate',[]); 
       await tip.success('添加成功');
@@ -222,9 +234,11 @@ export default {
         let flagIndex = this.adMachineId.indexOf(mac);
         this.adMachineId.splice(flagIndex,1);
         this.contentList[index].my_cart = 0;
+        this.selectItemlength -= 1
       }else{
         this.adMachineId.push(item);
         this.contentList[index].my_cart = 1;
+        this.selectItemlength += 1
       }
     },
     async getMachineType () {
