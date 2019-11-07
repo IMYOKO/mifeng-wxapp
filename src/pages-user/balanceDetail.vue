@@ -1,16 +1,15 @@
 <template>
   <view class="balanceDetail">
     <view class="item" v-for="(item, index) in contentList" :key="index">
-      <image class="icon" v-if="item.name == '充值'" src="../static/images/ic_my_fine_etail.png" />
-      <image class="icon" v-else-if="item.name=='提成'" src="../static/images/ic_commission.png" />
+      <image class="icon" v-if="item.bussType == '充值'" src="../static/images/ic_my_fine_etail.png" />
+      <image class="icon" v-else-if="item.bussType=='提成'" src="../static/images/ic_commission.png" />
       <image class="icon" v-else src="../static/images/ic_my_consumption.png" />
       <view class="middle">
-        <view class="tit">{{item.name}}</view>
-        <view class="ct">{{item.content}}</view>
-        <view class="time">{{item.created_at}}</view>
+        <view class="tit">{{item.bussType}}</view>
+        <view class="ct">{{item.remark}}</view>
+        <view class="time">{{item.opTime}}</view>
       </view>
-      <view class="pri" v-if="item.name=='充值'">+{{item.money}}</view>
-      <view class="pri" v-else>+{{item.money}}</view>
+      <view class="pri">+{{item.amount}}</view>
     </view>
 
     <!--加载更多时动画-->
@@ -58,9 +57,6 @@ export default {
       } catch (err) {
         list = [];
       }
-      list.forEach(item => {
-        item.add = parseFloat(list[i].amount) > 0;
-      });
       if (refresh) {
         this.contentList = list;
       } else {
@@ -104,5 +100,46 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+.item {
+  width: 710rpx;
+  height: 179rpx;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0rpx 2rpx 10rpx 0rpx rgba(33, 90, 121, 0.08);
+  border-radius: 10rpx;
+  margin: 0 auto;
+  margin-top: 24rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  .icon {
+    width: 88rpx;
+    height: 88rpx;
+    flex: 0 0 auto;
+    margin-right: 33rpx;
+  }
+  .middle {
+    margin-right: auto;
+    .tit {
+      font-size: 30rpx;
+      font-weight: bold;
+      color: rgba(51, 51, 51, 1);
+    }
+    .ct {
+      font-size: 28rpx;
+      color: rgba(102, 102, 102, 1);
+      margin: 10rpx 0;
+    }
+    .time {
+      font-size: 26rpx;
+      color: rgba(193, 193, 193, 1);
+    }
+  }
+  .pri {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: rgba(51, 51, 51, 1);
+  }
+}
 </style>
