@@ -1,26 +1,30 @@
 <template>
   <view>
-    <image class = "top-img" src = "../images/pic_home_banner_2.png" />
-    <view class = "item pd mt" @tap = "clickChooseMatter">
-      <view class = "line"></view>
-      <view class = "tit">选择素材</view>
-      <view class = "text">{{material_name}}</view>
-      <image class = "arrow" src = "../images/ic_home_open_1.png" />
+    <image class="top-img" src="../static/images/pic_home_banner_2.png" />
+    <view class="item pd mt" @tap="clickChooseMatter">
+      <view class="line"></view>
+      <view class="tit">选择素材</view>
+      <view class="text">{{material_name}}</view>
+      <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
-    <view class = "item pd bd-bt" @tap = "clickChooseMachine">
-      <view class = "line"></view>
-      <view class = "tit">选择广告机</view>
-      <image class = "add-icon" src = "../images/ic_home_add_to.png" />
+    <view class="item pd bd-bt" @tap="clickChooseMachine">
+      <view class="line"></view>
+      <view class="tit">选择广告机</view>
+      <image class="add-icon" src="../static/images/ic_home_add_to.png" />
     </view>
-    <view class = "content">
-      <view class = "item-ct bd-bt" v-for="(item, index) in machineCartList" :key = "index">
-        <image class = "logo" :src = "item.logo" />
-        <view class = "middle">
-          <view class = "name">{{item.machineName}}</view>
-          <view class = "place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
-          <view class  ="mark">{{item.labelType}}</view>
+    <view class="content">
+      <view class="item-ct bd-bt" v-for="(item, index) in machineCartList" :key="index">
+        <image class="logo" :src="item.logo" />
+        <view class="middle">
+          <view class="name">{{item.machineName}}</view>
+          <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
+          <view class="mark">{{item.labelType}}</view>
         </view>
-        <image class = "del" src=  "../images/ic_home_delete.png" @tap = "clickDelAdMachine(index)" />
+        <image
+          class="del"
+          src="../static/images/ic_home_delete.png"
+          @tap="clickDelAdMachine(index)"
+        />
       </view>
     </view>
     <view class="item pd mt">
@@ -58,292 +62,292 @@
         <view class="d-num">{{bapingType >= 0 ? dictData[bapingType].dictLabel : 0}}</view>
       </view>
     </block>
-    <view class = "note">注：广告显示为当天循环播放，图片广告每次播放时长为15秒，视频+图片广告播放时长为视频时长（视频总时长不能超过一分钟）。价格以播放时长计算，X元/15秒</view>
-    <button class = "btn" @tap = "clickSubmit">确认投放</button>
+    <view class="note">注：广告显示为当天循环播放，图片广告每次播放时长为15秒，视频+图片广告播放时长为视频时长（视频总时长不能超过一分钟）。价格以播放时长计算，X元/15秒</view>
+    <button class="btn" @tap="clickSubmit">确认投放</button>
   </view>
 </template>
 
 <script>
-import tip from '../utils/tip';
-import {
-  USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
-} from '../utils/constant';
+import tip from "../utils/tip";
+import { USER_TOKEN, USER_INFO, USER_SPECICAL_INFO } from "../utils/constant";
 export default {
   data() {
     return {
-      id: '',
-      nameLength:0, //广告名称长度
-      machineCartList:[],
-      material_id:'',   //素材id
-      material_name:'',   //素材名称
-      to_dates:[],        //选择的日期
+      id: "",
+      nameLength: 0, //广告名称长度
+      machineCartList: [],
+      material_id: "", //素材id
+      material_name: "", //素材名称
+      to_dates: [], //选择的日期
       type: 0,
-      typeRange: ['请选择', '按天投放', '霸屏投放'],
+      typeRange: ["请选择", "按天投放", "霸屏投放"],
       bapingRange: [],
       bapingType: -1
-    }
+    };
   },
 
   onLoad(options) {
-    this.id = options.id
+    this.id = options.id;
   },
-  onShow(){
-    let matter = uni.getStorageSync('matter') || null;
-    if(matter){
-      this.material_id = matter.id || '';
-      this.material_name = matter.name || '';
-      uni.removeStorageSync('matter');
+  onShow() {
+    let matter = uni.getStorageSync("matter") || null;
+    if (matter) {
+      this.material_id = matter.id || "";
+      this.material_name = matter.name || "";
+      uni.removeStorageSync("matter");
     }
-    let selectDate = uni.getStorageSync('selectDate') || null;
-    if(selectDate){
+    let selectDate = uni.getStorageSync("selectDate") || null;
+    if (selectDate) {
       this.to_dates = selectDate;
-      uni.removeStorageSync('selectDate');
+      uni.removeStorageSync("selectDate");
     }
     //获取我的广告机购物车
     this.getMachineCart();
 
-    this.getDictData()
+    this.getDictData();
   },
   methods: {
-    typeChange (e) {
+    typeChange(e) {
       this.type = Number(e.detail.value);
     },
-    bapingTypeChange (e) {
+    bapingTypeChange(e) {
       this.bapingType = Number(e.detail.value);
     },
     //选择时间
-    clickChooseDate(){
-       uni.navigateTo({
-        url:'/pages-home/chooseDate?to_dates='+this.to_dates+'&free=1&advertise_machine_id='+this.id
-      })
+    clickChooseDate() {
+      uni.navigateTo({
+        url:
+          "/pages-home/chooseDate?to_dates=" +
+          this.to_dates +
+          "&free=1&advertise_machine_id=" +
+          this.id
+      });
     },
     //选择素材
-    clickChooseMatter(){
-      this.$CommonJs.pathTo('/pages-home/chooseMatter')
+    clickChooseMatter() {
+      this.$CommonJs.pathTo("/pages-home/chooseMatter");
     },
     //选择广告机
-    clickChooseMachine(){
-      this.$CommonJs.pathTo('/pages-home/chooseAdMachine')
+    clickChooseMachine() {
+      this.$CommonJs.pathTo("/pages-home/chooseAdMachine");
     },
     //删除广告机
     async clickDelAdMachine(index) {
-      await tip.confirm('确定取消该广告机?');
-      this.machineCartList.splice(index, 1)
-      uni.setStorageSync('adMachineId', this.machineCartList);
+      await tip.confirm("确定取消该广告机?");
+      this.machineCartList.splice(index, 1);
+      uni.setStorageSync("adMachineId", this.machineCartList);
 
-      await tip.success('已取消');
+      await tip.success("已取消");
     },
     //确认投放
-    async clickSubmit(){
-      if(!this.material_id){
-        tip.toast('请选择素材');
+    async clickSubmit() {
+      if (!this.material_id) {
+        tip.toast("请选择素材");
         return;
       }
       if (this.machineCartList.length === 0) {
-        tip.toast('请选择广告机');
+        tip.toast("请选择广告机");
         return;
       }
       if (this.type === 0) {
-        tip.toast('请选择投放方式');
+        tip.toast("请选择投放方式");
         return;
       }
       if (this.to_dates.length === 0) {
-        tip.toast('请选择投放时间');
+        tip.toast("请选择投放时间");
         return;
       }
       if (this.type === 2 && this.bapingType === -1) {
-        tip.toast('请选择霸屏时间');
+        tip.toast("请选择霸屏时间");
         return;
       }
       try {
-        const machineIds = this.machineCartList.map(item => item.id).join(',')
-        const putDays = this.to_dates.map(item => item).join(',')
-        const dictId = this.type === 2 ? this.dictData[this.bapingType].id : 0
+        const machineIds = this.machineCartList.map(item => item.id).join(",");
+        const putDays = this.to_dates.map(item => item).join(",");
+        const dictId = this.type === 2 ? this.dictData[this.bapingType].id : 0;
         const payload = {
           machineIds,
           materialId: this.material_id,
           putDays,
           dictId
-        }
-        const res = await this.$server.addMaterialOrder(payload)
-        const orderId = res.data.data.orderId
-        await tip.success('下单成功');
-        this.$CommonJs.pathTo('/pages-home/postAdDetail?id=' + orderId)
+        };
+        const res = await this.$server.addMaterialOrder(payload);
+        const orderId = res.data.data.orderId;
+        await tip.success("下单成功");
+        this.$CommonJs.pathTo("/pages-home/postAdDetail?id=" + orderId);
       } catch (error) {}
     },
-    async getDictData () {
+    async getDictData() {
       try {
-        const res = await this.$server.getDictData()
-        this.dictData = res.data.data.dictData
-        let bapingRange = []
-        this.dictData.map(item => bapingRange.push(item.dictLabel))
-        this.bapingRange = bapingRange
-      } catch (error) {
-        
-      }
+        const res = await this.$server.getDictData();
+        this.dictData = res.data.data.dictData;
+        let bapingRange = [];
+        this.dictData.map(item => bapingRange.push(item.dictLabel));
+        this.bapingRange = bapingRange;
+      } catch (error) {}
     },
-    getMachineCart () {
-      const machineCartList = uni.getStorageSync('adMachineId') || []
-      this.machineCartList = machineCartList
-    },
+    getMachineCart() {
+      const machineCartList = uni.getStorageSync("adMachineId") || [];
+      this.machineCartList = machineCartList;
+    }
   }
-}
+};
 </script>
 
 <style lang="less">
-.top-img{
-  width:100%;
-  height:200rpx;
+.top-img {
+  width: 100%;
+  height: 200rpx;
   display: block;
 }
-.neck-ct{
+.neck-ct {
   background-color: #fff;
-  padding:24rpx 58rpx 24rpx 0;
+  padding: 24rpx 58rpx 24rpx 0;
   box-sizing: border-box;
-  textarea{
-    width:100%;
-    height:180rpx;
-    border:none;
+  textarea {
+    width: 100%;
+    height: 180rpx;
+    border: none;
     background-color: #fff;
-    padding:12rpx 24rpx;
+    padding: 12rpx 24rpx;
     box-sizing: border-box;
     font-size: 28rpx;
   }
 }
-.item{
-  width:100%;
-  min-height:84rpx;
+.item {
+  width: 100%;
+  min-height: 84rpx;
   display: flex;
   align-items: center;
   background-color: #fff;
-  .line{
-    width:9rpx;
-    height:34rpx;
-    background:rgba(247,208,67,1);
-    margin-right:24rpx;
-    flex:0 0 auto;
+  .line {
+    width: 9rpx;
+    height: 34rpx;
+    background: rgba(247, 208, 67, 1);
+    margin-right: 24rpx;
+    flex: 0 0 auto;
   }
-  .tit{
-    width:180rpx;
-    font-size:28rpx;
-    font-weight:bold;
-    color:rgba(20,20,20,1);
+  .tit {
+    width: 180rpx;
+    font-size: 28rpx;
+    font-weight: bold;
+    color: rgba(20, 20, 20, 1);
     margin-right: auto;
-    flex:0 0 auto;
+    flex: 0 0 auto;
   }
-  .num{
-    font-size:28rpx;
-    font-weight:bold;
-    color:rgba(20,20,20,1);
+  .num {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: rgba(20, 20, 20, 1);
   }
-  .d-num{
-    font-size:28rpx;
-    color:rgba(102,102,102,1);
+  .d-num {
+    font-size: 28rpx;
+    color: rgba(102, 102, 102, 1);
   }
-  .text{
-    width:55%;
-    word-wrap:break-word;
-    font-size:28rpx;
-    color:rgba(20,20,20,1);
+  .text {
+    width: 55%;
+    word-wrap: break-word;
+    font-size: 28rpx;
+    color: rgba(20, 20, 20, 1);
     margin-right: 15rpx;
     text-align: right;
   }
-  .arrow{
-    width:20rpx;
-    height:25rpx;
-    padding-top:5rpx;
+  .arrow {
+    width: 20rpx;
+    height: 25rpx;
+    padding-top: 5rpx;
     display: block;
-    flex:0 0 auto;
+    flex: 0 0 auto;
   }
-  .add-icon{
-    width:40rpx;
-    height:40rpx;
+  .add-icon {
+    width: 40rpx;
+    height: 40rpx;
     display: block;
-    flex:0 0 auto;
+    flex: 0 0 auto;
   }
 }
-.content{
-  width:100%;
+.content {
+  width: 100%;
   background-color: #fff;
-  padding:20rpx 58rpx 20rpx 32rpx;
+  padding: 20rpx 58rpx 20rpx 32rpx;
   box-sizing: border-box;
-  .item-ct{
-    width:100%;
+  .item-ct {
+    width: 100%;
     display: flex;
     align-items: center;
-    padding:20rpx 0;
+    padding: 20rpx 0;
     box-sizing: border-box;
-    .logo{
-      width:110rpx;
-      height:110rpx;
+    .logo {
+      width: 110rpx;
+      height: 110rpx;
       margin-right: 25rpx;
       flex: 0 0 auto;
     }
-    .middle{
-      width:100%;
+    .middle {
+      width: 100%;
       margin-right: auto;
-      .name{
-        width:340rpx;
-        word-wrap:break-word;
-        font-size:26rpx;
-        font-weight:bold;
-        color:rgba(20,20,20,1);
+      .name {
+        width: 340rpx;
+        word-wrap: break-word;
+        font-size: 26rpx;
+        font-weight: bold;
+        color: rgba(20, 20, 20, 1);
       }
-      .place{
-        font-size:22rpx;
-        color:rgba(102,102,102,1);
-        margin-top:8rpx;
+      .place {
+        font-size: 22rpx;
+        color: rgba(102, 102, 102, 1);
+        margin-top: 8rpx;
         word-break: break-all;
       }
-      .mark{
-        width:88rpx;
+      .mark {
+        width: 88rpx;
         text-align: center;
-        font-size:22rpx;
-        color:rgba(195,83,1,1);
-        background:rgba(255,242,225,1);
-        padding:0 10rpx;
+        font-size: 22rpx;
+        color: rgba(195, 83, 1, 1);
+        background: rgba(255, 242, 225, 1);
+        padding: 0 10rpx;
         box-sizing: border-box;
-        margin-top:8rpx;
+        margin-top: 8rpx;
       }
     }
-    .del{
-      width:45rpx;
-      height:45rpx;
+    .del {
+      width: 45rpx;
+      height: 45rpx;
       display: block;
       margin-right: 5rpx;
-      flex:0 0 auto;
+      flex: 0 0 auto;
     }
   }
 }
-.note{
-  width:100%;
-  background:rgba(255,238,236,1);
-  font-size:24rpx;
-  color:rgba(254,56,36,1);
-  padding:22rpx 55rpx;
+.note {
+  width: 100%;
+  background: rgba(255, 238, 236, 1);
+  font-size: 24rpx;
+  color: rgba(254, 56, 36, 1);
+  padding: 22rpx 55rpx;
   box-sizing: border-box;
 }
-.btn{
-  width:675rpx;
-  height:92rpx;
-  line-height:92rpx;
-  background:rgba(255,214,2,1);
-  border-radius:5rpx;
-  font-size:36rpx;
-  color:rgba(20,20,20,1);
-  margin:50rpx auto;
+.btn {
+  width: 675rpx;
+  height: 92rpx;
+  line-height: 92rpx;
+  background: rgba(255, 214, 2, 1);
+  border-radius: 5rpx;
+  font-size: 36rpx;
+  color: rgba(20, 20, 20, 1);
+  margin: 50rpx auto;
 }
-.pd{
-  padding-right:58rpx;
+.pd {
+  padding-right: 58rpx;
   box-sizing: border-box;
 }
-.mt{
-  margin-top:20rpx;
+.mt {
+  margin-top: 20rpx;
 }
-.bd-bt{
-  border-bottom:1rpx solid #f1f0f6;
+.bd-bt {
+  border-bottom: 1rpx solid #f1f0f6;
 }
-.none{
+.none {
   background: #fff !important;
 }
 </style>

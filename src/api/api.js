@@ -354,6 +354,22 @@ class Api extends BasicRequest {
   getQiniuParam() {
     return this.POST('/api/dictData/getQiniuParam', {});
   }
+
+  /**
+   * 我的广告机
+   * @param {object | undefined} payload
+   */
+  getMyMachinesList(payload) {
+    return this.POST('/api/machines/getMyMachinesList', payload);
+  }
+
+  /**
+   * 我的广告机详情
+   * @param {object | undefined} payload
+   */
+  getMyMachineDetail(payload) {
+    return this.POST('/api/machines/getMyMachineDetail', payload);
+  }
 }
 
 export default new Api();

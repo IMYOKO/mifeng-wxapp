@@ -1,6 +1,12 @@
 <template>
   <view class="myAdMachine">
-    <view class="ct-view" v-for="(item, index) in contentList" :key="index" @tap="clickDetail">
+    <view
+      class="ct-view"
+      v-for="(item, index) in contentList"
+      :key="index"
+      :data-id="item.id"
+      @tap="clickDetail"
+    >
       <image
         class="status"
         src="../static/images/pic_my_advertising_machine_on_line.png"
@@ -60,7 +66,7 @@ export default {
       no_more: false, //没有更多数据
       is_empty: false, //无数据，显示空页面
       start: 0,
-      offset:10,
+      offset: 10,
       contentList: [] //页面列表数据
     };
   },
@@ -74,34 +80,43 @@ export default {
     this.getAdMachineList(0, true);
   },
   methods: {
+    //广告机详情
+    clickDetail(e) {
+      let id = e.currentTarget.dataset.id;
+      uni.navigateTo({
+        url: "/pages-user/myAdMachineDetail?id=" + id
+      });
+    },
     async getAdMachineList(start, refresh) {
       try {
         const payload = {
           start,
-          offset: this.offset,
-        }
-        const res = await this.$server.getMyMachinesList(payload)
+          offset: this.offset
+        };
+        const res = await this.$server.getMyMachinesList(payload);
 
         if (refresh) {
           this.contentList = res.data.data.item;
         } else {
           this.contentList = [...this.contentList, ...res.data.data.item];
         }
-        if(res.data.data.isNext === 0){
+        if (res.data.data.isNext === 0) {
           //没有更多数据
           this.no_more = true;
-        }else{			
+        } else {
           this.no_more = false;
         }
-        if (this.start === 0 && res.data.data.isNext === 0 && response.data.data.item.length === 0) {
+        if (
+          this.start === 0 &&
+          res.data.data.isNext === 0 &&
+          response.data.data.item.length === 0
+        ) {
           //暂无数据
           this.is_empty = true;
         } else {
           this.is_empty = false;
         }
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     },
     /**
      * 页面相关事件处理函数--监听用户下拉动作

@@ -1,246 +1,263 @@
 <template>
   <view class="myAdMachineDetail">
-    <scroll-view class = "sv-view" :style="{'height': windowHeight-92 + 'rpx'}" scroll-y = "true">
-      <view class = "ct-view">
-        <image class = "status" src=  "../static/images/pic_my_advertising_machine_on_line.png" v-if="adInfo.online_status == 'online'" />
-        <image class = "status" src=  "../static/images/pic_my_advertising_machine_off_line.png" v-else-if="adInfo.online_status == 'offline'" />
-        <view class = "ct">
-          <image class = "logo" :src="adInfo.logo" />
-          <view class = "content">
-            <view class = "top">
-              <view class = "name">{{adInfo.materialName}}</view>
-              <view class = "mark">{{adInfo.labelType}}</view>
+    <scroll-view class="sv-view" :style="{'height': windowHeight-92 + 'rpx'}" scroll-y="true">
+      <view class="ct-view">
+        <image
+          class="status"
+          src="../static/images/pic_my_advertising_machine_on_line.png"
+          v-if="adInfo.onlineStatus == 0"
+        />
+        <image
+          class="status"
+          src="../static/images/pic_my_advertising_machine_off_line.png"
+          v-if="adInfo.onlineStatus == 1"
+        />
+        <view class="ct">
+          <image class="logo" :src="adInfo.logo" />
+          <view class="content">
+            <view class="top">
+              <view class="name">{{adInfo.materialName}}</view>
+              <view class="mark">{{adInfo.labelType}}</view>
             </view>
-            <view class = "middle">
-              <view class = "text">图片价格/天</view>
-              <view class = "pri">¥{{adInfo.imagePrice}}</view>
+            <view class="middle">
+              <view class="text">图片价格/天</view>
+              <view class="pri">¥{{adInfo.imagePrice}}</view>
             </view>
             <view class="bottom">
               <view class="text">视频价格/天</view>
-              <view class="pri">¥{{item.videoPrice}}</view>
+              <view class="pri">¥{{adInfo.videoPrice}}</view>
             </view>
-            <view class ="bottom">
-              <view class = "text">视频组合价格/15s/天</view>
-              <view class = "pri">¥{{adInfo.combinePrice}}</view>
+            <view class="bottom">
+              <view class="text">视频组合价格/15s/天</view>
+              <view class="pri">¥{{adInfo.combinePrice}}</view>
             </view>
           </view>
         </view>
-        <view class = "place">
-          <image class  = "site-icon" src = "../static/images/ic_home_location_2.png" />
-          <view class = "place">{{adInfo.province}}{{adInfo.city}}{{adInfo.district}}{{adInfo.address}}</view>
+        <view class="place">
+          <image class="site-icon" src="../static/images/ic_home_location_2.png" />
+          <view
+            class="place"
+          >{{adInfo.province}}{{adInfo.city}}{{adInfo.district}}{{adInfo.address}}</view>
         </view>
       </view>
-      <view class = "note">在播广告</view>
-      <view class = "content">
-        <view class = "ct-view" v-for="(item, index) in materials" :key="index">
-          <video :src="item.video" class = "ct-video" v-if="item.materialType === 5"></video>
-          <image class = "ct-img" :class="item.materialType == 1 || item.materialType == 2 || item.materialType == 5 ? 'group' : ''" :src="item.logo" />
-          <view class = "tit">{{item.materialName}}</view>
+      <view class="note">在播广告</view>
+      <view class="content">
+        <view class="ct-view" v-for="(item, index) in materials" :key="index">
+          <video :src="item.video" class="ct-video" v-if="item.materialType === 5"></video>
+          <image
+            class="ct-img"
+            :class="item.materialType == 1 || item.materialType == 2 || item.materialType == 5 ? 'group' : ''"
+            :src="item.logo"
+          />
+          <view class="tit">{{item.materialName}}</view>
         </view>
       </view>
     </scroll-view>
-    <cover-view class = "btn" @tap="clickPostAd">免费发布广告</cover-view>
+    <cover-view class="btn" @tap="clickPostAd">免费发布广告</cover-view>
   </view>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      id: '',
+      id: "",
       adInfo: null,
-      windowHeight: '',
+      windowHeight: "",
       materials: []
-    }
+    };
   },
   onLoad(options) {
     this.id = options.id;
     this.getAdInfo();
     let systemInfo = uni.getSystemInfoSync();
-    this.windowHeight = Math.ceil(systemInfo.windowHeight/(systemInfo.windowWidth/750))
+    this.windowHeight = Math.ceil(
+      systemInfo.windowHeight / (systemInfo.windowWidth / 750)
+    );
   },
   methods: {
-    clickPostAd(){
+    clickPostAd() {
       uni.navigateTo({
-        url:'/pages-home/postFreeAd?id='+this.id
-      })
+        url: "/pages-home/postFreeAd?id=" + this.id
+      });
     },
-    async getAdInfo(){
-      const payload = { id: this.id }
-      const res = await this.$server.getMyMachineDetail(payload)
-      this.adInfo = res.data.machine;
-      this.materials = res.data.materialList;
+    async getAdInfo() {
+      const payload = { id: Number(this.id) };
+      const res = await this.$server.getMyMachineDetail(payload);
+      this.adInfo = res.data.data.machine;
+      console.log(this.adInfo.logo);
+      this.materials = res.data.data.materialList;
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .myAdMachineDetail {
   padding-bottom: 92px;
 }
-.ct-view{
-  width:100%;
-  min-height:280rpx;
-  background:rgba(255,255,255,1);
-  border-radius:3rpx;
-  padding:25rpx 25rpx 0 25rpx;
+.ct-view {
+  width: 100%;
+  min-height: 280rpx;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 3rpx;
+  padding: 25rpx 25rpx 0 25rpx;
   box-sizing: border-box;
   position: relative;
-  .status{
+  .status {
     position: absolute;
-    width:161rpx;
-    height:162rpx;
-    top:0;
-    left:0;
+    width: 161rpx;
+    height: 162rpx;
+    top: 0;
+    left: 0;
   }
-  .ct{
+  .ct {
     display: flex;
     align-items: center;
-    border-bottom:1rpx solid #E5E5E5;
+    border-bottom: 1rpx solid #e5e5e5;
     padding-bottom: 24rpx;
-    .logo{
-      width:160rpx;
-      height:160rpx;
+    .logo {
+      width: 160rpx;
+      height: 160rpx;
       margin-right: 24rpx;
-      flex:0 0 auto;
+      flex: 0 0 auto;
     }
-    .content{
-      width:100%;
-      .top{
-        width:100%;
+    .content {
+      width: 100%;
+      .top {
+        width: 100%;
         display: flex;
         align-items: center;
-        .name{
-          width:340rpx;
-          word-wrap:break-word;
-          font-size:28rpx;
-          font-weight:bold;
-          color:rgba(20,20,20,1);
+        .name {
+          width: 340rpx;
+          word-wrap: break-word;
+          font-size: 28rpx;
+          font-weight: bold;
+          color: rgba(20, 20, 20, 1);
           margin-right: auto;
         }
-        .mark{
-          height:30rpx;
-          line-height:30rpx;
-          font-size:22rpx;
-          color:rgba(195,83,1,1);
-          background:rgba(255,242,225,1);
-          padding:0 10rpx;
+        .mark {
+          height: 30rpx;
+          line-height: 30rpx;
+          font-size: 22rpx;
+          color: rgba(195, 83, 1, 1);
+          background: rgba(255, 242, 225, 1);
+          padding: 0 10rpx;
           box-sizing: border-box;
-          flex:0 0 auto;
+          flex: 0 0 auto;
         }
       }
-      .middle{
-        width:100%;
+      .middle {
+        width: 100%;
         display: flex;
         align-items: center;
-        margin-top:34rpx;
+        margin-top: 34rpx;
       }
-      .bottom{
-        width:100%;
+      .bottom {
+        width: 100%;
         display: flex;
         align-items: center;
-        margin-top:10rpx;
+        margin-top: 10rpx;
       }
-      .text{
-        font-size:24rpx;
-        color:rgba(102,102,102,1);
+      .text {
+        font-size: 24rpx;
+        color: rgba(102, 102, 102, 1);
         margin-right: auto;
       }
-      .pri{
-        font-size:24rpx;
-        font-weight:bold;
-        color:rgba(20,20,20,1);
+      .pri {
+        font-size: 24rpx;
+        font-weight: bold;
+        color: rgba(20, 20, 20, 1);
       }
     }
   }
-  .place{
-    width:100%;
-    min-height:50rpx;
+  .place {
+    width: 100%;
+    min-height: 50rpx;
     display: flex;
     align-items: center;
-    padding:15rpx 0;
+    padding: 15rpx 0;
     box-sizing: border-box;
     word-break: break-all;
-    .site-icon{
-      width:40rpx;
-      height:40rpx;
-      margin-right:10rpx;
+    .site-icon {
+      width: 40rpx;
+      height: 40rpx;
+      margin-right: 10rpx;
     }
-    .place{
-      font-size:24rpx;
-      color:rgba(102,102,102,1);
+    .place {
+      font-size: 24rpx;
+      color: rgba(102, 102, 102, 1);
       margin-right: auto;
       word-break: break-all;
     }
-    .select-icon{
-      width:40rpx;
-      height:40rpx;
-      margin-left:20rpx;
-      flex:0 0 auto;
+    .select-icon {
+      width: 40rpx;
+      height: 40rpx;
+      margin-left: 20rpx;
+      flex: 0 0 auto;
     }
   }
 }
-.note{
-  width:100%;
-  height:88rpx;
-  line-height:88rpx;
-  font-size:28rpx;
-  font-weight:bold;
-  color:rgba(20,20,20,1);
-  padding-left:33rpx;
+.note {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: rgba(20, 20, 20, 1);
+  padding-left: 33rpx;
   box-sizing: border-box;
 }
-.content{
+.content {
   display: flex;
   flex-wrap: wrap;
-  padding:0 15rpx;
+  padding: 0 15rpx;
   box-sizing: border-box;
   justify-content: space-around;
-  .ct-view{
+  .ct-view {
     position: relative;
-    width:340rpx;
-    height:680rpx;
-    background:rgba(255,255,255,1);
-    border-radius:3rpx;
-    padding:20rpx;
+    width: 340rpx;
+    height: 680rpx;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 3rpx;
+    padding: 20rpx;
     box-sizing: border-box;
-    margin-top:20rpx;
-    .status{
-      width:162rpx;
-      height:162rpx;
+    margin-top: 20rpx;
+    .status {
+      width: 162rpx;
+      height: 162rpx;
       position: absolute;
       top: 0;
-      right:0;
+      right: 0;
     }
-    .select-icon{
-      width:45rpx;
-      height:45rpx;
+    .select-icon {
+      width: 45rpx;
+      height: 45rpx;
       border-radius: 50%;
-      border:2rpx solid #fff;
+      border: 2rpx solid #fff;
       position: absolute;
-      top:35rpx;
-      right:35rpx;
-      flex:0 0 auto;
+      top: 35rpx;
+      right: 35rpx;
+      flex: 0 0 auto;
     }
-    .ct-video{
-      width:300rpx;
-      height:170rpx;
+    .ct-video {
+      width: 300rpx;
+      height: 170rpx;
       margin-bottom: 20rpx;
     }
-    .ct-img{
-      width:300rpx;
-      height:550rpx;
-      margin:20rpx auto;
-      margin-top:0;
+    .ct-img {
+      width: 300rpx;
+      height: 550rpx;
+      margin: 20rpx auto;
+      margin-top: 0;
       display: block;
     }
-    .group{
-      height:350rpx;
+    .group {
+      height: 350rpx;
     }
-    .tit{
-      font-size:24rpx;
-      color:rgba(51,51,51,1);
+    .tit {
+      font-size: 24rpx;
+      color: rgba(51, 51, 51, 1);
       text-overflow: -o-ellipsis-lastline;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -251,22 +268,22 @@ export default {
     }
   }
 }
-.blank{
-  width:100%;
-  height:92rpx;
+.blank {
+  width: 100%;
+  height: 92rpx;
 }
-.btn{
-  width:100%;
-  height:92rpx;
-  line-height:92rpx;
-  background:rgba(255,214,2,1);
-  font-size:36rpx;
-  color:rgba(20,20,20,1);
+.btn {
+  width: 100%;
+  height: 92rpx;
+  line-height: 92rpx;
+  background: rgba(255, 214, 2, 1);
+  font-size: 36rpx;
+  color: rgba(20, 20, 20, 1);
   position: fixed;
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
   border-radius: 0;
   text-align: center;
-  z-index:999999999;
+  z-index: 999999999;
 }
 </style>
