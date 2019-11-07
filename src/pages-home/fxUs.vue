@@ -18,16 +18,60 @@
 export default {
   data () {
     return {
-      longitude: 116.3974,
-      latitude: 39.909,
-      markers: [{
-        latitude: 39.909,
-        longitude: 116.39742,
-        iconPath: '../static/images/ic_location_1.png',
-        width: 25,
-        height: 40
-      }],
-      windowHeight: '100vh'
+      windowHeight: 0,
+      position: null,
+      markers: [],
+    }
+  },
+  async onLoad() {
+    let systemInfo = uni.getSystemInfoSync();
+    this.windowHeight = Math.ceil(systemInfo.windowHeight / (systemInfo.windowWidth / 750))
+    uni.getLocation({
+      type: 'wgs84',
+      success: (res) => {
+        this.position = {
+          latitude: res.latitude,
+          longitude: res.longitude
+        }
+        this.getNearbyList();
+      },
+      fail: () => {
+        this.position = {
+          latitude: 22,
+          longitude: 114
+        }
+        this.getNearbyList();
+      }
+    })
+  },
+  methods: {
+    async getNearbyList (longitude, latitude) {
+      const payload = {
+        longitude,
+        latitude,
+        labelType: '',
+        machineName: '',
+        screenType: '',
+        province: '',
+        city: '',
+        district: '',
+        start: 0,
+        offset: 50,
+      }
+      console.log(payload)
+      const res = await this.$server.getMachinesList(payload)
+      const contentList = res.data.data.item;
+      let arr = []
+      contentList.forEach(item => {
+        arr.push({
+          iconPath: "/images/ic_location_1.png",
+          id: i,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          width: 25,
+          height: 40
+        })
+      })
     }
   }
 }

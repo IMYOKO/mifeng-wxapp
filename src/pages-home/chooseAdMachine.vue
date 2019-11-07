@@ -172,13 +172,7 @@ export default {
       this.getMachineList(0, true);
     },
     clickAll () {
-      this.provincesCitiesDistrict = ''
-      this.province = ''
-      this.city = ''
-      this.district = ''
-      this.cityPickerValueDefault = [0, 0, 1]
-      this.start = 0;
-      this.getMachineList(0, true);
+      this.adMachineId = this.contentList.map(item => item.my_cart = 1)
     },
     showMulLinkageThreePicker() {
 			this.$refs.mpvueCityPicker.show()
@@ -223,7 +217,7 @@ export default {
       uni.navigateBack();
     },
     clickItem(mac, index, mycart, item){
-      if(mycart == 1){
+      if(mycart === 1){
         //已选取
         let flagIndex = this.adMachineId.indexOf(mac);
         this.adMachineId.splice(flagIndex,1);
