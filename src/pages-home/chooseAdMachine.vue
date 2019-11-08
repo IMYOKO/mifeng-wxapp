@@ -46,6 +46,7 @@
         <view class="content">
           <view class="top">
             <view class="name">{{item.machineName}}</view>
+            <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
             <view class="mark">{{item.labelType}}</view>
           </view>
           <view class="middle">
@@ -144,10 +145,12 @@ export default {
       district: '',
       themeColor: '#007AFF',
       cityPickerValueDefault: [0, 0, 1],
-      selectItemlength: 0
+      selectItemlength: 0,
+      material_screenType: null
     };
   },
-  onLoad() {
+  onLoad(option) {
+    this.material_screenType = Number(option.material_screenType)
     let position = uni.getStorageSync('position') || null;
     if(position){
       this.address = position.site;
@@ -174,7 +177,7 @@ export default {
       this.getMachineList(0, true);
     },
     clickAll () {
-      this.adMachineId = this.contentList.map(item => item.my_cart = 1)
+      this.adMachineId = this.contentList.filter(item => item.my_cart = 1)
       this.selectItemlength = this.adMachineId.length
     },
     clickAllNot () {
@@ -199,7 +202,7 @@ export default {
     },
     //点击搜索
     clickSearch() {
-      this.$CommonJs.pathTo("/pages-home/search");
+      this.$CommonJs.pathTo("/pages-home/search?material_screenType=" + this.material_screenType);
     },
     //地图选点
     clickSite() {
@@ -214,17 +217,12 @@ export default {
       });
     },
     async clickSure () {
-      // const json = await request({
-      //   url:'advertise_machine_cart_items/store',
-      //   method:'POST',
-      //   data:{ids:this.adMachineId}
-      // })
       if (this.adMachineId.length === 0) {
         tip.error('请先选择广告机');
         return
       }
       uni.setStorageSync('adMachineId', this.adMachineId); 
-      uni.setStorageSync('selectDate',[]); 
+      uni.setStorageSync('selectDate', null); 
       await tip.success('添加成功');
       uni.navigateBack();
     },
@@ -254,7 +252,7 @@ export default {
           latitude: this.latitude,
           labelType: this.advertise_machine_label_type_index >= 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
           machineName: '',
-          screenType: '',
+          screenType: this.material_screenType,
           province: this.province,
           city: this.city,
           district: this.district,
@@ -447,6 +445,12 @@ export default {
             padding: 0 10rpx;
             box-sizing: border-box;
             flex: 0 0 auto;
+
+            &.mark2 {
+              margin-right: 2px;
+              background: #575757;
+              color: #f6e186;
+            }
           }
         }
         .middle {

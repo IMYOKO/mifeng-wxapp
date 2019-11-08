@@ -79,9 +79,11 @@ export default {
       isSearch:false,   //点击搜索后改变  是否显示搜索历史
       historyLength:8,         //搜索历史个数
       adMachineId:[],     //选择的广告机id
+      material_screenType: null
     }
   },
-  onShow() {
+  onLoad (option) {
+    this.material_screenType = Number(option.material_screenType)
     this.getCartList();
   },
   methods: {
@@ -194,7 +196,7 @@ export default {
           latitude: '',
           labelType: '',
           machineName: this.name,
-          screenType: '',
+          screenType: this.material_screenType,
           province: '',
           city: '',
           district: '',

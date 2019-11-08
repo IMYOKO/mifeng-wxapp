@@ -14,16 +14,19 @@
       </scroll-view>
     </view>
     <view class = "content">
-      <view class = "ct-view" v-for ="(item, index) in contentList" :key ="index" @tap="clickPre(item)">
-        <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.materialType === 5" />
-        <image class = "status" src = "../static/images/pic_material_audit.png" v-if ="item.auditStatus  === 0" />
-        <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if ="item.auditStatus === 2" />
-        <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" v-if="item.materialType === 5 || item.materialType === 1 || item.materialType === 2" :src="item.logo" />
-        <image class = "ct-img" v-if="item.materialType === 3 || item.materialType === 4" src="../static/images/pic_zhanwei_2.png" />
-        <view class = "tit">{{item.materialName}}</view>
+      <view class = "ct-view" v-for ="(item, index) in contentList" :key ="index" @tap="clickPre(item)" :class="{'min': item.screenType === 2}">
+        <view class="inner-wrapper">
+          <image src="../static/images/pic_zhanwei_2.png" class = "ct-video" v-if="item.materialType === 5" />
+          <image class = "status" src = "../static/images/pic_material_audit.png" v-if ="item.auditStatus  === 0" />
+          <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if ="item.auditStatus === 2" />
+          <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" v-if="(item.materialType === 5 || item.materialType === 1 || item.materialType === 2) && item.screenType === 1" :src="item.logo" />
+          <image class = "ct-img heng-img" :class="item.materialType === 5 ? 'group' : ''" v-if="(item.materialType === 5 || item.materialType === 1 || item.materialType === 2) && item.screenType === 2" :src="item.logo" />
+          <image class = "ct-img" v-if="item.materialType === 3 || item.materialType === 4" src="../static/images/pic_zhanwei_2.png" />
+          <view class = "tit">{{item.materialName}}</view>
+        </view>
       </view>
-      
     </view>
+
       <!--加载更多时动画-->
   <bottomLoadMore :show.sync="load_more" message="正在加载"></bottomLoadMore>
   <!--没有更多数据时动画-->
@@ -109,6 +112,7 @@ export default {
     },
     async getMatterList(start, refresh) {
       const payload = {
+        auditStatus: 1,
         materialType: this.type,
         start,
         offset: this.offset
@@ -290,6 +294,9 @@ export default {
     padding:20rpx;
     box-sizing: border-box;
     margin-top:20rpx;
+    &.min {
+      height: 340rpx;
+    }
     .status{
       width:162rpx;
       height:162rpx;
@@ -309,6 +316,10 @@ export default {
       margin:20rpx auto;
       margin-top:0;
       display: block;
+
+      &.heng-img {
+        height: 210rpx;
+      }
     }
     .group{
       height:360rpx;

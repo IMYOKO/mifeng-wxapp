@@ -20,6 +20,7 @@
           <view class="place">
             {{item.province}}{{item.city}}{{item.district}}{{item.address}}
           </view>
+          <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
           <view class="mark">{{item.labelType}}</view>
         </view>
         <image class="del" src="../static/images/ic_home_delete.png" @click="clickDelAdMachine(index)" />
@@ -32,7 +33,7 @@
         <view class="itembtn" :class="{'no-select': type === 0}">{{typeRange[type]}}</view>
       </picker>
     </view>
-    <block v-if="type === 1 || type === 2">
+    <block v-if="type === 1">
       <view class="item pd mt" @click="clickChooseDate">
         <view class="line none"></view>
         <view class="tit">选择时间</view>
@@ -71,12 +72,14 @@
 
 <script>
 import tip from '../utils/tip';
+import moment from 'moment'
 export default {
   data () {
     return {
       machineCartList: [],
       material_id: '', //素材id
       material_name: '', //素材名称
+      material_screenType: null,
       to_dates: [], //选择的日期,
       dictData: [],
       type: 0,
@@ -90,6 +93,7 @@ export default {
     if (matter) {
       this.material_id = matter.id || '';
       this.material_name = matter.name || '';
+      this.material_screenType = matter.screenType || null;
       uni.removeStorageSync('matter');
     }
     let selectDate = uni.getStorageSync('selectDate') || null;
@@ -102,9 +106,18 @@ export default {
 
     this.getDictData()
   },
+  onUnload() {
+    uni.setStorageSync('adMachineId', []); 
+  },
   methods: {
     typeChange (e) {
       this.type = Number(e.detail.value);
+      if (this.type === 1) {
+        this.to_dates = []
+      }
+      if (this.type === 2) {
+        this.to_dates = [moment.unix(moment().unix()).format('YYYY-MM-DD')]
+      }
     },
     bapingTypeChange (e) {
       this.bapingType = Number(e.detail.value);
@@ -115,7 +128,11 @@ export default {
     },
     //选择广告机
     clickChooseMachine (option) {
-      this.$CommonJs.pathTo('/pages-home/chooseAdMachine')
+      if (!this.material_id) {
+        tip.toast('请先选择素材');
+        return;
+      }
+      this.$CommonJs.pathTo('/pages-home/chooseAdMachine?material_screenType=' + this.material_screenType)
     },
     //选择时间
     clickChooseDate () {
@@ -189,6 +206,7 @@ export default {
         const res = await this.$server.addMaterialOrder(payload)
         const orderId = res.data.data.orderId
         await tip.success('下单成功');
+        uni.setStorageSync('adMachineId', []); 
         this.$CommonJs.pathTo('/pages-home/postAdDetail?id=' + orderId)
       } catch (error) {}
     },
@@ -337,6 +355,12 @@ export default {
           padding: 0 10rpx;
           box-sizing: border-box;
           margin-top: 8rpx;
+          display: inline-block;
+          &.mark2 {
+            margin-right: 2px;
+            background: #575757;
+            color: #f6e186;
+          }
         }
       }
 

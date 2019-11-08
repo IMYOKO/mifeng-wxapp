@@ -8,7 +8,7 @@
       </scroll-view>
     </view>
     <view class="content">
-      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.materialName)">
+      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.materialName, item.screenType)">
         <video :src="item.video" class="ct-video" v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5" />
         <image class="ct-img" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
         <view class="tit">{{item.materialName}}</view>
@@ -56,9 +56,9 @@ export default {
     clickHeadItem (type) {
       this.type = type
     },
-    clickChooseIt (id, name) {
-      let matter = {id, name}
-      uni.setStorageSync('matter',matter);
+    clickChooseIt (id, name, screenType) {
+      let matter = {id, name, screenType}
+      uni.setStorageSync('matter', matter);
       uni.navigateBack();
     },
     selectTag(index) {

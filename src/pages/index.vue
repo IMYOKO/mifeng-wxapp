@@ -48,7 +48,6 @@ export default {
 		uni.getLocation({
       type: 'wgs84',
       success: res => {
-				console.log(res)
         let site = res.address;
         let latitude = res.latitude;
         let longitude = res.longitude;
@@ -76,7 +75,7 @@ export default {
 				longitude,
 				site
 			}
-			uni.setStorageSync('position',position);
+			uni.setStorageSync('position', position);
 		},
 		goWebView (item) {
 			if (item.linkType === 0) {
