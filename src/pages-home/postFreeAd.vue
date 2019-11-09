@@ -130,7 +130,7 @@ export default {
     },
     //选择广告机
     clickChooseMachine() {
-      this.$CommonJs.pathTo("/pages-home/chooseAdMachine");
+      this.$CommonJs.pathTo("/pages-home/chooseAdMachine?isme");
     },
     //删除广告机
     async clickDelAdMachine(index) {

@@ -60,7 +60,7 @@ page {
   margin-top: 108rpx;
 }
 .btn {
-  width: 178rpx;
+  min-width: 178rpx;
   height: 88rpx;
   line-height: 88rpx;
   background: rgba(255, 255, 255, 1);

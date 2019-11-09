@@ -9,20 +9,20 @@
 
 <script>
 export default {
-  data () {
-		return {}
+  data() {
+    return {};
   },
   methods: {
-    clickBack () {
-      this.$CommonJs.pathTo('/pages/index/index')
+    clickBack() {
+      this.$CommonJs.pathTo("/pages/index/index");
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .applySuccess {
- .img {
+  .img {
     width: 390rpx;
     height: 390rpx;
     display: block;
@@ -31,25 +31,25 @@ export default {
   }
   .tit {
     font-size: 66rpx;
-    color:rgba(51,51,51,1);
+    color: rgba(51, 51, 51, 1);
     margin-top: 80rpx;
     text-align: center;
   }
   .ct {
     font-size: 30rpx;
-    color:rgba(51,51,51,1);
+    color: rgba(51, 51, 51, 1);
     margin-top: 16rpx;
     text-align: center;
   }
   .btn {
-    width: 178rpx;
+    min-width: 178rpx;
     height: 88rpx;
     line-height: 88rpx;
-    background: rgba(255,255,255,1);
+    background: rgba(255, 255, 255, 1);
     border-radius: 10rpx;
     border: 1rpx solid #979797;
     font-size: 30rpx;
-    color: rgba(102,102,102,1);
+    color: rgba(102, 102, 102, 1);
     margin-top: 108rpx;
   }
 }
