@@ -82,7 +82,7 @@
       <!--暂无数据显示-->
       <placeholder :show.sync="is_empty"></placeholder>
     </scroll-view>
-    <cover-view class="btn" @tap="clickPostAd">免费发布广告</cover-view>
+    <cover-view class="btn" @tap="clickPostAd(adInfo)">免费发布广告</cover-view>
   </view>
 </template>
 
@@ -110,6 +110,11 @@ export default {
   },
   onLoad(options) {
     this.start = 0;
+  },
+  onLoad(options) {
+    this.id = options.id;
+    this.item
+    this.getAdInfo();
     let systemInfo = uni.getSystemInfoSync();
     this.windowHeight = Math.ceil(
       systemInfo.windowHeight / (systemInfo.windowWidth / 750)
@@ -119,9 +124,12 @@ export default {
     this.getMyMachineMaterialList(this.start, true);
   },
   methods: {
-    clickPostAd() {
+    clickPostAd(item) {
+      const newItem = {...item, notDel: true}
+      const adMachineId = [newItem];
+      uni.setStorageSync('adMachineId', adMachineId); 
       uni.navigateTo({
-        url: "/pages-home/postFreeAd?id=" + this.id
+        url: "/pages-home/postFreeAd?id=" + this.id + '&material_screenType=' + newItem.screenType
       });
     },
     async getAdInfo() {

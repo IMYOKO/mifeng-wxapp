@@ -4,8 +4,7 @@
       class="ct-view"
       v-for="(item, index) in contentList"
       :key="index"
-      :data-id="item.id"
-      @tap="clickDetail"
+      @tap="clickDetail(item.id)"
     >
       <image
         class="status"
@@ -86,8 +85,8 @@ export default {
   },
   methods: {
     //广告机详情
-    clickDetail(e) {
-      let id = e.currentTarget.dataset.id;
+    clickDetail(id) {
+      console.log(id)
       uni.navigateTo({
         url: "/pages-user/myAdMachineDetail?id=" + id
       });

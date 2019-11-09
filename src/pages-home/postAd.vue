@@ -155,17 +155,8 @@ export default {
     },
     async clickDelAdMachine(index) {
       await tip.confirm("确定取消该广告机?");
-      // const json = await request({
-      //   url: 'advertise_machine_cart_items/delete',
-      //   method: 'POST',
-      //   loading: '',
-      //   data: {
-      //     id: id
-      //   }
-      // });
       this.machineCartList.splice(index, 1);
       uni.setStorageSync("adMachineId", this.machineCartList);
-
       await tip.success("已取消");
     },
     async clickSubmit() {
