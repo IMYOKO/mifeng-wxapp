@@ -51,13 +51,25 @@
     <view class="placeholderContainer">
       <view
         v-if="type === 3 || type === 4 || type === 5"
-        :class="`placeholderContent video placeholderContent-${type} ${video?'filled':''}`"
+        class="placeholderContent video"
+        :class="{
+          'filled': video !== '',
+          'placeholderContent-1': type === 1,
+          'placeholderContent-2': type === 2,
+          'placeholderContent-5': type === 5,
+        }"
       >
         <video v-if="!!video" :src="video"></video>
       </view>
       <view
         v-if="type === 1 || type === 2 || type === 5"
-        :class="`placeholderContent image placeholderContent-${type} ${logo?'filled':''}`"
+        class="placeholderContent image"
+        :class="{
+          'filled': logo !== '',
+          'placeholderContent-1': type === 1,
+          'placeholderContent-2': type === 2,
+          'placeholderContent-5': type === 5,
+        }"
       >
         <image v-if="!!logo" :src="logo" />
       </view>
