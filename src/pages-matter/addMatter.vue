@@ -46,19 +46,18 @@
     <view class="item pd" v-if="type === 3 || type === 4 || type === 5" @tap="clickChooseVideo">
       <view class="line"></view>
       <view class="tit">选择视频</view>
-      <!--<video wx:if = "{{video}}" class = "img" show-fullscreen-btn = "false" src=  "{{video}}"></video>-->
       <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
     <view class="placeholderContainer">
       <view
         v-if="type === 3 || type === 4 || type === 5"
-        :class="`placeholderContent placeholderContent-${type} ${video?'filled':''}`"
+        :class="`placeholderContent video placeholderContent-${type} ${video?'filled':''}`"
       >
         <video v-if="!!video" :src="video"></video>
       </view>
       <view
         v-if="type === 1 || type === 2 || type === 5"
-        :class="`placeholderContent placeholderContent-${type} ${logo?'filled':''}`"
+        :class="`placeholderContent image placeholderContent-${type} ${logo?'filled':''}`"
       >
         <image v-if="!!logo" :src="logo" />
       </view>
@@ -534,26 +533,26 @@ button {
 
   .placeholderContent-5 {
     height: calc(50vw * 1312 / 1080);
-    &::before {
+    &.image::before {
       content: "建议竖屏图片";
       top: 20%;
     }
-    &::after {
+    &.image::after {
       content: "1312x1080px";
-      top: 54%;
+      top: 40%;
     }
-  }
-
-  .placeholderContent-5:first-child {
-    height: calc(50vw * 608 / 1080);
-    color: #fff;
-    background: #29292b;
-    &::before {
-      content: "建议横屏视频";
-    }
-    &::after {
-      content: "608x1080px";
-      top: 36%;
+    &.video {
+      height: calc(50vw * 608 / 1080);
+      color: #fff;
+      background: #29292b;
+      &::before {
+        content: "建议横屏视频";
+        top: 24%;
+      }
+      &::after {
+        content: "608x1080px";
+        top: 54%;
+      }
     }
   }
 
