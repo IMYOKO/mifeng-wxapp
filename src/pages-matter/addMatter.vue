@@ -115,7 +115,7 @@ export default {
     },
     Torules() {
       uni.navigateTo({
-        url: "./adRulse?adtype=0&&adxieyitype=rule"
+        url: "/pages-matter/adRulse?adtype=0&&adxieyitype=rule"
       });
     },
     //输入广告名称
@@ -220,16 +220,19 @@ export default {
         tip.toast("上传视频不能超过1分钟请重新选择");
         return;
       }
+      const screenType = (this.type === 1 || this.type === 3 || this.type === 5) ? 1 : 2
       uni.navigateTo({
         url:
-          "./preMatter?type=" +
+          "/pages-matter/preMatter?type=" +
           this.type +
           "&logo=" +
           this.logo +
           "&video=" +
           this.video +
           "&name=" +
-          this.name
+          this.name + 
+          '&screenType=' +
+          screenType
       });
     },
     //上传
