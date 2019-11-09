@@ -5,25 +5,27 @@
       <view class="line"></view>
       <view class="tit">选择素材</view>
       <view class="text">{{material_name}}</view>
-      <image class="arrow" src="../static/images/ic_home_open_1.png"/>
+      <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
     <view class="item pd bd-bt" @click="clickChooseMachine">
       <view class="line"></view>
       <view class="tit">选择广告机</view>
-      <image class="add-icon" src="../static/images/ic_home_add_to.png"/>
+      <image class="add-icon" src="../static/images/ic_home_add_to.png" />
     </view>
     <view class="content">
       <view class="item-ct bd-bt" v-for="(item, index) in machineCartList" :key="index">
         <image class="logo" :src="item.logo" />
         <view class="middle">
           <view class="name">{{item.machineName}}</view>
-          <view class="place">
-            {{item.province}}{{item.city}}{{item.district}}{{item.address}}
-          </view>
+          <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
           <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
           <view class="mark">{{item.labelType}}</view>
         </view>
-        <image class="del" src="../static/images/ic_home_delete.png" @click="clickDelAdMachine(index)" />
+        <image
+          class="del"
+          src="../static/images/ic_home_delete.png"
+          @click="clickDelAdMachine(index)"
+        />
       </view>
     </view>
     <view class="item pd mt">
@@ -64,92 +66,94 @@
     <view class="note">注：广告显示为当天循环播放，图片广告每次播放时长为15秒，视频+图片广告播放时长为视频时长（视频总时长不能超过一分钟）。价格以播放时长计算，X元/15秒</view>
     <view @click="clickSubmit">
       <!-- <formidTaker> -->
-        <button class="btn">确认投放</button>
+      <button class="btn">确认投放</button>
       <!-- </formidTaker> -->
     </view>
   </view>
 </template>
 
 <script>
-import tip from '../utils/tip';
+import tip from "../utils/tip";
 export default {
-  data () {
+  data() {
     return {
       machineCartList: [],
-      material_id: '', //素材id
-      material_name: '', //素材名称
+      material_id: "", //素材id
+      material_name: "", //素材名称
       material_screenType: null,
       to_dates: [], //选择的日期,
       dictData: [],
       type: 0,
-      typeRange: ['请选择', '按天投放', '霸屏投放'],
+      typeRange: ["请选择", "按天投放", "霸屏投放"],
       bapingRange: [],
       bapingType: -1
-    }
+    };
   },
   onShow() {
-    let matter = uni.getStorageSync('matter') || null;
+    let matter = uni.getStorageSync("matter") || null;
     if (matter) {
-      this.material_id = matter.id || '';
-      this.material_name = matter.name || '';
+      this.material_id = matter.id || "";
+      this.material_name = matter.name || "";
       this.material_screenType = matter.screenType || null;
     }
-    let selectDate = uni.getStorageSync('selectDate') || null;
+    let selectDate = uni.getStorageSync("selectDate") || null;
     if (selectDate) {
       this.to_dates = selectDate;
-      
     }
     //获取我的广告机购物车
     this.getMachineCart();
 
-    this.getDictData()
+    this.getDictData();
   },
   onUnload() {
-    uni.removeStorageSync('matter');
-    uni.removeStorageSync('selectDate');
-    uni.setStorageSync('adMachineId', []); 
+    uni.removeStorageSync("matter");
+    uni.removeStorageSync("selectDate");
+    uni.setStorageSync("adMachineId", []);
   },
   methods: {
-    typeChange (e) {
+    typeChange(e) {
       this.type = Number(e.detail.value);
       if (this.type === 1) {
-        this.to_dates = []
+        this.to_dates = [];
       }
       if (this.type === 2) {
-        const times = new Date().getTime()
-        this.to_dates = this.$CommonJs.timestampToTime(times, false, 'YMD')
-        console.log(this.to_dates)
+        const times = new Date().getTime();
+        this.to_dates = this.$CommonJs.timestampToTime(times, false, "YMD");
+        console.log(this.to_dates);
       }
     },
-    bapingTypeChange (e) {
+    bapingTypeChange(e) {
       this.bapingType = Number(e.detail.value);
     },
     //选择素材
-    clickChooseMatter () {
-      this.$CommonJs.pathTo('/pages-home/chooseMatter')
+    clickChooseMatter() {
+      this.$CommonJs.pathTo("/pages-home/chooseMatter");
     },
     //选择广告机
-    clickChooseMachine (option) {
+    clickChooseMachine(option) {
       if (!this.material_id) {
-        tip.toast('请先选择素材');
+        tip.toast("请先选择素材");
         return;
       }
-      this.$CommonJs.pathTo('/pages-home/chooseAdMachine?material_screenType=' + this.material_screenType)
+      this.$CommonJs.pathTo(
+        "/pages-home/chooseAdMachine?material_screenType=" +
+          this.material_screenType
+      );
     },
     //选择时间
-    clickChooseDate () {
-      this.$CommonJs.pathTo('/pages-home/chooseDate?to_dates=' + this.to_dates)
+    clickChooseDate() {
+      this.$CommonJs.pathTo("/pages-home/chooseDate?to_dates=" + this.to_dates);
     },
     // 确认投放
-    clickSubmit () {
-      this.$CommonJs.pathTo('/pages-home/postAdDetail')
+    clickSubmit() {
+      this.$CommonJs.pathTo("/pages-home/postAdDetail");
     },
-    getMachineCart () {
-      const machineCartList = uni.getStorageSync('adMachineId') || []
-      this.machineCartList = machineCartList
+    getMachineCart() {
+      const machineCartList = uni.getStorageSync("adMachineId") || [];
+      this.machineCartList = machineCartList;
     },
     async clickDelAdMachine(index) {
-      await tip.confirm('确定取消该广告机?');
+      await tip.confirm("确定取消该广告机?");
       // const json = await request({
       //   url: 'advertise_machine_cart_items/delete',
       //   method: 'POST',
@@ -158,30 +162,30 @@ export default {
       //     id: id
       //   }
       // });
-      this.machineCartList.splice(index, 1)
-      uni.setStorageSync('adMachineId', this.machineCartList);
+      this.machineCartList.splice(index, 1);
+      uni.setStorageSync("adMachineId", this.machineCartList);
 
-      await tip.success('已取消');
+      await tip.success("已取消");
     },
     async clickSubmit() {
       if (!this.material_id) {
-        tip.toast('请选择素材');
+        tip.toast("请选择素材");
         return;
       }
       if (this.machineCartList.length === 0) {
-        tip.toast('请选择广告机');
+        tip.toast("请选择广告机");
         return;
       }
       if (this.type === 0) {
-        tip.toast('请选择投放方式');
+        tip.toast("请选择投放方式");
         return;
       }
       if (this.to_dates.length === 0) {
-        tip.toast('请选择投放时间');
+        tip.toast("请选择投放时间");
         return;
       }
       if (this.type === 2 && this.bapingType === -1) {
-        tip.toast('请选择霸屏时间');
+        tip.toast("请选择霸屏时间");
         return;
       }
       // const json = await request({
@@ -196,35 +200,33 @@ export default {
       //   }
       // });
       try {
-        const machineIds = this.machineCartList.map(item => item.id).join(',')
-        const putDays = this.to_dates.map(item => item).join(',')
-        const dictId = this.type === 2 ? this.dictData[this.bapingType].id : 0
+        const machineIds = this.machineCartList.map(item => item.id).join(",");
+        const putDays = this.to_dates.map(item => item).join(",");
+        const dictId = this.type === 2 ? this.dictData[this.bapingType].id : 0;
         const payload = {
           machineIds,
           materialId: this.material_id,
           putDays,
           dictId
-        }
-        const res = await this.$server.addMaterialOrder(payload)
-        const orderId = res.data.data.orderId
-        await tip.success('下单成功');
-        uni.setStorageSync('adMachineId', []); 
-        this.$CommonJs.pathTo('/pages-home/postAdDetail?id=' + orderId)
+        };
+        const res = await this.$server.addMaterialOrder(payload);
+        const orderId = res.data.data.orderId;
+        await tip.success("下单成功");
+        uni.setStorageSync("adMachineId", []);
+        this.$CommonJs.pathTo("/pages-home/postAdDetail?id=" + orderId);
       } catch (error) {}
     },
-    async getDictData () {
+    async getDictData() {
       try {
-        const res = await this.$server.getDictData()
-        this.dictData = res.data.data.dictData
-        let bapingRange = []
-        this.dictData.map(item => bapingRange.push(item.dictLabel))
-        this.bapingRange = bapingRange
-      } catch (error) {
-        
-      }
+        const res = await this.$server.getDictData();
+        this.dictData = res.data.data.dictData;
+        let bapingRange = [];
+        this.dictData.map(item => bapingRange.push(item.dictLabel));
+        this.bapingRange = bapingRange;
+      } catch (error) {}
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -249,7 +251,7 @@ export default {
       font-size: 28rpx;
     }
   }
-    .item {
+  .item {
     width: 100%;
     min-height: 84rpx;
     display: flex;
@@ -349,7 +351,6 @@ export default {
         }
 
         .mark {
-          width: 88rpx;
           text-align: center;
           font-size: 22rpx;
           color: rgba(195, 83, 1, 1);
@@ -408,7 +409,7 @@ export default {
       font-size: 28rpx;
 
       &.no-select {
-        opacity: .4;
+        opacity: 0.4;
       }
     }
   }
