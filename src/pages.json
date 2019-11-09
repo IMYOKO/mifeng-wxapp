@@ -85,6 +85,10 @@
           "style": { "navigationBarTitleText": "预览素材" }
         },
         {
+          "path": "reviewMatter",
+          "style": { "navigationBarTitleText": "审核素材" }
+        },
+        {
           "path": "addMatterSuccess",
           "style": { "navigationBarTitleText": "结果页面" }
         },

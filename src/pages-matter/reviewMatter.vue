@@ -16,6 +16,16 @@
     <view class = "video min" v-if="(type === 3 || type === 4)  && screenType === 2">
       <video :src="video" class="videos min"></video>
     </view>
+
+    <view class="shenhe">
+      <view class="input-box">
+        <input type="text" v-model="auditRemark" />
+      </view>
+      <view class="btn-view">
+        <button class="refuse_btn btn" @click="sumbit(2)">不通过</button>
+        <button class="login_btn btn" @click="sumbit(1)">通过</button>
+      </view>
+    </view>
   </view>
 
 </template>
@@ -45,7 +55,10 @@ export default {
       windowHeight:0,
       logoImg:'',
       codeImg:'',
-      screenType: null
+      screenType: null,
+      id: null,
+      auditStatus: 0,
+      auditRemark: ''
     }
   },
   async onLoad(options) {
@@ -55,9 +68,35 @@ export default {
     if(this.type === 5){
       this.pace = 0.8; //滚动速度
     }
-    this.logo = options.logo;
-    this.video = options.video;
-    this.screenType = Number(options.screenType);
+    this.id = Number(options.id);
+    this.getMaterialsForAudit()
+  },
+  methods: {
+    async getMaterialsForAudit() {
+      const payload = {
+        id: this.id
+      }
+      const res = await this.$server.getMaterialsForAudit(payload)
+      const item = res.data.data.item
+      this.type = item.materialType
+      this.logo = item.logo
+      this.video = item.video
+      this.screenType = item.screenType
+      this.auditStatus = item.auditStatus
+    },
+    async sumbit (auditStatus) {
+      if (this.auditRemark == '') {
+        tip.error('请输入审核备注')
+        return;
+      }
+      const payload = {
+        id: this.id,
+        auditStatus,
+        auditRemark: this.auditRemark
+      }
+      await this.$server.materialAudit(payload)
+      tip.success('操作成功')
+    }
   }
 }
 
@@ -87,6 +126,50 @@ page{
     }
   }
 }
+
+.input-box {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  padding-top: 30rpx;
+  input {
+    padding: 20rpx;
+    width: 100%;
+    height: 24rpx;
+    line-height: 24rpx;
+    border: 1rpx solid #e3e3e4;
+    border-radius: 5px;
+  }
+}
+
+.btn-view {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+
+  .btn {
+    width: 340rpx;
+    height: 92rpx;
+    border-radius: 5rpx;
+    line-height: 92rpx;
+    margin-top: 40rpx;
+    font-size: 32rpx;
+    border-radius: 4rpx;
+    border: none;
+  }
+
+  .login_btn {
+    background-color: #e9c300;
+    color: #fff;
+  }
+
+  .refuse_btn {
+    background: rgba(216, 216, 216, 1);
+    color: #fff;
+  }
+}
+
 .images{
   position: relative;
 }

@@ -62,6 +62,12 @@ export default {
 		...mapState('User/User', ['userInfo']),
 	},
 	methods: {
+		requestSubscribeMessage () {
+			wx.requestSubscribeMessage({
+				tmplIds: [''],
+				success (res) { }
+			})
+		},
 		myUpload (option) {
 			console.log(option)
 			qiniuUpload(option.path, async (res) => {
