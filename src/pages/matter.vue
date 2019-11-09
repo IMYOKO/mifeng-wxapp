@@ -17,14 +17,14 @@
         >{{item}}</view>
       </scroll-view>
     </view>
-    <view class="content" :style="`height: ${contentHeight}rpx`">
+    <view class="content" :style="{height: contentHeight + 'rpx'}">
       <view
         class="ct-view"
         v-for="(item, index) in contentList"
         :key="index"
         @tap="clickPre(item)"
         :class="{'min': item.screenType === 2}"
-        :style="`left: ${item.style.left}; top: ${item.style.top};`"
+        :style="{left: item.style.left, top: item.style.top}"
       >
         <view class="inner-wrapper">
           <image
