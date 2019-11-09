@@ -42,39 +42,77 @@
         </view>
       </view>
       <view class="note">在播广告</view>
-      <view class="content">
-        <view class="ct-view" v-for="(item, index) in materials" :key="index">
-          <video :src="item.video" class="ct-video" v-if="item.materialType === 5"></video>
+      <view class="content" :style="{height: contentHeight + 'rpx'}">
+        <view
+          class="ct-view"
+          v-for="(item, index) in contentList"
+          :key="index"
+          :data-id="item.id"
+          :data-index="index"
+          :class="{'min': item.screenType === 2}"
+          :style="{left: item.style.left, top: item.style.top}"
+        >
+          <video
+            :src="item.video"
+            v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5"
+            :class="item.materialType === 5 ? 'ct-video' : (item.screenType === 2 ? 'ct-img min' : 'ct-img')"
+          />
           <image
             class="ct-img"
-            :class="item.materialType == 1 || item.materialType == 2 || item.materialType == 5 ? 'group' : ''"
+            v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5"
+            :class="item.materialType === 5 ? 'group' : (item.screenType === 2 ? 'min' : '')"
             :src="item.logo"
           />
+          <cover-image
+            v-if="item.isSelected"
+            class="select-icon"
+            src="../static/images/ic_home_select.png"
+          ></cover-image>
           <view class="tit">{{item.materialName}}</view>
         </view>
       </view>
+      <!--加载更多时动画-->
+      <bottomLoadMore :show.sync="load_more" message="正在加载"></bottomLoadMore>
+      <!--没有更多数据时动画-->
+      <bottomNoMore :show.sync="no_more"></bottomNoMore>
+      <!--暂无数据显示-->
+      <placeholder :show.sync="is_empty"></placeholder>
     </scroll-view>
     <cover-view class="btn" @tap="clickPostAd">免费发布广告</cover-view>
   </view>
 </template>
 
 <script>
+import bottomLoadMore from "../components/common/bottomLoadMore";
+import bottomNoMore from "../components/common/bottomNoMore";
+import placeholder from "../components/common/placeholder";
 export default {
+  components: {
+    bottomLoadMore: bottomLoadMore,
+    bottomNoMore: bottomNoMore,
+    placeholder: placeholder
+  },
   data() {
     return {
       id: "",
       adInfo: null,
       windowHeight: "",
-      materials: []
+      contentHeight: 0,
+      contentList: [],
+      load_more: false, //加载更多图案
+      no_more: false, //没有更多数据
+      is_empty: false //无数据，显示空页面
     };
   },
   onLoad(options) {
-    this.id = options.id;
-    this.getAdInfo();
+    this.start = 0;
     let systemInfo = uni.getSystemInfoSync();
     this.windowHeight = Math.ceil(
       systemInfo.windowHeight / (systemInfo.windowWidth / 750)
     );
+    this.id = Number(options.id);
+    this.getAdInfo();
+    this.getMyMachineMaterialList(this.start, true);
   },
   methods: {
     clickPostAd() {
@@ -83,11 +121,89 @@ export default {
       });
     },
     async getAdInfo() {
-      const payload = { id: Number(this.id) };
-      const res = await this.$server.getMyMachineDetail(payload);
+      const res = await this.$server.getMyMachineDetail({ id: this.id });
       this.adInfo = res.data.data.machine;
-      console.log(this.adInfo.logo);
-      this.materials = res.data.data.materialList;
+    },
+    async getMyMachineMaterialList(start, refresh) {
+      const payload = {
+        id: this.id,
+        start,
+        offset: 10
+      };
+      try {
+        const response = await this.$server.getMyMachineMaterialList(payload);
+        this.load_more = false;
+        if (refresh) {
+          this.contentList = response.data.data.item;
+        } else {
+          this.contentList = [...this.contentList, ...response.data.data.item];
+        }
+        if (response.data.data.isNext === 0) {
+          //没有更多数据
+          this.no_more = true;
+        } else {
+          this.no_more = false;
+        }
+        if (
+          this.start === 0 &&
+          response.data.data.isNext === 0 &&
+          response.data.data.item.length === 0
+        ) {
+          //暂无数据
+          this.is_empty = true;
+        } else {
+          this.is_empty = false;
+        }
+        const tops = [0, 0];
+        if (this.contentList.length) {
+          this.contentList = this.contentList.map(item => {
+            this.computeLeftAndTop(item, tops);
+            return item;
+          });
+        }
+        this.contentHeight = Math.max(tops[0], tops[1]);
+      } catch (error) {
+        this.is_empty = this.start === 0 && this.contentList.length === 0;
+        this.no_more = !this.is_empty;
+        this.load_more = false;
+        return;
+      }
+    },
+    computeLeftAndTop(item, tops) {
+      const itemHeight =
+        item.materialType === 2 || item.materialType === 4 ? 295 : 660;
+      if (tops[0] <= tops[1]) {
+        item.style = {
+          top: tops[0] + "rpx",
+          left: 10
+        };
+        tops[0] = tops[0] + itemHeight;
+      } else {
+        item.style = {
+          top: tops[1] + "rpx",
+          left: 370 + "rpx"
+        };
+        tops[1] = tops[1] + itemHeight;
+      }
+    }
+  },
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+    this.start = 0;
+    this.getMyMachineMaterialList(0, true);
+    setTimeout(() => {
+      uni.stopPullDownRefresh();
+    }, 1000);
+  },
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+    if (!this.no_more && !this.is_empty) {
+      this.start += 1;
+      this.getMyMachineMaterialList(this.start, false);
     }
   }
 };
@@ -216,20 +332,20 @@ export default {
   box-sizing: border-box;
 }
 .content {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  padding: 0 15rpx;
+  padding: 0 15rpx 20rpx;
   box-sizing: border-box;
-  justify-content: space-around;
   .ct-view {
-    position: relative;
+    position: absolute;
     width: 340rpx;
-    height: 680rpx;
+    // height:680rpx;
     background: rgba(255, 255, 255, 1);
     border-radius: 3rpx;
     padding: 20rpx;
     box-sizing: border-box;
-    margin-top: 20rpx;
+    margin: 10rpx;
     .status {
       width: 162rpx;
       height: 162rpx;
@@ -249,21 +365,25 @@ export default {
     }
     .ct-video {
       width: 300rpx;
-      height: 170rpx;
-      margin-bottom: 20rpx;
+      height: 169rpx;
     }
     .ct-img {
       width: 300rpx;
-      height: 550rpx;
-      margin: 20rpx auto;
+      height: 534rpx;
       margin-top: 0;
       display: block;
+
+      &.min {
+        height: 169rpx;
+      }
     }
     .group {
-      height: 350rpx;
+      height: 365rpx;
     }
     .tit {
       font-size: 24rpx;
+      line-height: 28rpx;
+      height: 56rpx;
       color: rgba(51, 51, 51, 1);
       text-overflow: -o-ellipsis-lastline;
       overflow: hidden;
@@ -272,6 +392,7 @@ export default {
       -webkit-line-clamp: 2;
       line-clamp: 2;
       -webkit-box-orient: vertical;
+      margin-top: 20rpx;
     }
   }
 }

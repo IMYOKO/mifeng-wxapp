@@ -80,6 +80,7 @@ export default {
       material_id: "", //素材id
       material_name: "", //素材名称
       to_dates: [], //选择的日期
+      dictData: [],
       type: 0,
       typeRange: ["请选择", "按天投放", "霸屏投放"],
       bapingRange: [],

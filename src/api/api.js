@@ -372,6 +372,14 @@ class Api extends BasicRequest {
   }
 
   /**
+   * 我的广告机在播广告
+   * @param {object | undefined} payload
+   */
+  getMyMachineMaterialList(payload) {
+    return this.POST('/api/machines/getMyMachineMaterialList', payload);
+  }
+
+  /**
    * 素材审核查询
    * @param {number} id
    */

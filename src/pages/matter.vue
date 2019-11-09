@@ -80,7 +80,6 @@
 <script>
 import tip from "../utils/tip";
 import { checkRole } from "../utils/user";
-import { USER_TOKEN, USER_INFO, USER_SPECICAL_INFO } from "../utils/constant";
 import bottomLoadMore from "../components/common/bottomLoadMore";
 import bottomNoMore from "../components/common/bottomNoMore";
 import placeholder from "../components/common/placeholder";
@@ -114,13 +113,15 @@ export default {
     };
   },
   async onShow() {
-    await checkRole(true)
+    await checkRole(true);
     this.getMatterList(0, true);
   },
   methods: {
     //预览
-    clickPre(item){
-      this.$CommonJs.pathTo(`/pages-matter/preMatter?type=${item.materialType}&logo=${item.logo}&video=${item.video}&name=${item.name}&screenType=${item.screenType}`)
+    clickPre(item) {
+      this.$CommonJs.pathTo(
+        `/pages-matter/preMatter?type=${item.materialType}&logo=${item.logo}&video=${item.video}&name=${item.name}&screenType=${item.screenType}`
+      );
     },
     //点击分类筛选
     clickTypeItem(type) {
