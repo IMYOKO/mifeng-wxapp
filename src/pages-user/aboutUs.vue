@@ -18,7 +18,7 @@ export default {
 
   async onLoad() {
     const res = await this.$server.getArticle({
-      type: 5
+      type: 1
     });
     this.info = res.data.data.article;
   }

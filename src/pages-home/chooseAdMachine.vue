@@ -29,11 +29,16 @@
       </view>
     </view>
     <view class="banner area-picker">
-      <view class="item" @tap="clickAllNot" v-if="selectItemlength === contentList.length && contentList.length > 0">取消全选</view>
+      <view
+        class="item"
+        @tap="clickAllNot"
+        v-if="selectItemlength === contentList.length && contentList.length > 0"
+      >取消全选</view>
       <view class="item" @tap="clickAll" v-else>全选</view>
-      <view class="addresss" @click="showMulLinkageThreePicker">
-        {{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}
-      </view>
+      <view
+        class="addresss"
+        @click="showMulLinkageThreePicker"
+      >{{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}</view>
     </view>
     <view
       class="ct-view"
@@ -60,6 +65,10 @@
           <view class="bottom">
             <view class="text">视频组合价格/15s/天</view>
             <view class="pri">¥{{item.combinePrice}}</view>
+          </view>
+          <view class="bottom">
+            <view class="text">霸屏/60s</view>
+            <view class="pri">¥{{item.bpPrice || 10}}</view>
           </view>
         </view>
       </view>
@@ -112,47 +121,52 @@
       v-if="showClassify"
     ></view>
 
-    <mpvue-city-picker :themeColor="themeColor" ref="mpvueCityPicker" :pickerValueDefault="cityPickerValueDefault"
-		 @onCancel="onCancel" @onConfirm="onConfirm"></mpvue-city-picker>
+    <mpvue-city-picker
+      :themeColor="themeColor"
+      ref="mpvueCityPicker"
+      :pickerValueDefault="cityPickerValueDefault"
+      @onCancel="onCancel"
+      @onConfirm="onConfirm"
+    ></mpvue-city-picker>
   </view>
 </template>
 
 <script>
-import Placeholder from '../component/common/placeholder';
+import Placeholder from "../component/common/placeholder";
 import BottomNoMore from "../component/common/bottomNoMore";
 import BottomLoadMore from "../component/common/bottomLoadMore";
-import mpvueCityPicker from '../component/mpvue-citypicker/mpvueCityPicker.vue'
-import tip from '../utils/tip';
+import mpvueCityPicker from "../component/mpvue-citypicker/mpvueCityPicker.vue";
+import tip from "../utils/tip";
 export default {
   data() {
     return {
-      showClassify:false,
-      load_more: false,    //加载更多图案
-      no_more: false,       //没有更多数据
-      is_empty: false,     //无数据，显示空页面
-      start:0,
+      showClassify: false,
+      load_more: false, //加载更多图案
+      no_more: false, //没有更多数据
+      is_empty: false, //无数据，显示空页面
+      start: 0,
       offset: 10,
-      contentList:[],    //页面列表数据
+      contentList: [], //页面列表数据
       advertise_machine_label_type_index: -1,
-      address:'',
-      longitude:'',
-      latitude:'',
-      adMachineId:[],     //选择的广告机id
-      machineType:[],     //广告机类别
-      provincesCitiesDistrict: '',
-      province: '',
-      city: '',
-      district: '',
-      themeColor: '#007AFF',
+      address: "",
+      longitude: "",
+      latitude: "",
+      adMachineId: [], //选择的广告机id
+      machineType: [], //广告机类别
+      provincesCitiesDistrict: "",
+      province: "",
+      city: "",
+      district: "",
+      themeColor: "#007AFF",
       cityPickerValueDefault: [0, 0, 1],
       selectItemlength: 0,
       material_screenType: null
     };
   },
   onLoad(option) {
-    this.material_screenType = Number(option.material_screenType)
-    let position = uni.getStorageSync('position') || null;
-    if(position){
+    this.material_screenType = Number(option.material_screenType);
+    let position = uni.getStorageSync("position") || null;
+    if (position) {
       this.address = position.site;
       this.longitude = position.longitude;
       this.latitude = position.latitude;
@@ -160,34 +174,34 @@ export default {
     //获取机器分类
     this.getMachineType();
   },
-  onShow(){
+  onShow() {
     this.start = 0;
-    this.getMachineList(0,true);
+    this.getMachineList(0, true);
   },
   methods: {
-    onCancel (e) {},
-    onConfirm (e) {
-      this.provincesCitiesDistrict = e.label
-      const cityArr = e.label.split('-')
-      this.provinces = cityArr[0]
-      this.city = cityArr[1]
-      this.district = cityArr[2] || ''
-      this.cityPickerValueDefault = e.value
+    onCancel(e) {},
+    onConfirm(e) {
+      this.provincesCitiesDistrict = e.label;
+      const cityArr = e.label.split("-");
+      this.provinces = cityArr[0];
+      this.city = cityArr[1];
+      this.district = cityArr[2] || "";
+      this.cityPickerValueDefault = e.value;
       this.start = 0;
       this.getMachineList(0, true);
     },
-    clickAll () {
-      this.adMachineId = this.contentList.filter(item => item.my_cart = 1)
-      this.selectItemlength = this.adMachineId.length
+    clickAll() {
+      this.adMachineId = this.contentList.filter(item => (item.my_cart = 1));
+      this.selectItemlength = this.adMachineId.length;
     },
-    clickAllNot () {
-      this.contentList.map(item => item.my_cart = 0)
-      this.adMachineId = []
-      this.selectItemlength = 0
+    clickAllNot() {
+      this.contentList.map(item => (item.my_cart = 0));
+      this.adMachineId = [];
+      this.selectItemlength = 0;
     },
     showMulLinkageThreePicker() {
-			this.$refs.mpvueCityPicker.show()
-		},
+      this.$refs.mpvueCityPicker.show();
+    },
     //头部筛选
     clickSx(index) {
       this.advertise_machine_label_type_index = index;
@@ -202,7 +216,9 @@ export default {
     },
     //点击搜索
     clickSearch() {
-      this.$CommonJs.pathTo("/pages-home/search?material_screenType=" + this.material_screenType);
+      this.$CommonJs.pathTo(
+        "/pages-home/search?material_screenType=" + this.material_screenType
+      );
     },
     //地图选点
     clickSite() {
@@ -212,60 +228,63 @@ export default {
           this.longitude = res.longitude;
           this.latitude = res.latitude;
           this.start = 0;
-          this.getMachineList(0,true);
+          this.getMachineList(0, true);
         }
       });
     },
-    async clickSure () {
+    async clickSure() {
       if (this.adMachineId.length === 0) {
-        tip.error('请先选择广告机');
-        return
+        tip.error("请先选择广告机");
+        return;
       }
-      uni.setStorageSync('adMachineId', this.adMachineId); 
-      uni.setStorageSync('selectDate', null); 
-      await tip.success('添加成功');
+      uni.setStorageSync("adMachineId", this.adMachineId);
+      uni.setStorageSync("selectDate", null);
+      await tip.success("添加成功");
       uni.navigateBack();
     },
-    clickItem(mac, index, mycart, item){
-      if(mycart === 1){
+    clickItem(mac, index, mycart, item) {
+      if (mycart === 1) {
         //已选取
         let flagIndex = this.adMachineId.indexOf(mac);
-        this.adMachineId.splice(flagIndex,1);
+        this.adMachineId.splice(flagIndex, 1);
         this.contentList[index].my_cart = 0;
-        this.selectItemlength -= 1
-      }else{
+        this.selectItemlength -= 1;
+      } else {
         this.adMachineId.push(item);
         this.contentList[index].my_cart = 1;
-        this.selectItemlength += 1
+        this.selectItemlength += 1;
       }
     },
-    async getMachineType () {
+    async getMachineType() {
       try {
-        const res = await this.$server.getMachineLabels()
-        this.machineType = res.data.data.machineLabels
+        const res = await this.$server.getMachineLabels();
+        this.machineType = res.data.data.machineLabels;
       } catch (error) {}
     },
-    async getMachineList (start, refresh) {
+    async getMachineList(start, refresh) {
       try {
         const payload = {
           longitude: this.longitude,
           latitude: this.latitude,
-          labelType: this.advertise_machine_label_type_index >= 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
-          machineName: '',
+          labelType:
+            this.advertise_machine_label_type_index >= 0
+              ? this.machineType[this.advertise_machine_label_type_index]
+              : "",
+          machineName: "",
           screenType: this.material_screenType,
           province: this.province,
           city: this.city,
           district: this.district,
           start,
-          offset: this.offset,
-        }
-        console.log(payload)
-        const res = await this.$server.getMachinesList(payload)
-        if(this.advertise_machine_label_type_index === -1){
+          offset: this.offset
+        };
+        console.log(payload);
+        const res = await this.$server.getMachinesList(payload);
+        if (this.advertise_machine_label_type_index === -1) {
           //全部的时候取出所有已选择的广告机id
-          for(var i in res.data.data.item){
-            if(res.data.data.item[i].my_cart === 1){
-              if(this.adMachineId.indexOf(res.data.data.item[i].id) === -1){
+          for (var i in res.data.data.item) {
+            if (res.data.data.item[i].my_cart === 1) {
+              if (this.adMachineId.indexOf(res.data.data.item[i].id) === -1) {
                 this.adMachineId.push(res.data.data.item[i].id);
               }
             }
@@ -276,21 +295,23 @@ export default {
         } else {
           this.contentList = [...this.contentList, ...res.data.data.item];
         }
-        if(res.data.data.isNext === 0){
+        if (res.data.data.isNext === 0) {
           //没有更多数据
           this.no_more = true;
-        }else{			
+        } else {
           this.no_more = false;
         }
-        if (this.start === 0 && res.data.data.isNext === 0 && response.data.data.item.length === 0) {
+        if (
+          this.start === 0 &&
+          res.data.data.isNext === 0 &&
+          response.data.data.item.length === 0
+        ) {
           //暂无数据
           this.is_empty = true;
         } else {
           this.is_empty = false;
         }
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     }
   },
   /**
@@ -301,13 +322,13 @@ export default {
     this.getMachineList(0, true);
     setTimeout(() => {
       uni.stopPullDownRefresh();
-    }, 1000);  
+    }, 1000);
   },
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom() {
-    if ((!this.no_more) && (!this.is_empty)) {
+    if (!this.no_more && !this.is_empty) {
       this.start += 1;
       this.getMachineList(this.start, false);
     }
