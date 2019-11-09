@@ -53,9 +53,9 @@
         v-if="type === 3 || type === 4 || type === 5"
         class="placeholderContent video"
         :class="{
-          'filled': video !== '',
-          'placeholderContent-1': type === 1,
-          'placeholderContent-2': type === 2,
+          'filled': video,
+          'placeholderContent-3': type === 3,
+          'placeholderContent-4': type === 4,
           'placeholderContent-5': type === 5,
         }"
       >
@@ -65,7 +65,7 @@
         v-if="type === 1 || type === 2 || type === 5"
         class="placeholderContent image"
         :class="{
-          'filled': logo !== '',
+          'filled': logo,
           'placeholderContent-1': type === 1,
           'placeholderContent-2': type === 2,
           'placeholderContent-5': type === 5,
@@ -232,7 +232,8 @@ export default {
         tip.toast("上传视频不能超过1分钟请重新选择");
         return;
       }
-      const screenType = (this.type === 1 || this.type === 3 || this.type === 5) ? 1 : 2
+      const screenType =
+        this.type === 1 || this.type === 3 || this.type === 5 ? 1 : 2;
       uni.navigateTo({
         url:
           "/pages-matter/preMatter?type=" +
@@ -242,8 +243,8 @@ export default {
           "&video=" +
           this.video +
           "&name=" +
-          this.name + 
-          '&screenType=' +
+          this.name +
+          "&screenType=" +
           screenType
       });
     },
