@@ -73,13 +73,13 @@
         <view class="pri">¥{{orderInfo.amount ? orderInfo.amount : 0}}</view>
       </view>
     </view>
-    <view class="pay">
-      <view class="name">支付方式</view>
-      <view class="pay-view">
-        <view class="item" :class="pay_type === 2 ? 'balance' : ''" @tap="clickPayType(2)">
-          <image class="pay-icon" src="../static/images/ic_home_payment_wallet.png" />
-          <view class="text">余额支付</view>
-          <view class="pri">（余额：¥{{money}}）</view>
+    <view class = "pay" v-if="orderStatus !== 1">
+      <view class = "name">支付方式</view>
+      <view class = "pay-view">
+        <view class = "item" :class="pay_type === 2 ? 'balance' : ''" @tap="clickPayType(2)">
+          <image class ="pay-icon" src = "../static/images/ic_home_payment_wallet.png" />
+          <view class = "text">余额支付</view>
+          <view class = "pri">（余额：¥{{money}}）</view>
         </view>
         <view class="item" :class="pay_type === 1 ? 'balance' : ''" @tap="clickPayType(1)">
           <image class="pay-icon wx" src="../static/images/ic_home_payment_wechat.png" />
@@ -92,16 +92,13 @@
         </view>
       </view>
     </view>
-    <button class="btn" @tap="clickSureOrder">确认下单</button>
-    <view class="modal-mask" catchtouchmove="preventTouchMove" v-if="showPay"></view>
-    <view class="pop-pay" v-if="showPay">
-      <view class="top">
-        <view class="name">请输入支付密码</view>
-        <image
-          class="xx"
-          src="../static/images/ic_home_advertising_machine_close.png"
-          @tap="clickHidden"
-        />
+    <button class ="btn" @tap="clickSureOrderFree" v-if="orderStatus === 1">查看订单</button>
+    <button class ="btn" @tap="clickSureOrder" v-else>确认下单</button>
+    <view class="modal-mask"   catchtouchmove="preventTouchMove" v-if="showPay"></view>
+    <view class = "pop-pay" v-if="showPay">
+      <view class = "top">
+        <view class = "name">请输入支付密码</view>
+        <image class = "xx" src = "../static/images/ic_home_advertising_machine_close.png" @tap="clickHidden" />
       </view>
       <input
         type="number"
@@ -148,11 +145,13 @@ export default {
       userInfo: null,
       machineList: [],
       money: 0,
-      integral: 0
-    };
+      integral: 0,
+      orderStatus: 0
+    }
   },
   async onLoad(options) {
     this.id = options.id;
+    this.orderStatus = Number(options.orderStatus);
     this.userInfo = uni.getStorageSync(USER_INFO) || null;
     //获取页面信息
     await this.getUserAssets();
@@ -260,7 +259,12 @@ export default {
           });
       }
     },
-    async callPayOut() {
+    async clickSureOrderFree () {
+      uni.switchTab({
+        url:'/pages/advertise'
+      })
+    },
+    async callPayOut(){
       //发起支付通信
       const payload = {
         orderId: this.id,

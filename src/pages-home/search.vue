@@ -9,10 +9,10 @@
       <view class = "search" @tap="clickSearch">搜索</view>
     </view>
     <block v-if="isSearch">
-      <view class = "grey">
+      <view class = "grey" v-if="false">
         <view class = "tit">热门搜索</view>
       </view>
-      <view class = "hot">
+      <view class = "hot" v-if="false">
         <view class = "item" v-for="(item, index) in hotList" :key="index" @tap ="clickHotItem(item.name)">{{item.name}}</view>
       </view>
       <view class = "grey">
@@ -79,10 +79,12 @@ export default {
       isSearch:false,   //点击搜索后改变  是否显示搜索历史
       historyLength:8,         //搜索历史个数
       adMachineId:[],     //选择的广告机id
-      material_screenType: null
+      material_screenType: null,
+      isFree: ''
     }
   },
   onLoad (option) {
+    this.isFree = option.isFree || ''
     this.material_screenType = Number(option.material_screenType)
     this.getCartList();
   },
@@ -178,24 +180,41 @@ export default {
     //获取广告机列表
     async getMachineList (start, refresh) {
       try {
-        const payload = {
-          longitude: '',
-          latitude: '',
-          labelType: '',
-          machineName: this.name,
-          screenType: this.material_screenType,
-          province: '',
-          city: '',
-          district: '',
-          start,
-          offset: this.offset,
+        let payload;
+        if (this.isFree == '') {
+          payload = {
+            longitude: '',
+            latitude: '',
+            labelType: '',
+            machineName: this.name,
+            screenType: this.material_screenType,
+            province: '',
+            city: '',
+            district: '',
+            start,
+            offset: this.offset,
+          }
+        } else {
+          payload = {
+            screenType: this.material_screenType,
+            start,
+            offset: this.offset,
+          }
         }
         console.log(payload)
-        const res = await this.$server.getMachinesList(payload)
+        let res 
+        if (this.isFree == '') {
+          res = await this.$server.getMachinesList(payload)
+        } else {
+          res = await this.$server.getMyMachinesList(payload)
+        }
         if (refresh) {
           this.contentList = res.data.data.item;
         } else {
           this.contentList = [...this.contentList, ...res.data.data.item];
+        }
+        if (this.isFree != '') {
+          this.contentList.map(item=>item.notDel = true)
         }
         if(res.data.data.isNext === 0){
           //没有更多数据

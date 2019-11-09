@@ -22,6 +22,7 @@
           <view class="mark">{{item.labelType}}</view>
         </view>
         <image
+          v-if="!item.notDel"
           class="del"
           src="../static/images/ic_home_delete.png"
           @tap="clickDelAdMachine(index)"
@@ -35,7 +36,7 @@
         <view class="itembtn" :class="{'no-select': type === 0}">{{typeRange[type]}}</view>
       </picker>
     </view>
-    <block v-if="type === 1 || type === 2">
+    <block v-if="type === 1">
       <view class="item pd mt" @click="clickChooseDate">
         <view class="line none"></view>
         <view class="tit">选择时间</view>
@@ -84,33 +85,46 @@ export default {
       type: 0,
       typeRange: ["请选择", "按天投放", "霸屏投放"],
       bapingRange: [],
-      bapingType: -1
+      bapingType: -1,
+      material_screenType: null
     };
   },
 
   onLoad(options) {
     this.id = options.id;
+    this.material_screenType = options.material_screenType || null;
   },
   onShow() {
     let matter = uni.getStorageSync("matter") || null;
     if (matter) {
       this.material_id = matter.id || "";
       this.material_name = matter.name || "";
-      uni.removeStorageSync("matter");
     }
     let selectDate = uni.getStorageSync("selectDate") || null;
     if (selectDate) {
       this.to_dates = selectDate;
-      uni.removeStorageSync("selectDate");
     }
     //获取我的广告机购物车
     this.getMachineCart();
 
     this.getDictData();
   },
+  onUnload() {
+    uni.removeStorageSync("matter");
+    uni.removeStorageSync("selectDate");
+    uni.setStorageSync("adMachineId", []);
+  },
   methods: {
     typeChange(e) {
       this.type = Number(e.detail.value);
+      if (this.type === 1) {
+        this.to_dates = [];
+      }
+      if (this.type === 2) {
+        const times = new Date().getTime()
+        const to_dates = this.$CommonJs.timestampToTime(times, false, 'YMD')
+        this.to_dates = [to_dates]
+      }
     },
     bapingTypeChange(e) {
       this.bapingType = Number(e.detail.value);
@@ -127,18 +141,21 @@ export default {
     },
     //选择素材
     clickChooseMatter() {
-      this.$CommonJs.pathTo("/pages-home/chooseMatter?screen");
+      this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
+          this.material_screenType);
     },
     //选择广告机
     clickChooseMachine() {
-      this.$CommonJs.pathTo("/pages-home/chooseAdMachine?isme");
+      this.$CommonJs.pathTo(
+        "/pages-home/chooseAdMachine?material_screenType=" +
+          this.material_screenType + "&isFree=free"
+      );
     },
     //删除广告机
     async clickDelAdMachine(index) {
-      await tip.confirm("确定取消该广告机?");
+     await tip.confirm("确定取消该广告机?");
       this.machineCartList.splice(index, 1);
       uni.setStorageSync("adMachineId", this.machineCartList);
-
       await tip.success("已取消");
     },
     //确认投放
@@ -175,8 +192,9 @@ export default {
         };
         const res = await this.$server.addMaterialOrder(payload);
         const orderId = res.data.data.orderId;
+        const orderStatus = res.data.data.status;
         await tip.success("下单成功");
-        this.$CommonJs.pathTo("/pages-home/postAdDetail?id=" + orderId);
+        this.$CommonJs.pathTo("/pages-home/postAdDetail?orderStatus=" + orderStatus + "&id=" + orderId);
       } catch (error) {}
     },
     async getDictData() {
@@ -351,6 +369,14 @@ export default {
 }
 .mt {
   margin-top: 20rpx;
+
+  .itembtn {
+    font-size: 28rpx;
+
+    &.no-select {
+      opacity: 0.4;
+    }
+  }
 }
 .bd-bt {
   border-bottom: 1rpx solid #f1f0f6;

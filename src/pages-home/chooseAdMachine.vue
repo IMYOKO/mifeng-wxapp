@@ -121,7 +121,7 @@
 import Placeholder from '../component/common/placeholder';
 import BottomNoMore from "../component/common/bottomNoMore";
 import BottomLoadMore from "../component/common/bottomLoadMore";
-import mpvueCityPicker from '../component/mpvue-citypicker/mpvueCityPicker.vue'
+import mpvueCityPicker from '../component/mpvue-citypicker/mpvueCityPicker.vue';
 import tip from '../utils/tip';
 export default {
   data() {
@@ -146,11 +146,13 @@ export default {
       themeColor: '#007AFF',
       cityPickerValueDefault: [0, 0, 1],
       selectItemlength: 0,
-      material_screenType: null
+      material_screenType: null,
+      isFree: ''
     };
   },
   onLoad(option) {
-    this.material_screenType = Number(option.material_screenType)
+    this.material_screenType = Number(option.material_screenType);
+    this.isFree = option.isFree || ''
     let position = uni.getStorageSync('position') || null;
     if(position){
       this.address = position.site;
@@ -202,7 +204,7 @@ export default {
     },
     //点击搜索
     clickSearch() {
-      this.$CommonJs.pathTo("/pages-home/search?material_screenType=" + this.material_screenType);
+      this.$CommonJs.pathTo("/pages-home/search?material_screenType=" + this.material_screenType + '&isFree=free');
     },
     //地图选点
     clickSite() {
@@ -247,20 +249,34 @@ export default {
     },
     async getMachineList (start, refresh) {
       try {
-        const payload = {
-          longitude: this.longitude,
-          latitude: this.latitude,
-          labelType: this.advertise_machine_label_type_index >= 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
-          machineName: '',
-          screenType: this.material_screenType,
-          province: this.province,
-          city: this.city,
-          district: this.district,
-          start,
-          offset: this.offset,
+        let payload;
+        if (this.isFree == '') {
+          payload = {
+            longitude: this.longitude,
+            latitude: this.latitude,
+            labelType: this.advertise_machine_label_type_index >= 0 ? this.machineType[this.advertise_machine_label_type_index] : '',
+            machineName: '',
+            screenType: this.material_screenType,
+            province: this.province,
+            city: this.city,
+            district: this.district,
+            start,
+            offset: this.offset,
+          }
+        } else {
+          payload = {
+            screenType: this.material_screenType,
+            start,
+            offset: this.offset,
+          }
         }
         console.log(payload)
-        const res = await this.$server.getMachinesList(payload)
+        let res
+        if (this.isFree == '') {
+          res = await this.$server.getMachinesList(payload)
+        } else {
+          res = await this.$server.getMyMachinesList(payload)
+        }
         if(this.advertise_machine_label_type_index === -1){
           //全部的时候取出所有已选择的广告机id
           for(var i in res.data.data.item){
@@ -275,6 +291,9 @@ export default {
           this.contentList = res.data.data.item;
         } else {
           this.contentList = [...this.contentList, ...res.data.data.item];
+        }
+        if (this.isFree != '') {
+          this.contentList.map(item=>item.notDel = true)
         }
         if(res.data.data.isNext === 0){
           //没有更多数据
