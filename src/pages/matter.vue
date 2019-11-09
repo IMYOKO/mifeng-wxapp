@@ -20,8 +20,9 @@
           <image class = "status" src = "../static/images/pic_material_audit.png" v-if ="item.auditStatus  === 0" />
           <image class = "status" src = "../static/images/pic_material_audit_failed.png" v-if ="item.auditStatus === 2" />
           <image class = "ct-img" :class="item.materialType === 5 ? 'group' : ''" v-if="(item.materialType === 5 || item.materialType === 1 || item.materialType === 2) && item.screenType === 1" :src="item.logo" />
-          <image class = "ct-img heng-img" :class="item.materialType === 5 ? 'group' : ''" v-if="(item.materialType === 5 || item.materialType === 1 || item.materialType === 2) && item.screenType === 2" :src="item.logo" />
-          <image class = "ct-img" v-if="item.materialType === 3 || item.materialType === 4" src="../static/images/pic_zhanwei_2.png" />
+          <image class = "ct-img min" :class="item.materialType === 5 ? 'group' : ''" v-if="(item.materialType === 5 || item.materialType === 1 || item.materialType === 2) && item.screenType === 2" :src="item.logo" />
+          <image class = "ct-img" v-if="(item.materialType === 3 || item.materialType === 4) && item.screenType === 1" src="../static/images/pic_zhanwei_2.png" />
+          <image class = "ct-img min" v-if="(item.materialType === 3 || item.materialType === 4) && item.screenType === 2" src="../static/images/pic_zhanwei_2.png" />
           <view class = "tit">{{item.materialName}}</view>
         </view>
       </view>
@@ -168,7 +169,7 @@ export default {
 }
 
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .top{
   width:100%;
   height:80rpx;
@@ -283,19 +284,20 @@ export default {
   flex-wrap: wrap;
   padding:0 15rpx;
   box-sizing: border-box;
-  justify-content: space-around;
+  // justify-content: space-around;
   margin-top:100rpx;
   .ct-view{
     position: relative;
     width:340rpx;
-    height:680rpx;
+    // height:680rpx;
     background:rgba(255,255,255,1);
     border-radius:3rpx;
     padding:20rpx;
     box-sizing: border-box;
-    margin-top:20rpx;
+    // margin-top:20rpx;
+    margin: 10rpx;
     &.min {
-      height: 340rpx;
+      // height: 340rpx;
     }
     .status{
       width:162rpx;
@@ -317,7 +319,7 @@ export default {
       margin-top:0;
       display: block;
 
-      &.heng-img {
+      &.min {
         height: 210rpx;
       }
     }
@@ -326,6 +328,8 @@ export default {
     }
     .tit{
       font-size:24rpx;
+      line-height: 28rpx;
+      height: 56rpx;
       color:rgba(51,51,51,1);
       text-overflow: -o-ellipsis-lastline;
       overflow: hidden;

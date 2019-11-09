@@ -50,13 +50,13 @@ export default {
     }
     this.logo = options.logo;
     this.video = options.video;
-    const json = await request({
-      url:'scrolling_text',
-      method:'GET',
-    });
-    this.name = json.data.content;
-    this.logoImg = json.data.picture.logo;
-    this.codeImg = json.data.picture.qr_code;
+    // const json = await request({
+    //   url:'scrolling_text',
+    //   method:'GET',
+    // });
+    // this.name = json.data.content;
+    // this.logoImg = json.data.picture.logo;
+    // this.codeImg = json.data.picture.qr_code;
     // this.startMarquee()
   },
 //根据viewId查询view的宽度

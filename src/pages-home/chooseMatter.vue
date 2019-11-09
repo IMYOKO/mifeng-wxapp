@@ -8,9 +8,14 @@
       </scroll-view>
     </view>
     <view class="content">
-      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.materialName, item.screenType)">
-        <video :src="item.video" class="ct-video" v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5" />
+      <view class="ct-view" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.materialName, item.screenType)" v-if="item.screenType === 1">
+        <video :src="item.video" class="ct-video" v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5"  :class="item.materialType === 5 ? 'group' : ''" />
         <image class="ct-img" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
+        <view class="tit">{{item.materialName}}</view>
+      </view>
+      <view class="ct-view min" v-for="(item, index) in contentList" :key="index" @click="clickChooseIt(item.id, item.materialName, item.screenType)" v-if="item.screenType === 2">
+        <video :src="item.video" class="ct-video min" v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5" />
+        <image class="ct-img min" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5 ? 'group' : ''" :src="item.logo" />
         <view class="tit">{{item.materialName}}</view>
       </view>
     </view>
@@ -188,16 +193,19 @@ export default {
     flex-wrap: wrap;
     padding:0 15rpx;
     box-sizing: border-box;
-    justify-content: space-around;
+    // justify-content: space-around;
     .ct-view{
       position: relative;
       width:340rpx;
-      height:680rpx;
+      // height:680rpx;
       background:rgba(255,255,255,1);
       border-radius:3rpx;
       padding:20rpx;
       box-sizing: border-box;
       margin-top:20rpx;
+      &.min {
+        // height: 340rpx;
+      }
       .status{
         width:162rpx;
         height:162rpx;
@@ -207,8 +215,13 @@ export default {
       }
       .ct-video{
         width:300rpx;
-        height:170rpx;
+        height:550rpx;
         margin-bottom: 20rpx;
+        margin: 10rpx;
+        &.group,
+        &.min {
+          height: 170rpx;
+        }
       }
       .ct-img{
         width:300rpx;
@@ -216,12 +229,17 @@ export default {
         margin:20rpx auto;
         margin-top:0;
         display: block;
+        &.min {
+          height: 210rpx;
+        }
       }
       .group{
         height:360rpx;
       }
       .tit{
         font-size:24rpx;
+        line-height: 28rpx;
+        height: 56rpx;
         color:rgba(51,51,51,1);
         text-overflow: -o-ellipsis-lastline;
         overflow: hidden;

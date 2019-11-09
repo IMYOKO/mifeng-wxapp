@@ -1,10 +1,16 @@
 <template>
   <view>
     <view class = "content">
-      <view class = "ct-view" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" :data-index = "index" @tap = "clickItem">
-        <video :src="item.video" class = "ct-video" v-if ="item.materialType === 3 || item.materialType === 3 || item.materialType === 5"></video>
+      <view class = "ct-view" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" :data-index = "index" @tap = "clickItem" v-if="item.screenType === 1">
+        <video :src="item.video" class = "ct-video" v-if ="item.materialType === 3 || item.materialType === 4 || item.materialType === 5"></video>
         <cover-image  v-if = "item.isSelected" class = "select-icon" src = "../static/images/ic_home_select.png"></cover-image>
         <image class = "ct-img" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5?'group':''" :src="item.logo" />
+        <view class = "tit">{{item.materialName}}</view>
+      </view>
+      <view class = "ct-view" v-for = "(item, index) in contentList" :key = "index" :data-id = "item.id" :data-index = "index" @tap = "clickItem" v-if="item.screenType === 2">
+        <video :src="item.video" class = "ct-video min" v-if ="item.materialType === 3 || item.materialType === 4 || item.materialType === 5"></video>
+        <cover-image  v-if = "item.isSelected" class = "select-icon" src = "../static/images/ic_home_select.png"></cover-image>
+        <image class = "ct-img min" v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" :class="item.materialType === 5?'group':''" :src="item.logo" />
         <view class = "tit">{{item.materialName}}</view>
       </view>
     </view>
@@ -54,12 +60,33 @@ export default {
     }
   },
   onLoad(options) {
-    this.type = options.type;
-    if(this.type == 1){
+    this.type = Number(options.type);
+    if(this.type === 0){
       uni.setNavigationBarTitle({
-        title: '管理图片素材'
+        title: '管理全部素材'
       })
-    }else if(this.type == 2){
+    }
+    if(this.type === 1){
+      uni.setNavigationBarTitle({
+        title: '管理竖屏图片素材'
+      })
+    }
+    if(this.type === 2){
+      uni.setNavigationBarTitle({
+        title: '管理横屏图片素材'
+      })
+    }
+    if(this.type === 3){
+      uni.setNavigationBarTitle({
+        title: '管理竖屏视频素材'
+      })
+    }
+    if(this.type === 4){
+      uni.setNavigationBarTitle({
+        title: '管理横屏视频素材'
+      })
+    }
+    if(this.type === 5){
       uni.setNavigationBarTitle({
         title: '管理组合素材'
       })
@@ -120,6 +147,7 @@ export default {
     },
     async getMatterList(start, refresh) {
       const payload = {
+        auditStatus: 1,
         materialType: this.type,
         start,
         offset: this.offset
@@ -186,18 +214,17 @@ page{
 .content{
   display: flex;
   flex-wrap: wrap;
-  padding:0 15rpx;
+  padding:0 15rpx 20rpx;
   box-sizing: border-box;
-  justify-content: space-around;
   .ct-view{
     position: relative;
     width:340rpx;
-    height:680rpx;
+    // height:680rpx;
     background:rgba(255,255,255,1);
     border-radius:3rpx;
     padding:20rpx;
     box-sizing: border-box;
-    margin-top:20rpx;
+    margin:10rpx;
     .status{
       width:162rpx;
       height:162rpx;
@@ -226,6 +253,9 @@ page{
       margin:20rpx auto;
       margin-top:0;
       display: block;
+      &.min {
+        height: 210rpx;
+      }
     }
     .group{
       height:360rpx;

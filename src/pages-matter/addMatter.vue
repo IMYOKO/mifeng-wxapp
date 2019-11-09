@@ -109,7 +109,7 @@
       }
     },
     onLoad(options) {
-      this.type = options.type || 0;
+      this.type = Number(options.type) || 1;
     },
     methods: {
       radioChange(){

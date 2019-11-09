@@ -15,7 +15,8 @@
         <view class = "status">{{item.status === 0 ? '待支付' : item.status === 1 ? '待投放' : item.status === 2 ? '投放中' : item.status === 3 ? '已完成' : '已关闭'}}</view>
       </view>
       <view class = "middle">
-        <image class  = "img" :src="item.logo" />
+        <image class  = "img" :src="item.logo"  v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5" />
+        <image class  = "img" src="../static/images/pic_zhanwei_2.png"  v-else/>
         <view class = "m-ct">
           <view class = "m-ct-top">
             <view class = "name">{{item.materialName}}</view>

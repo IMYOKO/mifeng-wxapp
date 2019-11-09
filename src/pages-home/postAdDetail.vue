@@ -311,7 +311,7 @@ export default {
 }
 .matter{
   width:100%;
-  min-height:780rpx;
+  // min-height:780rpx;
   background:rgba(255,255,255,1);
   margin-top:20rpx;
   padding-bottom: 20rpx;

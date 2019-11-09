@@ -17,13 +17,21 @@
         <view class = "time-item" v-for="(item,index) in orderInfo.putDay" :key ="index">{{item}}</view>
       </view>
     </view>
-    <view class = "matter">
+    <view class = "matter" v-if="orderInfo.screenType === 1">
       <view class ="top">
         <view class = "name">广告素材</view>
         <view class = "text">{{orderInfo.materialName}}</view>
       </view>
       <video :src="orderInfo.video" class = "video" v-if ="orderInfo.materialType === 3 || orderInfo.materialType === 4 || orderInfo.materialType === 5"></video>
       <image class = "img" :src="orderInfo.logo" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5" />
+    </view>
+    <view class = "matter min"  v-if="orderInfo.screenType === 2">
+      <view class ="top">
+        <view class = "name">广告素材</view>
+        <view class = "text">{{orderInfo.materialName}}</view>
+      </view>
+      <video :src="orderInfo.video" class = "video min" v-if ="orderInfo.materialType === 3 || orderInfo.materialType === 4 || orderInfo.materialType === 5"></video>
+      <image class = "img min" :src="orderInfo.logo" v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5" />
     </view>
     <view class = "machine">
       <view class = "name">广告机</view>
@@ -453,11 +461,11 @@ export default {
 }
 .matter{
   width:100%;
-  min-height:780rpx;
   background:rgba(255,255,255,1);
   margin-top:20rpx;
   padding-bottom: 20rpx;
   box-sizing: border-box;
+
   .top{
     width:100%;
     display: flex;
@@ -484,6 +492,10 @@ export default {
     height:169rpx;
     margin:0 auto;
     margin-bottom: 20rpx;
+    &.min {
+      width: 700rpx;
+      height: 340rpx;
+    }
   }
   .img{
     width:344rpx;
@@ -491,6 +503,10 @@ export default {
     display: block;
     margin:0 auto;
     margin-top:20rpx;
+    &.min {
+      width: 700rpx;
+      height: 340rpx;
+    }
   }
 }
 .machine{
