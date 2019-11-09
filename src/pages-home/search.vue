@@ -23,7 +23,7 @@
         <view class = "item" v-for="(item, index) in history" :key="index" @tap="clickHistoryItem(item)">{{item}}</view>
       </view>
     </block>
-    <view class = "ct-view" v-for="(item, index) in contentList" :key="index" @tap ="clickItem(item.id, index, item.my_cart)">
+    <view class = "ct-view" v-for="(item, index) in contentList" :key="index" @tap ="clickItem(item.id, index, item.my_cart, item)">
       <view class = "ct">
         <image class = "logo" :src='item.logo' />
         <view class = "content">
@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     //点击广告机
-    clickItem(id, index, my_cart){
+    clickItem(id, index, my_cart, item){
       let mycart = my_cart;
       if(mycart === 1){
         //已选取
@@ -96,7 +96,7 @@ export default {
         this.adMachineId.splice(flagIndex,1);
         this.contentList[index].my_cart = 0;
       }else{
-        this.adMachineId.push(id);
+        this.adMachineId.push(item);
         this.contentList[index].my_cart = 1;
       }
     },
@@ -157,15 +157,12 @@ export default {
         tip.toast('请选择广告机');
         return;
       }
-      // const json = await request({
-      //   url:'advertise_machine_cart_items/store',
-      //   method:'POST',
-      //   data:{ids:this.adMachineId}
-      // })
       uni.setStorageSync('adMachineId', this.adMachineId);
       uni.setStorageSync('selectDate',[]); 
       await tip.success('添加成功');
-      uni.navigateBack();
+      uni.redirectTo({
+        url: '/pages-home/postAd'
+      });
     },
     //获取购物车的广告机
     async getCartList(){
@@ -177,16 +174,6 @@ export default {
           this.adMachineId.push(item.id);
         }
       })
-      // const json = await request({
-      //   url:'users/advertise_machine_cart_items',
-      //   method:'GET',
-      // })
-      // for(var i in json.data){
-      //   if(this.adMachineId.indexOf(json.data[i].id) == -1){
-      //       this.adMachineId.push(json.data[i].id);
-      //     }
-      // }
-      // this.$apply();
     },
     //获取广告机列表
     async getMachineList (start, refresh) {

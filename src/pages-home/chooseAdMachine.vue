@@ -29,7 +29,7 @@
       </view>
     </view>
     <view class="banner area-picker">
-      <view class="item" @tap="clickAllNot" v-if="selectItemlength === adMachineId.length && adMachineId.length > 0">取消全选</view>
+      <view class="item" @tap="clickAllNot" v-if="selectItemlength === contentList.length && contentList.length > 0">取消全选</view>
       <view class="item" @tap="clickAll" v-else>全选</view>
       <view class="addresss" @click="showMulLinkageThreePicker">
         {{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}
