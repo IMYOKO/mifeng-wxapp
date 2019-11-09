@@ -191,15 +191,14 @@ export default {
         } else {
           this.is_empty = false;
         }
+        const tops = [0, 0];
         if (this.contentList.length) {
-          const tops = [0, 0];
           this.contentList = this.contentList.map(item => {
             this.computeLeftAndTop(item, tops);
-            this.contentHeight = Math.max(tops[0], tops[1]);
             return item;
           });
         }
-        console.log(res);
+        this.contentHeight = Math.max(tops[0], tops[1]);
       } catch (error) {
         this.is_empty = this.start === 0 && this.contentList.length === 0;
         this.no_more = !this.is_empty;
