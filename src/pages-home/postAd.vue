@@ -117,7 +117,8 @@ export default {
       }
       if (this.type === 2) {
         const times = new Date().getTime()
-        this.to_dates = this.$CommonJs.timestampToTime(times, false, 'YMD')
+        const to_dates = this.$CommonJs.timestampToTime(times, false, 'YMD')
+        this.to_dates = [to_dates]
         console.log(this.to_dates)
       }
     },
