@@ -370,6 +370,24 @@ class Api extends BasicRequest {
   getMyMachineDetail(payload) {
     return this.POST('/api/machines/getMyMachineDetail', payload);
   }
+
+  /**
+   * 素材审核查询
+   * @param {number} id
+   */
+  getMaterialsForAudit(payload) {
+    return this.POST('/api/materials/getMaterialsForAudit', payload);
+  }
+
+  /**
+   * 素材审核
+   * @param {Number} id
+   * @param {Number} auditStatus // 1-通过、2-驳回
+   * @param {String} auditRemark
+   */
+  materialAudit(payload) {
+    return this.POST('/api/materials/materialAudit', payload);
+  }
 }
 
 export default new Api();

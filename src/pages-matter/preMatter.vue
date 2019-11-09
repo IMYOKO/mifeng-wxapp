@@ -44,7 +44,7 @@ export default {
   async onLoad(options) {
     let systemInfo = uni.getSystemInfoSync();
     this.windowHeight = `height:${Math.ceil(systemInfo.windowHeight/(systemInfo.windowWidth/750))}rpx`
-    this.type = options.type;
+    this.type = Number(options.type);
     if(this.type == 2){
       this.pace = 0.8; //滚动速度
     }

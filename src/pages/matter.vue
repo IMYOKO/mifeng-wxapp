@@ -79,7 +79,7 @@ export default {
   methods: {
     //预览
     clickPre(item){
-      this.$CommonJs.pathTo(`/pages-matter/preMatter?type=${item.screenType}&logo=${item.logo}&video=${item.video}&name=${item.name}`)
+      this.$CommonJs.pathTo(`/pages-matter/preMatter?type=${item.materialType}&logo=${item.logo}&video=${item.video}&name=${item.name}`)
     },
     //点击分类筛选
     clickTypeItem(type){
