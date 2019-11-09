@@ -72,7 +72,6 @@
 
 <script>
 import tip from '../utils/tip';
-import moment from 'moment'
 export default {
   data () {
     return {
@@ -116,7 +115,9 @@ export default {
         this.to_dates = []
       }
       if (this.type === 2) {
-        this.to_dates = [moment.unix(moment().unix()).format('YYYY-MM-DD')]
+        const times = new Date().getTime()
+        this.to_dates = this.$CommonJs.timestampToTime(times, false, 'YMD')
+        console.log(this.to_dates)
       }
     },
     bapingTypeChange (e) {

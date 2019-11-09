@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
 import {checkRole} from '../utils/user';
 import avatar from '../component/corp';
 import qiniuUpload from '../utils/qiniuUpload';
@@ -57,9 +56,6 @@ export default {
 	},
 	onShow () {
 		this.getBanner({type: 1})
-	},
-	computed: {
-		...mapState('User/User', ['userInfo']),
 	},
 	methods: {
 		requestSubscribeMessage () {

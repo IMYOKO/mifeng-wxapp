@@ -78,7 +78,6 @@
   </view>
 </template>
 <script>
-import { mapState, mapMutations } from "vuex";
 import tip from "../utils/tip";
 import { checkRole } from "../utils/user";
 import { USER_TOKEN, USER_INFO, USER_SPECICAL_INFO } from "../utils/constant";
@@ -114,14 +113,9 @@ export default {
       ]
     };
   },
-  onShow() {
-    if (!this.userInfo) {
-      this.$CommonJs.pathTo("/pages/login");
-    }
+  async onShow() {
+    await checkRole(true)
     this.getMatterList(0, true);
-  },
-  computed: {
-    ...mapState("User/User", ["userInfo"])
   },
   methods: {
     //预览

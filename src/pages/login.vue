@@ -46,7 +46,6 @@
 </template>
 <script>
 import uParse from "../components/uParse/wxParse";
-import { mapState, mapMutations } from "vuex";
 export default {
   components: {
     uParse: uParse
@@ -61,9 +60,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("User/User", ["SETUSERINFO"]),
     agreed() {
-      console.log(this.status);
       this.status = !this.status;
     },
     goHome() {
@@ -86,7 +83,6 @@ export default {
           this.userInfo.phone = res.data.data.phone;
         }
         uni.setStorageSync("userInfo", this.userInfo);
-        this.SETUSERINFO(this.userInfo);
         this.$CommonJs.showToast("登录成功");
         uni.navigateBack();
       } catch (error) {
