@@ -18,6 +18,7 @@
         <view class="middle">
           <view class="name">{{item.machineName}}</view>
           <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}</view>
+          <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
           <view class="mark">{{item.labelType}}</view>
         </view>
         <image
@@ -125,7 +126,7 @@ export default {
     },
     //选择素材
     clickChooseMatter() {
-      this.$CommonJs.pathTo("/pages-home/chooseMatter");
+      this.$CommonJs.pathTo("/pages-home/chooseMatter?screen");
     },
     //选择广告机
     clickChooseMachine() {
@@ -300,7 +301,6 @@ export default {
         word-break: break-all;
       }
       .mark {
-        width: 88rpx;
         text-align: center;
         font-size: 22rpx;
         color: rgba(195, 83, 1, 1);
@@ -308,6 +308,13 @@ export default {
         padding: 0 10rpx;
         box-sizing: border-box;
         margin-top: 8rpx;
+        display: inline-block;
+
+        &.mark2 {
+          margin-right: 2px;
+          background: #575757;
+          color: #f6e186;
+        }
       }
     }
     .del {

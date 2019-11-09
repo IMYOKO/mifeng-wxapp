@@ -17,6 +17,7 @@
           <view class="content">
             <view class="top">
               <view class="name">{{adInfo.materialName}}</view>
+              <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
               <view class="mark">{{adInfo.labelType}}</view>
             </view>
             <view class="middle">
@@ -145,6 +146,12 @@ export default {
           padding: 0 10rpx;
           box-sizing: border-box;
           flex: 0 0 auto;
+
+          &.mark2 {
+            margin-right: 2px;
+            background: #575757;
+            color: #f6e186;
+          }
         }
       }
       .middle {
