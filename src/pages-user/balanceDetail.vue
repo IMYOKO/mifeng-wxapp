@@ -1,15 +1,15 @@
 <template>
   <view class="balanceDetail">
     <view class="item" v-for="(item, index) in contentList" :key="index">
-      <image class="icon" v-if="item.bussType == '充值'" src="../static/images/ic_my_fine_etail.png" />
-      <image class="icon" v-else-if="item.bussType=='提成'" src="../static/images/ic_commission.png" />
-      <image class="icon" v-else src="../static/images/ic_my_consumption.png" />
+      <image class="icon" v-if="item.szlx == 1" src="../static/images/ic_my_fine_etail.png" />
+      <image class="icon" v-else-if="item.szlx==2" src="../static/images/ic_my_consumption.png" />
+      <image class="icon" v-else src="../static/images/ic_commission.png" />
       <view class="middle">
         <view class="tit">{{item.bussType}}</view>
         <view class="ct">{{item.remark}}</view>
         <view class="time">{{item.opTime}}</view>
       </view>
-      <view class="pri">+{{item.amount}}</view>
+      <view class="pri">{{(item.szlx ===1 ? '+' : '-') + item.amount}}</view>
     </view>
 
     <!--加载更多时动画-->

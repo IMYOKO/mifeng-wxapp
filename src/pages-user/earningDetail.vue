@@ -68,8 +68,8 @@ export default {
   },
 
   onShow() {
-    this.page = 1;
-    this.getEarningList(1, true);
+    this.page = 0;
+    this.getEarningList(this.page, true);
     this.getInfo();
   },
   methods: {

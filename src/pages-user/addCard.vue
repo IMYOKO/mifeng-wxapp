@@ -15,6 +15,18 @@
           />
         </view>
         <view class="item none">
+          <view class="tit">开户银行</view>
+          <input
+            class="large-text"
+            type="text"
+            placeholder="请输入银行名称"
+            name="bank_name"
+            :value="relevance_bank"
+            @input="inputBankname"
+            placeholder-class="input-placeholder"
+          />
+        </view>
+        <view class="item none">
           <view class="tit">支行名称</view>
           <input
             class="large-text"
@@ -117,6 +129,9 @@ export default {
         this.relevance_bank = "";
         this.card_name = "";
       }
+    },
+    inputBankname(e) {
+      this.relevance_bank = e.detail.value;
     },
     inputBranch(e) {
       this.bankBranch = e.detail.value;

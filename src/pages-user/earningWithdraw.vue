@@ -312,7 +312,6 @@ export default {
     }
     input {
       height: 100rpx;
-      font-size: 98rpx;
       background: rgba(255, 255, 255, 1);
       border: 0rpx;
     }
