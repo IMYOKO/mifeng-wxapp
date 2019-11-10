@@ -128,7 +128,12 @@ export default {
     },
     //选择素材
     clickChooseMatter() {
-      this.$CommonJs.pathTo("/pages-home/chooseMatter");
+      if (this.material_screenType) {
+        this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
+          this.material_screenType);
+      } else {
+        this.$CommonJs.pathTo("/pages-home/chooseMatter");
+      }
     },
     //选择广告机
     clickChooseMachine(option) {
@@ -199,9 +204,10 @@ export default {
         };
         const res = await this.$server.addMaterialOrder(payload);
         const orderId = res.data.data.orderId;
+        const orderStatus = res.data.data.status;
         await tip.success("下单成功");
         uni.setStorageSync("adMachineId", []);
-        this.$CommonJs.pathTo("/pages-home/postAdDetail?id=" + orderId);
+        this.$CommonJs.pathTo("/pages-home/postAdDetail?orderStatus=" + orderStatus + "&id=" + orderId);
       } catch (error) {
 
       }

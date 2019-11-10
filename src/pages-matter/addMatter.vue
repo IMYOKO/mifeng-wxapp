@@ -290,11 +290,14 @@ export default {
       if (this.type === 3 || this.type === 4) {
         payload.logo = "";
         payload.video = this.video;
+        payload.seconds = this.seconds;
       }
       if (this.type === 5) {
         payload.logo = this.logo;
         payload.video = this.video;
+        payload.seconds = this.seconds;
       }
+      console.log(payload)
       try {
         await this.$server.addMaterials(payload);
         await tip.success("添加成功");

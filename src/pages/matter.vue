@@ -57,7 +57,7 @@
           <image
             class="ct-img"
             v-if="(item.materialType === 3 || item.materialType === 4) && item.screenType === 1"
-            src="../static/images/pic_zhanwei_2.png"
+            src="../static/images/pic_zhanwei_3.png"
           />
           <image
             class="ct-img min"

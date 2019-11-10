@@ -69,7 +69,7 @@ page{
 .prew-img {
   padding: 15rpx;
   .img,
-  &.video {
+  .video {
     width: 715rpx;
     height: 1272rpx;
     display: flex;
