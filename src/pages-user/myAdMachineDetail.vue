@@ -33,8 +33,8 @@
               <view class="pri">¥{{adInfo.combinePrice}}</view>
             </view>
             <view class="bottom">
-              <view class="text">霸屏/{{item.bpTime}}s</view>
-              <view class="pri">¥{{item.bpPrice}}</view>
+              <view class="text">霸屏/{{adInfo.bpTime}}s</view>
+              <view class="pri">¥{{adInfo.bpPrice}}</view>
             </view>
           </view>
         </view>
@@ -113,7 +113,7 @@ export default {
   },
   onLoad(options) {
     this.id = options.id;
-    this.item
+    this.item;
     this.getAdInfo();
     let systemInfo = uni.getSystemInfoSync();
     this.windowHeight = Math.ceil(
@@ -125,11 +125,15 @@ export default {
   },
   methods: {
     clickPostAd(item) {
-      const newItem = {...item, notDel: true}
+      const newItem = { ...item, notDel: true };
       const adMachineId = [newItem];
-      uni.setStorageSync('adMachineId', adMachineId); 
+      uni.setStorageSync("adMachineId", adMachineId);
       uni.navigateTo({
-        url: "/pages-home/postFreeAd?id=" + this.id + '&material_screenType=' + newItem.screenType
+        url:
+          "/pages-home/postFreeAd?id=" +
+          this.id +
+          "&material_screenType=" +
+          newItem.screenType
       });
     },
     async getAdInfo() {
