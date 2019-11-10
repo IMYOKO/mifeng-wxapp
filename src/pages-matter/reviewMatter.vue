@@ -17,15 +17,17 @@
       <video :src="video" class="videos min"></video>
     </view>
 
-    <view class="shenhe">
+    <view class="shenhe" v-if="auditStatus === 0">
       <view class="input-box">
-        <input type="text" v-model="auditRemark" />
+        <input type="text" placeholder="请输入审核备注" v-model="auditRemark" />
       </view>
       <view class="btn-view">
         <button class="refuse_btn btn" @click="sumbit(2)">不通过</button>
         <button class="login_btn btn" @click="sumbit(1)">通过</button>
       </view>
     </view>
+    <view class="shenhe shenhe2" v-if="auditStatus === 1">审核通过</view>
+    <view class="shenhe shenhe2" v-if="auditStatus === 2">审核不通过</view>
   </view>
 
 </template>
@@ -77,7 +79,9 @@ export default {
         id: this.id
       }
       const res = await this.$server.getMaterialsForAudit(payload)
-      const item = res.data.data.item
+      console.log(res)
+      const item = res.data.data.material
+      console.log(item)
       this.type = item.materialType
       this.logo = item.logo
       this.video = item.video
@@ -124,6 +128,16 @@ page{
         height: 402rpx;
       }
     }
+  }
+}
+
+.shenhe {
+  padding: 20rpx 0;
+  &.shenhe2 {
+    text-align: center;
+    font-size: 24rpx;
+    line-height: 24rpx;
+    padding-top: 30px;
   }
 }
 

@@ -75,22 +75,28 @@
       <view class="item" v-for="(item, index) in machineList" :key="index">
         <image class="logo" :src="item.logo" />
         <view class="ct">
-          <view class="top">机器编号：{{item.mac}}</view>
+          <view class="top">{{item.materialName}}</view>
           <view class="middle">
             <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
-            <view
-              class="pri"
-              v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
-            >¥{{item.price}}／天</view>
-            <view
-              class="pri"
-              v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
-            >¥{{item.price}}／15s／天</view>
+            <block v-if="item.sfbp === 0">
+              <view
+                class="pri"
+                v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
+              >¥{{item.price}}／天</view>
+              <view
+                class="pri"
+                v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
+              >¥{{item.price}}／15s／天</view>
+            </block>
+            <block v-else>
+              <view class="pri">¥{{orderInfo.bpprice}}／{{orderInfo.bpsj}}s</view>
+            </block>
           </view>
           <view class="bottom">
             <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
             <view class="mark">{{item.lableType}}</view>
-            <view class="num">×{{item.price}}</view>
+            <view class="num" v-if="item.sfbp === 0">×{{item.price}}</view>
+            <view class="num" v-else>×{{orderInfo.bpprice}}</view>
           </view>
         </view>
       </view>
