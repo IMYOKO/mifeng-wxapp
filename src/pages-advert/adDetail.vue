@@ -258,7 +258,8 @@ export default {
       payPassValue: "", //支付密码输入内容
       inputBan: false,
       money: 0, // 余额
-      integral: 0 // 积分
+      integral: 0, // 积分
+      machineList: []
     };
   },
   onLoad(options) {
