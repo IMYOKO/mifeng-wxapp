@@ -33,8 +33,8 @@
               <view class="pri">¥{{adInfo.combinePrice}}</view>
             </view>
             <view class="bottom">
-              <view class="text">霸屏/60s</view>
-              <view class="pri">¥{{item.bpPrice || 10}}</view>
+              <view class="text">霸屏/{{item.bpTime}}s</view>
+              <view class="pri">¥{{item.bpPrice}}</view>
             </view>
           </view>
         </view>

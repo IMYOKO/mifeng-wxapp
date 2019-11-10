@@ -29,7 +29,8 @@
     <view class="time">
       <view class="time-selectet" @tap="clickDate">
         <view class="text">投放时间</view>
-        <view class="num">总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
+        <view class="num" v-if="orderInfo.sfbp === 1">总秒数（{{orderInfo.bpsj ? orderInfo.bpsj : 0}}）</view>
+        <view class="num" v-else>总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
         <image class="icon" src="../static/images/ic_home_launch_time_1.png" v-if="dateOpen" />
         <image class="icon" src="../static/images/ic_home_launch_time_2.png" v-else />
       </view>
@@ -416,56 +417,56 @@ export default {
     //点击投放时间
     clickDate() {
       this.dateOpen = !this.dateOpen;
-    }
-  },
-  async callPayOut() {
-    //发起支付通信
-    const payload = {
-      orderId: this.id,
-      payType: this.pay_type,
-      paypwd: this.payPassValue
-    };
-    await this.$server
-      .orderPay(payload)
-      .then(res => {
-        this.payPassValue = "";
-        uni.redirectTo({
-          url: "/pages-home/paySuccess?id=" + this.payId
-        });
-      })
-      .then(res => {
-        this.payPassValue = "";
-        uni.redirectTo({
-          url: "/pages-home/paySuccess?id=" + this.id
-        });
-      })
-      .catch(err => {
-        if (err.code != 0) {
-          this.inputBan = false;
+    },
+    async callPayOut() {
+      //发起支付通信
+      const payload = {
+        orderId: this.id,
+        payType: this.pay_type,
+        paypwd: this.payPassValue
+      };
+      await this.$server
+        .orderPay(payload)
+        .then(res => {
           this.payPassValue = "";
-          if (err.code == 40301002) {
-            //密码错误
-            wx.showModal({
-              title: "密码输入错误",
-              content: "",
-              cancelText: "忘记密码",
-              confirmText: "重新输入",
-              confirmColor: "#000000",
-              cancelColor: "#000000",
-              success: function(res) {
-                if (res.confirm) {
-                  //重新输入
-                } else if (res.cancel) {
-                  //忘记密码
-                  uni.navigateTo({
-                    url: "/pages-home/updatePayPass"
-                  });
+          uni.redirectTo({
+            url: "/pages-home/paySuccess?id=" + this.payId
+          });
+        })
+        .then(res => {
+          this.payPassValue = "";
+          uni.redirectTo({
+            url: "/pages-home/paySuccess?id=" + this.id
+          });
+        })
+        .catch(err => {
+          if (err.code != 0) {
+            this.inputBan = false;
+            this.payPassValue = "";
+            if (err.code == 40301002) {
+              //密码错误
+              wx.showModal({
+                title: "密码输入错误",
+                content: "",
+                cancelText: "忘记密码",
+                confirmText: "重新输入",
+                confirmColor: "#000000",
+                cancelColor: "#000000",
+                success: function(res) {
+                  if (res.confirm) {
+                    //重新输入
+                  } else if (res.cancel) {
+                    //忘记密码
+                    uni.navigateTo({
+                      url: "/pages-home/updatePayPass"
+                    });
+                  }
                 }
-              }
-            });
+              });
+            }
           }
-        }
-      });
+        });
+    },
   }
 };
 </script>

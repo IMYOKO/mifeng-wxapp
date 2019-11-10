@@ -18,19 +18,13 @@
       <image class = "img2" src = "../static/images/pic_application_24.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
-		
-		<!-- <avatar selWidth="300upx" selHeight="300upx" @upload="myUpload" :avatarSrc="url" avatarStyle="width: 50vw;height: calc(50vw * 1920/1080);border-radius: 0;margin:0;"></avatar> -->
+		<button class="v-btn mt40" @tap="sendMsg">发生订阅消息</button>
 	</view>
 </template>
 
 <script>
 import {checkRole} from '../utils/user';
-import avatar from '../component/corp';
-import qiniuUpload from '../utils/qiniuUpload';
 export default {
-	components: {
-		avatar
-	},
 	data () {
 		return {
 			url: './../static/images/pic_addmatter_group_placeholder.png',
@@ -58,19 +52,6 @@ export default {
 		this.getBanner({type: 1})
 	},
 	methods: {
-		requestSubscribeMessage () {
-			wx.requestSubscribeMessage({
-				tmplIds: [''],
-				success (res) { }
-			})
-		},
-		myUpload (option) {
-			console.log(option)
-			qiniuUpload(option.path, async (res) => {
-				this.logo = res.imageURL;
-				console.log(this.logo)
-			})
-		},
 		loadCity (longitude, latitude, site) {
 			let position  = {
 				latitude,

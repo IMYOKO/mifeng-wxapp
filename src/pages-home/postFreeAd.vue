@@ -195,7 +195,24 @@ export default {
         const orderStatus = res.data.data.status;
         await tip.success("下单成功");
         this.$CommonJs.pathTo("/pages-home/postAdDetail?orderStatus=" + orderStatus + "&id=" + orderId);
-      } catch (error) {}
+      } catch (error) {
+        const status = error.data.status
+        const data = error.data.data
+        this.delMachineCart(status, data)
+      }
+    },
+    async delMachineCart (status, data) {
+      if (status === 10109) {
+        await tip.confirm("当前时间段，存在不可用的广告机，是否移除?");
+        data.map(item => {
+          this.machineCartList.map((value, index) => {
+            if (value.id === item.id) {
+              this.machineCartList.splice(index, 1);
+            }
+          })
+        })
+        uni.setStorageSync("adMachineId", this.machineCartList);
+      }
     },
     async getDictData() {
       try {

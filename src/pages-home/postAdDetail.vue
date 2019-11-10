@@ -4,7 +4,8 @@
     <view class="time">
       <view class="time-selectet" @tap="clickDate">
         <view class="text">投放时间</view>
-        <view class="num">总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
+        <view class="num" v-if="orderInfo.sfbp === 1">总秒数（{{orderInfo.bpsj ? orderInfo.bpsj : 0}}）</view>
+        <view class="num" v-else>总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
         <image class="icon" src="../static/images/ic_home_launch_time_1.png" v-if="dateOpen" />
         <image class="icon" src="../static/images/ic_home_launch_time_2.png" v-else />
       </view>
@@ -52,14 +53,21 @@
           <view class="top">{{item.materialName}}</view>
           <view class="middle">
             <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
-            <view
-              class="pri"
-              v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
-            >¥{{item.price}}／天</view>
-            <view
-              class="pri"
-              v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
-            >¥{{item.price}}／15s／天</view>
+            <block v-if="orderInfo.sfbp === 0">
+              <view
+                class="pri"
+                v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
+              >¥{{item.price}}／天</view>
+              <view
+                class="pri"
+                v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
+              >¥{{item.price}}／15s／天</view>
+            </block>
+            <block v-else>
+              <view
+                class="pri"
+              >¥{{orderInfo.bpprice}}／{{orderInfo.bpsj}}s</view>
+            </block>
           </view>
           <view class="bottom">
             <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>

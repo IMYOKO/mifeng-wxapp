@@ -22,13 +22,18 @@
             <view class = "name">{{item.materialName}}</view>
             <view class = "mark">{{item.labelType}}</view>
           </view>
-          <view  class = "m-ct-middle">
+          <view  class = "m-ct-middle" v-if="item.sfbp === 0">
             <view class = "text">总投放天数</view>
             <view class = "day">{{item.putDays}}</view>
           </view>
+          <view  class = "m-ct-middle" v-else>
+            <view class = "text">霸屏时间(s)</view>
+            <view class = "day">{{item.bpsj}}</view>
+          </view>
           <view class = "m-ct-bottom">
             <view class = "text">合计</view>
-            <view class = "pri">¥{{item.amount}}</view>
+            <view class = "pri" v-if="item.sfbp === 0">¥{{item.amount}}</view>
+            <view class = "pri" v-else>¥{{item.bpprice}}</view>
           </view>
         </view>
       </view>

@@ -145,10 +145,6 @@ export default {
     clickChooseDate() {
       this.$CommonJs.pathTo("/pages-home/chooseDate?to_dates=" + this.to_dates);
     },
-    // 确认投放
-    clickSubmit() {
-      this.$CommonJs.pathTo("/pages-home/postAdDetail");
-    },
     getMachineCart() {
       const machineCartList = uni.getStorageSync("adMachineId") || [];
       this.machineCartList = machineCartList;
@@ -206,7 +202,9 @@ export default {
         await tip.success("下单成功");
         uni.setStorageSync("adMachineId", []);
         this.$CommonJs.pathTo("/pages-home/postAdDetail?id=" + orderId);
-      } catch (error) {}
+      } catch (error) {
+
+      }
     },
     async getDictData() {
       try {
