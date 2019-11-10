@@ -56,16 +56,8 @@ export default {
       content: "",
       status: true,
       openid: null,
-      userInfo: null,
-      versionOk: false
+      userInfo: null
     };
-  },
-  onShow() {
-    const version = wx.getSystemInfoSync().SDKVersion;
-    if (this.$CommonJs.compareVersion(version, '2.8.2') >= 0) {
-      this.versionOk = true
-    }
-    console.log(this.versionOk)
   },
   methods: {
     agreed() {
@@ -74,49 +66,6 @@ export default {
     goHome() {
       uni.switchTab({ url: "/pages/index" });
     },
-    async sendMsg () {
-			return new Promise((reslove, reject) => {
-				wx.requestSubscribeMessage({
-					tmplIds: [
-            'qOhXrEbbhk-Thb6Bh-DiY_Vhu729f6knvfxbZnFrajw',
-            'bIp4adGXcD9nulkNBbydX7Vj7gtsUduli-90zCiH1J0',
-            'ckzg5M3o10rlw2x1fAhRzNOfWXG0giXgLjEJR9f8GU8'
-          ],
-					success: res => {
-						if (res.errMsg === 'requestSubscribeMessage:ok') {
-              let payload = []
-              if (res['qOhXrEbbhk-Thb6Bh-DiY_Vhu729f6knvfxbZnFrajw'] === 'accept') {
-                payload.push('qOhXrEbbhk-Thb6Bh-DiY_Vhu729f6knvfxbZnFrajw')
-              }
-              if (res['bIp4adGXcD9nulkNBbydX7Vj7gtsUduli-90zCiH1J0'] === 'accept') {
-                payload.push('bIp4adGXcD9nulkNBbydX7Vj7gtsUduli-90zCiH1J0')
-              }
-              if (res['ckzg5M3o10rlw2x1fAhRzNOfWXG0giXgLjEJR9f8GU8'] === 'accept') {
-                payload.push('ckzg5M3o10rlw2x1fAhRzNOfWXG0giXgLjEJR9f8GU8')
-              }
-              console.log(payload)
-              if (payload.length === 0) {
-                reslove({
-                  status: 0
-                })
-              }
-							reslove({
-								status: 0
-							})
-						} else {
-							reject({
-								status: 10000
-							})
-						}
-					},
-					fail() {
-						reject({
-							status: 10000
-						})
-					}
-				})
-			})
-		},
     async login(e) {
       if (e.detail.errMsg == "getUserInfo:fail auth deny") {
         this.$CommonJs.showToast("请允许授权");
@@ -153,11 +102,6 @@ export default {
       }
     },
     async catchSubmit() {
-      if (this.versionOk) {
-        await this.sendMsg()
-      } else {
-        console.log('版本不支持消息订阅')
-      }
       uni.login({
         provider: "weixin",
         success: loginRes => {

@@ -396,6 +396,21 @@ class Api extends BasicRequest {
   materialAudit(payload) {
     return this.POST('/api/materials/materialAudit', payload);
   }
+
+  /**
+   * 查询用户消息订阅模板
+   * @param {String} result
+   */
+  getUserWxTemplate() {
+    return this.POST('/api/user/getUserWxTemplate', {});
+  }
+
+  /**
+   * 微信消息订阅
+   */
+  wxxxdy(payload) {
+    return this.POST('/api/user/wxxxdy', payload);
+  }
 }
 
 export default new Api();

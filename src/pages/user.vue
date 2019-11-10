@@ -5,6 +5,7 @@
       <image class="tx" :src="userInfo.avatarUrl" />
       <view class="name">{{userInfo.nickName}}</view>
       <view class="sf">{{userInfo.userLevelName}}</view>
+      <button class="dingyue" @click="sendMsg">订阅</button>
     </view>
     <view @tap="clickMyAd">
       <formidTaker>
@@ -66,6 +67,7 @@
 </template>
 
 <script>
+import tip from "../utils/tip";
 import { getUserInfo, updateUserInfo, checkRole } from "../utils/user";
 const userMap = {
   0: "一般用户",
@@ -79,15 +81,80 @@ const userMap = {
 export default {
   data() {
     return {
-      userInfo: null
+      userInfo: null,
+      versionOk: false,
+      tmplIds: []
     };
   },
   async onShow() {
     await checkRole();
     await this.requestUserInfo();
     this.userInfo = getUserInfo();
+    const version = wx.getSystemInfoSync().SDKVersion;
+    if (this.$CommonJs.compareVersion(version, '2.8.2') >= 0) {
+      this.versionOk = true
+    }
+    await this.getUserWxTemplate()
+    console.log(this.versionOk)
   },
   methods: {
+    async getUserWxTemplate () {
+      try {
+        const res = await this.$server.getUserWxTemplate()
+        const templateList = res.data.data.templateList || []
+        let tmplIds = []
+        templateList.forEach(item => {
+          if (item.sfdy === 0) {
+            tmplIds.push(item.templateId)
+          }
+        })
+        this.tmplIds = tmplIds
+      } catch (error) {
+        
+      }
+    },
+    async wxxxdy (result) {
+      const payload = { result }
+      console.log(payload)
+      const res = await this.$server.wxxxdy(payload)
+      tip.success('操作成功')
+    },
+    async requestSubscribeMessage () {
+			return new Promise((reslove, reject) => {
+				wx.requestSubscribeMessage({
+					tmplIds: this.tmplIds,
+					success: async res => {
+						if (res.errMsg === 'requestSubscribeMessage:ok') {
+              await this.wxxxdy(JSON.stringify(res))
+							reslove({
+								status: 0
+							})
+						} else {
+							reslove({
+								status: 0
+							})
+            }
+					},
+					fail() {
+						reslove({
+							status: 0
+						})
+					}
+				})
+			})
+    },
+    async sendMsg () {
+      await this.getUserWxTemplate()
+      if (this.versionOk) {
+        if (this.tmplIds.length > 0) {
+          await this.requestSubscribeMessage()
+        } else {
+          tip.error('您没有新的信息订阅拉！')
+        }
+      } else {
+        tip.error('当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试')
+      }
+    },
     async requestUserInfo() {
       try {
         const res = await this.$server.getUserInfo();
@@ -157,6 +224,25 @@ page {
     z-index: 999;
     position: relative;
     margin-bottom: 60rpx;
+
+    .dingyue {
+      padding: 0;
+      border: none;
+      background: #575757;
+      position: absolute;
+      top: 142rpx;
+      left: 170rpx;
+      font-size: 24rpx;
+      padding: 0 10px;
+      background: ;
+      line-height: 48rpx;
+      border-radius: 5rpx;
+      color: #f6e186;
+
+      &::after {
+        border: none;
+      }
+    }
 
     .tx {
       width: 136rpx;
