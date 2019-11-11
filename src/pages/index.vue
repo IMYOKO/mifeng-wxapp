@@ -18,7 +18,6 @@
       <image class = "img2" src = "../static/images/pic_application_24.png" @click="clickAddMatter" />
 		</view>
 		<image class = "img3" src = "../static/images/pic_findus_3.png" @click="clickFindUs" />
-		<button class="v-btn mt40" @tap="sendMsg">发生订阅消息</button>
 	</view>
 </template>
 
