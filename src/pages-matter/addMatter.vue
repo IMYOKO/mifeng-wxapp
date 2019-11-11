@@ -76,26 +76,22 @@
     </view>
 
     <view class="tip">图片规格为手机图片,组合素材必须上传一张图片一个视频，视频时长不超过1分钟</view>
-    <formidTaker>
-      <view class="btn">
-        <button class="left" @tap="clickPreView">预览效果</button>
-        <button class="right" @tap="clickUpload">上传</button>
-      </view>
-    </formidTaker>
+
+    <view class="btn">
+      <button class="left" @tap="clickPreView">预览效果</button>
+      <button class="right" @tap="clickUpload">上传</button>
+    </view>
+
   </view>
 </template>
 <script>
 import request from "../utils/request";
-import FormidTaker from "../components/formidTaker";
 import tip from "../utils/tip";
 import { USER_TOKEN, USER_INFO, USER_SPECICAL_INFO } from "../utils/constant";
 import qiniuUpload from "../utils/qiniuUpload";
 export default {
   config: {
     navigationBarTitleText: "添加素材"
-  },
-  components: {
-    formidTaker: FormidTaker
   },
   data() {
     return {
