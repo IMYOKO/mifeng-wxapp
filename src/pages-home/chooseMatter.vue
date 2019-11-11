@@ -31,7 +31,8 @@
           :class="item.materialType === 5 ? 'group' : (item.screenType === 2 ? 'min' : '')"
           :src="item.logo"
         />
-        <view class="tit">{{item.materialName}}</view>
+        <view class="tit">{{item.id}}</view>
+        <view class="tit min">{{item.createTime}}</view>
       </view>
     </view>
 
@@ -152,7 +153,7 @@ export default {
     },
     computeLeftAndTop(item, tops) {
       const itemHeight =
-        item.materialType === 2 || item.materialType === 4 ? 295 : 660;
+        item.materialType === 2 || item.materialType === 4 ? 323 : 660;
       if (tops[0] <= tops[1]) {
         item.style = {
           top: tops[0] + "rpx",
@@ -291,7 +292,7 @@ export default {
       .tit {
         font-size: 24rpx;
         line-height: 28rpx;
-        height: 56rpx;
+        height: 28rpx;
         color: rgba(51, 51, 51, 1);
         text-overflow: -o-ellipsis-lastline;
         overflow: hidden;
@@ -301,6 +302,9 @@ export default {
         line-clamp: 2;
         -webkit-box-orient: vertical;
         margin-top: 20rpx;
+        &.min {
+          font-size: 20rpx;
+        }
       }
     }
   }

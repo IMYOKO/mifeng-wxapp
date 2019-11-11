@@ -2,12 +2,12 @@
   <view>
     <view class="top-button">
       <view class="item">
-        <button class="top-btn" @tap="clickManager">管理</button>
+        <!-- <button class="top-btn" @tap="clickManager">管理</button> -->
         <button class="top-btn add" @tap="clickAdd">添加</button>
       </view>
     </view>
     <view class="banner">
-      <scroll-view class="sv" scroll-x="true">
+      <!-- <scroll-view class="sv" scroll-x="true">
         <view
           v-for="(item, index) in tags"
           :key="index"
@@ -15,7 +15,20 @@
           class="b-item"
           :class="selectedTag == index ? 'selected' : ''"
         >{{item}}</view>
-      </scroll-view>
+      </scroll-view> -->
+    </view>
+    <view class="banner-click">
+      <view class="banner-item" v-for="(item, index) in tags" :key="index">
+        <view class="item-inner">
+          <view
+            class="item"
+            @tap="selectTag(index)"
+            :class="{'selected': selectedTag == index}"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
     </view>
     <view class="content" :style="{height: contentHeight + 'rpx'}">
       <view
@@ -64,7 +77,9 @@
             v-if="(item.materialType === 3 || item.materialType === 4) && item.screenType === 2"
             src="../static/images/pic_zhanwei_2.png"
           />
-          <view class="tit">{{item.materialName}}</view>
+          <view class="tit">{{item.id}}</view>
+          <view class="tit min">{{item.createTime}}</view>
+          <image @click.stop="clickDel(item.id)" class="delete" src="../static/images/ic_home_search_history_delete.png" />
         </view>
       </view>
     </view>
@@ -104,10 +119,10 @@ export default {
       selectedTag: 0,
       tags: [
         "全部素材",
-        "竖屏图片",
         "横屏图片",
-        "竖屏视频",
         "横屏视频",
+        "竖屏图片",
+        "竖屏视频",
         "组合素材"
       ]
     };
@@ -131,7 +146,17 @@ export default {
     },
     selectTag(index) {
       this.selectedTag = index;
-      this.type = index;
+      if (index === 1) {
+        this.type = 2
+      } else if (index == 2) {
+        this.type = 4
+      } else if (index == 3) {
+        this.type = 1
+      } else if (index == 4) {
+        this.type = 3
+      } else {
+        this.type = index;
+      }
       this.start = 0;
       this.getMatterList(0, true);
     },
@@ -155,7 +180,6 @@ export default {
     },
     async getMatterList(start, refresh) {
       const payload = {
-        auditStatus: 1,
         materialType: this.type,
         start,
         offset: this.offset
@@ -201,7 +225,7 @@ export default {
     },
     computeLeftAndTop(item, tops) {
       const itemHeight =
-        item.materialType === 2 || item.materialType === 4 ? 295 : 660;
+        item.materialType === 2 || item.materialType === 4 ? 323 : 688; // 295 660
       if (tops[0] <= tops[1]) {
         item.style = {
           top: tops[0] + "rpx",
@@ -215,7 +239,19 @@ export default {
         };
         tops[1] = tops[1] + itemHeight;
       }
-    }
+    },
+    async clickDel(id) {
+      await tip.confirm("确定删除该素材？");
+      const payload = { ids: `${id}` };
+      console.log(payload);
+      try {
+        await this.$server.delMaterials(payload);
+        tip.success("删除成功");
+        this.start = 0;
+        this.isAll = false;
+        this.getMatterList(0, true);
+      } catch (error) {}
+    },
   },
   /**
    * 页面相关事件处理函数--监听用户下拉动作
@@ -258,6 +294,7 @@ export default {
     color: rgba(153, 153, 153, 1);
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     box-sizing: border-box;
     border-bottom: 6rpx solid #141414;
     .top-btn {
@@ -288,6 +325,8 @@ export default {
   top: 0rpx;
   right: 0;
   white-space: nowrap;
+  justify-content: flex-end;
+  align-items: center;
   overflow: hidden;
   z-index: 600;
 
@@ -295,8 +334,8 @@ export default {
     height: 80rpx;
     font-size: 28rpx;
     color: rgba(153, 153, 153, 1);
-    display: flex;
-    align-items: center;
+    margin-right: 10rpx;
+    margin-top: 16rpx;
     box-sizing: border-box;
     border-bottom: 6rpx solid #141414;
     .top-btn {
@@ -311,7 +350,8 @@ export default {
     .add {
       background: rgba(51, 51, 51, 1);
       color: rgba(255, 214, 2, 1);
-      margin-left: 10rpx;
+      // margin-left: 10rpx;
+      float: right;
     }
   }
 }
@@ -347,12 +387,44 @@ export default {
     font-weight: bold;
   }
 }
+.banner-click {
+  width: 100%;
+  display: flex;
+  background: #fff;
+  flex-wrap: wrap;
+  position: fixed;
+  left: 0;
+  top: 80rpx;
+  z-index: 1000;
+
+  .banner-item {
+    width: 33.33%;
+
+    .item-inner {
+      padding: 10rpx;
+      .item {
+        color: #666;
+        height: 50rpx;
+        line-height: 50rpx;
+        font-size: 24rpx;
+        border-radius: 5rpx;
+        text-align: center;
+        box-shadow: 0px 0px 5px rgba(153, 153, 153, .5);
+        &.selected {
+          color: rgba(255, 214, 2, 1);
+          background: rgba(51, 51, 51, 1);
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
 .content {
   position: relative;
   flex-wrap: wrap;
   padding: 0 15rpx;
   box-sizing: border-box;
-  margin-top: 100rpx;
+  margin-top: 240rpx;
   .ct-view {
     position: absolute;
     width: 340rpx;
@@ -368,7 +440,7 @@ export default {
       position: absolute;
       top: 0;
       right: 0;
-      z-index: 998;
+      z-index: 98;
     }
     .ct-video {
       width: 300rpx;
@@ -390,17 +462,28 @@ export default {
     .tit {
       font-size: 24rpx;
       line-height: 28rpx;
-      height: 56rpx;
+      height: 28rpx;
       color: rgba(51, 51, 51, 1);
       text-overflow: -o-ellipsis-lastline;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 2;
-      line-clamp: 2;
+      line-clamp: 1;
       -webkit-box-orient: vertical;
       margin-top: 20rpx;
+      &.min {
+        font-size: 20rpx;
+      }
     }
+  }
+  .delete {
+    position: absolute;
+    bottom: 15rpx;
+    right: 15rpx;
+    z-index: 100;
+    width: 48rpx;
+    height: 48rpx;
   }
 }
 </style>

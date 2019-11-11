@@ -40,8 +40,8 @@
             <view class="day">{{item.putDays}}</view>
           </view>
           <view class="m-ct-middle" v-else>
-            <view class="text">霸屏时间(s)</view>
-            <view class="day">{{item.bpsj}}</view>
+            <view class="text">霸屏时间</view>
+            <view class="day">{{$CommonJs.bpsj(item.bpsj)}}</view>
           </view>
           <view class="m-ct-bottom">
             <view class="text">合计</view>

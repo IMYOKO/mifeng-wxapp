@@ -8,7 +8,7 @@
         <view class="modal_btn" @tap="closeModal">确定</view>
       </view>
     </view>
-    <view class="neck-ct">
+    <!-- <view class="neck-ct">
       <view class="item">
         <view class="line"></view>
         <view class="tit">素材名称</view>
@@ -20,7 +20,7 @@
         placeholder-class="input-placeholder"
         @input="inputName"
       ></textarea>
-    </view>
+    </view> -->
     <view class="text_group">
       <radio-group bindchange="radioChange" @tap="click_radio">
         <radio style="zoom:.5" :checked="status" color="#FFD602" />
@@ -207,10 +207,6 @@ export default {
     },
     //预览
     clickPreView() {
-      if (!this.name) {
-        tip.toast("请输入素材名称");
-        return;
-      }
       if (
         (this.type === 1 || this.type === 2 || this.type === 5) &&
         !this.logo
@@ -252,10 +248,6 @@ export default {
     async clickUpload() {
       if (!this.status) {
         this.showModal = true;
-        return;
-      }
-      if (!this.name) {
-        tip.toast("请输入广告名称");
         return;
       }
       if (

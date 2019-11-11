@@ -66,9 +66,19 @@ const compareVersion = (v1, v2) => {
   return 0
 }
 
+const bpsj = times => {
+  const hour = Math.floor((times % (24*3600)) / 3600)
+  const minutes = Math.floor(((times % (24*3600)) % 3600) / 60)
+  if (hour > 0) {
+    return hour + '小时 ' + minutes + '分钟'
+  }
+  return minutes + '分钟'
+}
+
 export default {
   pathTo,
   showToast,
   timestampToTime,
-  compareVersion
+  compareVersion,
+  bpsj
 }

@@ -4,7 +4,7 @@
     <view class="item pd mt" @tap="clickChooseMatter">
       <view class="line"></view>
       <view class="tit">选择素材</view>
-      <view class="text">{{material_name}}</view>
+      <view class="text">{{material_id}}</view>
       <image class="arrow" src="../static/images/ic_home_open_1.png" />
     </view>
     <view class="item pd bd-bt" @tap="clickChooseMachine">
@@ -32,9 +32,10 @@
     <view class="item pd mt">
       <view class="line"></view>
       <view class="tit">选择投放类型</view>
-      <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">
-        <view class="itembtn" :class="{'no-select': type === 0}">{{typeRange[type]}}</view>
-      </picker>
+      <view class="itembtn itembtn2">
+        <view class="bp" :class="{select: type === 1}" @click="selectType(1)">按天投放</view>
+        <view class="bp" :class="{select: type === 2}" @click="selectType(2)">霸屏投放</view>
+      </view>
     </view>
     <block v-if="type === 1">
       <view class="item pd mt" @click="clickChooseDate">
@@ -50,7 +51,7 @@
       </view>
     </block>
     <block v-if="type === 2">
-      <picker mode="selector" :range="bapingRange" :value="bapingType" @change="bapingTypeChange">
+      <picker mode="multiSelector" @columnchange="bindMultiPickerColumnChange" :value="multiIndex" :range="multiArray">
         <view class="item pd mt">
           <view class="line none"></view>
           <view class="tit">选择时间</view>
@@ -61,10 +62,13 @@
       <view class="item pd">
         <view class="line none"></view>
         <view class="tit">霸屏时间</view>
-        <view class="d-num">{{bapingType >= 0 ? dictData[bapingType].dictLabel : 0}}</view>
+        <view class="d-num">
+          {{multiArray[0][multiIndex[0]]}}小时 {{multiArray[1][multiIndex[1]]}}分钟
+        </view>
       </view>
     </block>
-    <view class="note">注：广告显示为当天循环播放，图片广告每次播放时长为15秒，视频+图片广告播放时长为视频时长（视频总时长不能超过一分钟）。价格以播放时长计算，X元/15秒</view>
+    <view class="note" v-if="type === 1">注：广告显示为当天循环播放，图片广告每次播放时长为15秒，视频+图片广告播放时长为视频时长（视频总时长不能超过一分钟）。价格以播放时长计算，X元/15秒</view>
+    <view class="note" v-if="type === 2"></view>
     <button class="btn" @tap="clickSubmit">确认投放</button>
   </view>
 </template>
@@ -72,6 +76,14 @@
 <script>
 import tip from "../utils/tip";
 import { USER_TOKEN, USER_INFO, USER_SPECICAL_INFO } from "../utils/constant";
+let hourArr = []
+for(let i = 0; i < 24; i++) {
+  hourArr.push(i)
+}
+let minArr = []
+for(let i = 0; i < 60; i++) {
+  minArr.push(i)
+}
 export default {
   data() {
     return {
@@ -86,7 +98,12 @@ export default {
       typeRange: ["请选择", "按天投放", "霸屏投放"],
       bapingRange: [],
       bapingType: -1,
-      material_screenType: null
+      material_screenType: null,
+      multiArray: [
+        hourArr,
+        minArr
+      ],
+      multiIndex: [0, 0],
     };
   },
 
@@ -107,7 +124,6 @@ export default {
     //获取我的广告机购物车
     this.getMachineCart();
 
-    this.getDictData();
   },
   onUnload() {
     uni.removeStorageSync("matter");
@@ -115,8 +131,14 @@ export default {
     uni.setStorageSync("adMachineId", []);
   },
   methods: {
-    typeChange(e) {
-      this.type = Number(e.detail.value);
+    bindMultiPickerColumnChange (e) {
+      console.log('修改的列为：' + e.detail.column + '，值为：' + e.detail.value)
+      this.multiIndex[e.detail.column] = e.detail.value
+      this.$forceUpdate()
+    },
+    selectType (type) {
+      this.type = type
+      this.bapingType = type
       if (this.type === 1) {
         this.to_dates = [];
       }
@@ -124,10 +146,8 @@ export default {
         const times = new Date().getTime()
         const to_dates = this.$CommonJs.timestampToTime(times, false, 'YMD')
         this.to_dates = [to_dates]
+        console.log(this.to_dates)
       }
-    },
-    bapingTypeChange(e) {
-      this.bapingType = Number(e.detail.value);
     },
     //选择时间
     clickChooseDate() {
@@ -176,20 +196,24 @@ export default {
         tip.toast("请选择投放时间");
         return;
       }
-      if (this.type === 2 && this.bapingType === -1) {
+      if (this.type === 2 && this.multiArray[0][this.multiIndex[0]] === 0 && this.multiArray[1][this.multiIndex[1]] === 0) {
         tip.toast("请选择霸屏时间");
         return;
       }
       try {
         const machineIds = this.machineCartList.map(item => item.id).join(",");
         const putDays = this.to_dates.map(item => item).join(",");
-        const dictId = this.type === 2 ? this.dictData[this.bapingType].id : 0;
+        // const dictId = this.type === 2 ? this.dictData[this.bapingType].id : 0;
         const payload = {
           machineIds,
           materialId: this.material_id,
           putDays,
-          dictId
+          bpsj: 0
         };
+        if (this.type === 2) {
+          payload.bpsj = this.multiArray[0][this.multiIndex[0]] * 60 * 60 + this.multiArray[1][this.multiIndex[1]] * 60
+        }
+        console.log(payload)
         const res = await this.$server.addMaterialOrder(payload);
         const orderId = res.data.data.orderId;
         const orderStatus = res.data.data.status;
