@@ -1,6 +1,6 @@
 <template>
   <view class="chooseMatter">
-    <view class="banner">
+    <!-- <view class="banner">
       <scroll-view class="sv" scroll-x="true">
         <view
           v-for="(item, index) in tags"
@@ -10,6 +10,19 @@
           :class="selectedTag == index ? 'selected' : ''"
         >{{item}}</view>
       </scroll-view>
+    </view> -->
+    <view class="banner-click">
+      <view class="banner-item" v-for="(item, index) in tags" :key="index">
+        <view class="item-inner">
+          <view
+            class="item"
+            @tap="selectTag(index)"
+            :class="{'selected': selectedTag == index}"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
     </view>
     <view class="content" :style="{height: contentHeight + 'rpx'}">
       <view
@@ -68,10 +81,10 @@ export default {
       selectedTag: 0,
       tags: [
         "全部素材",
-        "竖屏图片",
         "横屏图片",
-        "竖屏视频",
         "横屏视频",
+        "竖屏图片",
+        "竖屏视频",
         "组合素材"
       ],
       screenType: null
@@ -106,6 +119,17 @@ export default {
     selectTag(index) {
       this.selectedTag = index;
       this.type = index;
+      if (index === 1) {
+        this.type = 2
+      } else if (index == 2) {
+        this.type = 4
+      } else if (index == 3) {
+        this.type = 1
+      } else if (index == 4) {
+        this.type = 3
+      } else {
+        this.type = index;
+      }
       this.start = 0;
       this.getMatterList(0, true);
     },
@@ -196,7 +220,7 @@ export default {
 
 <style lang="less" scoped>
 .chooseMatter {
-  padding-top: 80rpx;
+  padding-top: 160rpx;
   box-sizing: border-box;
 
   .banner {
@@ -229,6 +253,38 @@ export default {
     .selected {
       color: rgba(20, 20, 20, 1);
       font-weight: bold;
+    }
+  }
+  .banner-click {
+    width: 100%;
+    display: flex;
+    background: #fff;
+    flex-wrap: wrap;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+
+    .banner-item {
+      width: 33.33%;
+
+      .item-inner {
+        padding: 10rpx;
+        .item {
+          color: #666;
+          height: 50rpx;
+          line-height: 50rpx;
+          font-size: 24rpx;
+          border-radius: 5rpx;
+          text-align: center;
+          box-shadow: 0px 0px 5px rgba(153, 153, 153, .5);
+          &.selected {
+            color: rgba(255, 214, 2, 1);
+            background: rgba(51, 51, 51, 1);
+            font-weight: bold;
+          }
+        }
+      }
     }
   }
   .matterAddHeaderBtn {

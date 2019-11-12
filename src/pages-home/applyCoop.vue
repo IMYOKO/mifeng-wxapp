@@ -1,6 +1,6 @@
 <template>
   <view class="applyCoop">
-    <form bindsubmit="formSubmit" bindreset="formReset">
+    <form @submit="formSubmit" @reset="formReset">
       <view class="banner-wrapper">
         <swiper class="swiper"
           :indicator-dots="indicatorDots"
@@ -16,7 +16,7 @@
       </view>
       <view class="item">
         <view class="tit">联系人</view>
-        <input type="text" maxlength="6" name="linkman"/>
+        <input type="text" v- maxlength="6" name="linkman"/>
       </view>
       <view class="item">
         <view class="tit">联系电话</view>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import tip from "../utils/tip";
 export default {
   data () {
 		return {
@@ -41,7 +42,7 @@ export default {
   },
   onLoad() {
     //获取轮播图
-    this.getBanner();
+    this.getBanner({type: 2});
   },
   methods: {
     goWebView (item) {

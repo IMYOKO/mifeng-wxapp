@@ -21,13 +21,6 @@
         @input="inputName"
       ></textarea>
     </view> -->
-    <view class="text_group">
-      <radio-group bindchange="radioChange" @tap="click_radio">
-        <radio style="zoom:.5" :checked="status" color="#FFD602" />
-      </radio-group>
-      <view class="subtext">是否详细阅读并同意</view>
-      <view class="subtext" style="color:#E9C300" @tap="Torules">《广告发布规则》</view>
-    </view>
     <view class="item pd mt">
       <view class="line"></view>
       <view class="tit">素材类型</view>
@@ -73,6 +66,13 @@
       >
         <image v-if="!!logo" :src="logo" />
       </view>
+    </view>
+    <view class="text_group">
+      <radio-group bindchange="radioChange" @tap="click_radio">
+        <radio style="zoom:.5" :checked="status" color="#FFD602" />
+      </radio-group>
+      <view class="subtext">是否详细阅读并同意</view>
+      <view class="subtext" style="color:#E9C300" @tap="Torules">《广告发布规则》</view>
     </view>
 
     <view class="tip">图片规格为手机图片,组合素材必须上传一张图片一个视频，视频时长不超过1分钟</view>
@@ -368,6 +368,7 @@ export default {
   padding-left: 31rpx;
   box-sizing: border-box;
   display: flex;
+  margin-bottom: 100rpx;
   align-items: center;
   .subtext {
     margin-top: 17rpx;
@@ -508,7 +509,7 @@ button {
   width: 100%;
   flex-direction: column;
   align-items: center;
-  margin: 30rpx 0 190rpx;
+  margin: 30rpx 0 30rpx;
   text-align: center;
   .placeholderContent {
     position: relative;

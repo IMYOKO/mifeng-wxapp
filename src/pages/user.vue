@@ -39,6 +39,14 @@
         </view>
       </formidTaker>
     </view>
+    <view @tap="clickApplyCoop">
+      <formidTaker>
+        <view class="item">
+          <image class="item-icon hezuo" src="../static/images/ic_my_hezuo.png" />
+          <view class="item-text">申请合作</view>
+        </view>
+      </formidTaker>
+    </view>
     <view @tap="clickFeedback">
       <formidTaker>
         <view class="item">
@@ -170,6 +178,11 @@ export default {
       await checkRole(true);
       this.$CommonJs.pathTo("/pages-user/myWallet");
     },
+    clickApplyCoop() {
+      uni.navigateTo({
+        url: "/pages-home/applyCoop"
+      });
+    },
     clickMyPoint() {
       uni.navigateTo({
         url: "/pages-user/myPoint"
@@ -276,6 +289,9 @@ page {
       width: 40rpx;
       height: 40rpx;
       margin-right: 35rpx;
+      &.hezuo {
+        height: 34rpx;
+      }
     }
 
     .item-text {

@@ -62,7 +62,7 @@
         <view class="line none"></view>
         <view class="tit">霸屏时间</view>
         <view class="d-num">
-          {{multiArray[0][multiIndex[0]]}}小时 {{multiArray[1][multiIndex[1]]}}分钟
+          {{multiArray[0][multiIndex[0]]}} {{multiArray[1][multiIndex[1]]}}
         </view>
       </view>
     </block>
@@ -79,12 +79,12 @@
 <script>
 import tip from "../utils/tip";
 let hourArr = []
-for(let i = 0; i < 24; i++) {
-  hourArr.push(i)
+for(let i = 0; i < 11; i++) {
+  hourArr.push(i + ' 小时')
 }
 let minArr = []
 for(let i = 0; i < 60; i++) {
-  minArr.push(i)
+  minArr.push(i + ' 分钟')
 }
 export default {
   data() {
@@ -148,8 +148,12 @@ export default {
     //选择素材
     clickChooseMatter() {
       if (this.material_screenType) {
-        this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
-          this.material_screenType);
+        if (this.machineCartList.length === 0) {
+          this.$CommonJs.pathTo("/pages-home/chooseMatter");
+        } else {
+          this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
+            this.material_screenType);
+        }
       } else {
         this.$CommonJs.pathTo("/pages-home/chooseMatter");
       }
@@ -196,7 +200,7 @@ export default {
         tip.toast("请选择投放时间");
         return;
       }
-      if (this.type === 2 && this.multiArray[0][this.multiIndex[0]] === 0 && this.multiArray[1][this.multiIndex[1]] === 0) {
+      if (this.type === 2 && Number.parseInt(this.multiArray[0][this.multiIndex[0]]) === 0 && Number.parseInt(this.multiArray[1][this.multiIndex[1]]) === 0) {
         tip.toast("请选择霸屏时间");
         return;
       }
@@ -222,9 +226,10 @@ export default {
           bpsj: 0
         };
         if (this.type === 2) {
-          payload.bpsj = this.multiArray[0][this.multiIndex[0]] * 60 * 60 + this.multiArray[1][this.multiIndex[1]] * 60
+          payload.bpsj = Number.parseInt(this.multiArray[0][this.multiIndex[0]]) * 60 * 60 + Number.parseInt(this.multiArray[1][this.multiIndex[1]]) * 60
         }
         console.log(payload)
+        return
         const res = await this.$server.addMaterialOrder(payload);
         const orderId = res.data.data.orderId;
         const orderStatus = res.data.data.status;
