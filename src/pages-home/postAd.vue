@@ -229,7 +229,6 @@ export default {
           payload.bpsj = Number.parseInt(this.multiArray[0][this.multiIndex[0]]) * 60 * 60 + Number.parseInt(this.multiArray[1][this.multiIndex[1]]) * 60
         }
         console.log(payload)
-        return
         const res = await this.$server.addMaterialOrder(payload);
         const orderId = res.data.data.orderId;
         const orderStatus = res.data.data.status;
