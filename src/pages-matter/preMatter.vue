@@ -118,7 +118,6 @@ page{
     height:350rpx;
     background:rgba(20,20,20,1);
     border-radius:7rpx 7rpx 0px 0px;
-    opacity:0.6;
     display: block;
     margin:0 auto;
     margin-top:20rpx;
@@ -132,7 +131,6 @@ page{
     height:350rpx;
     background:rgba(20,20,20,1);
     border-radius:7rpx 7rpx 0px 0px;
-    opacity:0.6;
     display: block;
     margin:0 auto;
     margin-top:20rpx;

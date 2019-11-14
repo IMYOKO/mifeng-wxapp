@@ -66,7 +66,7 @@ const compareVersion = (v1, v2) => {
   return 0
 }
 
-const bpsj = times => {
+const bpsjFn = times => {
   const hour = Math.floor((times % (24*3600)) / 3600)
   const minutes = Math.floor(((times % (24*3600)) % 3600) / 60)
   if (hour > 0) {
@@ -80,5 +80,5 @@ export default {
   showToast,
   timestampToTime,
   compareVersion,
-  bpsj
+  bpsjFn
 }

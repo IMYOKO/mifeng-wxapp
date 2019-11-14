@@ -8,28 +8,28 @@
         <view class="modal_btn" @tap="closeModal">确定</view>
       </view>
     </view>
-    <!-- <view class="neck-ct">
-      <view class="item">
-        <view class="line"></view>
-        <view class="tit">素材名称</view>
-        <view class="num">{{nameLength}}/50</view>
+    <view class="banner-click" v-if="showTag">
+      <view class="banner-item" v-for="(item, index) in tags" :key="index">
+        <view class="item-inner">
+          <view
+            class="itemss"
+            @tap="selectTag(index)"
+            :class="{'selected': typeIndex === index}"
+          >
+            {{item}}
+          </view>
+        </view>
       </view>
-      <textarea
-        maxlength="50"
-        placeholder="请输入素材名称"
-        placeholder-class="input-placeholder"
-        @input="inputName"
-      ></textarea>
-    </view> -->
+    </view>
+    <view class="bg" @click="showTag = false" v-if="showTag"></view>
     <view class="item pd mt">
       <view class="line"></view>
       <view class="tit">素材类型</view>
-      <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">
-        <view class="picker-container">
-          <view class="itembtn">{{typeRange[type - 1]}}</view>
-          <image class="arrow" src="../static/images/ic_home_open_1.png" />
-        </view>
-      </picker>
+      <!-- <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">-->
+      <view class="picker-container" @click="showTag=true">
+        <view class="itembtn">{{tags[typeIndex]}}</view>
+        <image class="arrow" src="../static/images/ic_home_open_1.png" />
+      </view>
     </view>
     <view class="item pd" v-if="type === 1 || type === 2 || type === 5" @tap="clickChooseImg">
       <view class="line"></view>
@@ -95,6 +95,7 @@ export default {
   },
   data() {
     return {
+      typeIndex: 0,
       nameLength: 0,
       name: "",
       logo: "",
@@ -103,13 +104,46 @@ export default {
       seconds: 0,
       status: true,
       showModal: false,
-      typeRange: ["竖屏图片", "横屏图片", "竖屏视频", "横屏视频", "组合素材"]
+      tags: [
+        "横屏图片",
+        "横屏视频",
+        "竖屏图片",
+        "竖屏视频",
+        "组合素材"
+      ],
+      showTag: false
+      // typeRange: ["竖屏图片", "横屏图片", "竖屏视频", "横屏视频", "组合素材"]
     };
   },
+  watch: {
+    typeIndex (value) {
+      switch (value) {
+        case 0:
+          this.type = 2
+          break;
+        case 1:
+          this.type = 4
+          break;
+        case 2:
+          this.type = 1
+          break;
+        case 3:
+          this.type = 3
+          break;
+        case 4:
+          this.type = 5
+          break;
+      }
+    }
+  },
   onLoad(options) {
-    this.type = Number(options.type) || 1;
+    this.type = 2;
   },
   methods: {
+    selectTag (index) {
+      this.typeIndex = index
+      this.showTag = false
+    },
     radioChange() {
       // this.status = !this.status
       console.log(this.status);
@@ -149,9 +183,11 @@ export default {
               success: function(res) {
                 let tempFilePaths = res.tempFilePaths;
                 tip.loading("上传中");
+                console.log('图片上传中')
                 qiniuUpload(tempFilePaths[0], async function(res) {
                   that.logo = res.imageURL;
                   tip.loaded();
+                  console.log('图片上传完成')
                 });
               }
             });
@@ -162,10 +198,11 @@ export default {
               success: function(res) {
                 let tempFilePaths = res.tempFilePaths;
                 tip.loading("上传中");
+                console.log('图片上传中')
                 qiniuUpload(tempFilePaths[0], async function(res) {
                   that.logo = res.imageURL;
-                  console.log(that.logo);
                   tip.loaded();
+                  console.log('图片上传完成')
                 });
               }
             });
@@ -298,6 +335,49 @@ export default {
 <style lang="less">
 .container {
   position: relative;
+}
+
+.bg {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.banner-click {
+  width: 100%;
+  display: flex;
+  background: #fff;
+  flex-wrap: wrap;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+
+  .banner-item {
+    width: 33.33%;
+
+    .item-inner {
+      padding: 10rpx;
+      .itemss {
+        color: #666;
+        height: 50rpx;
+        line-height: 50rpx;
+        font-size: 24rpx;
+        border-radius: 5rpx;
+        text-align: center;
+        box-shadow: 0px 0px 5px rgba(153, 153, 153, .5);
+        &.selected {
+          color: rgba(255, 214, 2, 1);
+          background: rgba(51, 51, 51, 1);
+          font-weight: bold;
+        }
+      }
+    }
+  }
 }
 
 .modal {
@@ -500,7 +580,7 @@ button {
 .selected {
   background: rgba(51, 51, 51, 1);
   color: rgba(255, 214, 2, 1);
-  margin-left: 10rpx;
+  // margin-left: 10rpx;
 }
 
 .placeholderContainer {

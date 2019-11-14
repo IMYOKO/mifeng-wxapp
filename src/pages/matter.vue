@@ -40,11 +40,16 @@
         :style="{left: item.style.left, top: item.style.top}"
       >
         <view class="inner-wrapper">
-          <image
+          <!-- <image
             src="../static/images/pic_zhanwei_2.png"
             class="ct-video"
             v-if="item.materialType === 5"
-          />
+          /> -->
+          <video
+            :src="item.video"
+            class="ct-video"
+            v-if="item.materialType === 5"
+          ></video>
           <image
             class="status"
             src="../static/images/pic_material_audit.png"
@@ -67,16 +72,16 @@
             v-if="(item.materialType === 5 || item.materialType === 1 || item.materialType === 2) && item.screenType === 2"
             :src="item.logo"
           />
-          <image
+          <video
             class="ct-img"
             v-if="(item.materialType === 3 || item.materialType === 4) && item.screenType === 1"
-            src="../static/images/pic_zhanwei_3.png"
-          />
-          <image
+            :src="item.video"
+          ></video>
+          <video
             class="ct-img min"
             v-if="(item.materialType === 3 || item.materialType === 4) && item.screenType === 2"
-            src="../static/images/pic_zhanwei_2.png"
-          />
+            :src="item.video"
+          ></video>
           <view class="tit">{{item.id}}</view>
           <view class="tit min">{{item.createTime}}</view>
           <image @click.stop="clickDel(item.id)" class="delete" src="../static/images/ic_home_search_history_delete.png" />

@@ -33,8 +33,8 @@
       <view class="line"></view>
       <view class="tit">投放类型</view>
       <view class="itembtn itembtn2">
-        <view class="bp" :class="{select: type === 1}" @click="selectType(1)">按天投放</view>
-        <view class="bp" :class="{select: type === 2}" @click="selectType(2)">霸屏投放</view>
+        <view class="bp" :class="{select: type === 1}">按天投放</view>
+        <!-- <view class="bp" :class="{select: type === 2}" @click="selectType(2)">霸屏投放</view> -->
       </view>
     </view>
     <block v-if="type === 1">
@@ -94,7 +94,7 @@ export default {
       material_name: "", //素材名称
       to_dates: [], //选择的日期
       dictData: [],
-      type: 0,
+      type: 1,
       typeRange: ["请选择", "按天投放", "霸屏投放"],
       bapingRange: [],
       bapingType: -1,

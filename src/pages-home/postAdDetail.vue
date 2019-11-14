@@ -4,7 +4,7 @@
     <view class="time">
       <view class="time-selectet" @tap="clickDate">
         <view class="text">投放时间</view>
-        <view class="num" v-if="orderInfo.sfbp === 1">总秒数（{{orderInfo.bpsj ? orderInfo.bpsj : 0}}）</view>
+        <view class="num" v-if="orderInfo.sfbp === 1">总时间（{{orderInfo.bpsj ? $CommonJs.bpsjFn(orderInfo.bpsj) : 0}}）</view>
         <view class="num" v-else>总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
         <image class="icon" src="../static/images/ic_home_launch_time_1.png" v-if="dateOpen" />
         <image class="icon" src="../static/images/ic_home_launch_time_2.png" v-else />
@@ -16,7 +16,7 @@
     <view class="matter" v-if="orderInfo.screenType === 1">
       <view class="top">
         <view class="name">广告素材</view>
-        <view class="text">{{orderInfo.materialName}}</view>
+        <view class="text"></view>
       </view>
       <video
         :src="orderInfo.video"
@@ -32,7 +32,7 @@
     <view class="matter min" v-if="orderInfo.screenType === 2">
       <view class="top">
         <view class="name">广告素材</view>
-        <view class="text">{{orderInfo.materialName}}</view>
+        <view class="text"></view>
       </view>
       <video
         :src="orderInfo.video"
@@ -343,7 +343,7 @@ export default {
     align-items: center;
     border-bottom: 1rpx solid #e5e5e5;
     .text {
-      width: 55%;
+      width: 25%;
       word-break: break-all;
       font-size: 28rpx;
       font-weight: bold;
@@ -406,7 +406,7 @@ export default {
   .video {
     display: block;
     width: 344rpx;
-    height: 169rpx;
+    height: 631rpx;
     margin: 0 auto;
     margin-bottom: 20rpx;
     &.min {

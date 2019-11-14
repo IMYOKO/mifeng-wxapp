@@ -29,7 +29,7 @@
     <view class="time">
       <view class="time-selectet" @tap="clickDate">
         <view class="text">投放时间</view>
-        <view class="num" v-if="orderInfo.sfbp === 1">总秒数（{{orderInfo.bpsj ? orderInfo.bpsj : 0}}）</view>
+        <view class="num" v-if="orderInfo.sfbp === 1">总时间（{{orderInfo.bpsj ? orderInfo.bpsj : 0}}）</view>
         <view class="num" v-else>总天数（{{orderInfo.putDays ? orderInfo.putDays : 0}}）</view>
         <image class="icon" src="../static/images/ic_home_launch_time_1.png" v-if="dateOpen" />
         <image class="icon" src="../static/images/ic_home_launch_time_2.png" v-else />
@@ -236,7 +236,7 @@
           />
         </block>
       </view>
-      <view class="forget">忘记支付密码？</view>
+      <view class="forget" @tap="clickForget">忘记支付密码？</view>
     </view>
   </view>
 </template>
@@ -278,6 +278,10 @@ export default {
     await this.getUserIntegral();
   },
   methods: {
+    //忘记支付密码
+    clickForget() {
+      this.$CommonJs.pathTo("/pages-home/updatePayPass");
+    },
     //获取用户余额
     async getUserAssets() {
       const res = await this.$server.getUserAssets();
@@ -296,6 +300,7 @@ export default {
         const res = await this.$server.getMaterialsOrderDetail(payload);
         const orderInfo = res.data.data.materialDetail;
         orderInfo.putDay = orderInfo.putDay.split(",");
+        orderInfo.bpsj = this.$CommonJs.bpsjFn(orderInfo.bpsj)
         this.orderInfo = orderInfo;
         this.machineList = res.data.data.machineList;
       } catch (error) {}

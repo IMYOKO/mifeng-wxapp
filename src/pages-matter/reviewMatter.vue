@@ -1,14 +1,14 @@
 <template>
   <view class="prew-img">
     <view class = "img" v-if="(type === 1 || type === 2) && screenType === 1">
-      <image class = "images" :src="logo" />
+      <image class = "images" :src="logo" @click="previewImage(logo)"/>
     </view>
     <view class = "img min" v-if="(type === 1 || type === 2) && screenType === 2">
-      <image class = "images min" :src="logo" />
+      <image class = "images min" :src="logo" @click="previewImage(logo)" />
     </view>
     <view class = "group" v-if="type === 5">
       <video :src="video"></video>
-      <image class = "images" :src="logo" />
+      <image class = "images" :src="logo" @click="previewImage(logo)" />
     </view>
     <view class = "video" v-if="(type === 3 || type === 4)  && screenType === 1">
       <video :src="video" class="videos"></video>
@@ -74,6 +74,11 @@ export default {
     this.getMaterialsForAudit()
   },
   methods: {
+    previewImage(url) {
+      uni.previewImage({
+        urls: [url]
+      });
+    },
     async getMaterialsForAudit() {
       const payload = {
         id: this.id
@@ -215,7 +220,6 @@ page{
     height:350rpx;
     background:rgba(20,20,20,1);
     border-radius:7rpx 7rpx 0px 0px;
-    opacity:0.6;
     display: block;
     margin:0 auto;
     margin-top:20rpx;
@@ -229,7 +233,6 @@ page{
     height:350rpx;
     background:rgba(20,20,20,1);
     border-radius:7rpx 7rpx 0px 0px;
-    opacity:0.6;
     display: block;
     margin:0 auto;
     margin-top:20rpx;

@@ -29,27 +29,32 @@
           :src="item.logo"
           v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5"
         />
-        <image class="img" src="../static/images/pic_zhanwei_2.png" v-else />
+        <video class="img" :src="item.video" v-else />
         <view class="m-ct">
           <view class="m-ct-top">
-            <view class="name">{{item.materialName}}</view>
-            <view class="mark">{{item.labelType}}</view>
+            <view class="name">订单编号</view>
+            <view class="mark">{{item.orderno}}</view>
           </view>
-          <view class="m-ct-middle" v-if="item.sfbp === 0">
+          <view class="m-ct-middle">
+            <view class="text">机器数量</view>
+            <view class="day">{{item.machineNum}}</view>
+          </view>
+          <view class="m-ct-bottom" v-if="item.sfbp === 0">
             <view class="text">总投放天数</view>
-            <view class="day">{{item.putDays}}</view>
+            <view class="pri">{{item.putDays}}</view>
           </view>
-          <view class="m-ct-middle" v-else>
+          <view class="m-ct-bottom" v-else>
             <view class="text">霸屏时间</view>
-            <view class="day">{{$CommonJs.bpsj(item.bpsj)}}</view>
+            <view class="pri">{{$CommonJs.bpsjFn(item.bpsj)}}</view>
           </view>
           <view class="m-ct-bottom">
-            <view class="text">合计</view>
+            <view class="text">合计费用</view>
             <view class="pri" v-if="item.sfbp === 0">¥{{item.amount}}</view>
             <view class="pri" v-else>¥{{item.bpprice}}</view>
           </view>
         </view>
       </view>
+      <view class="time">{{item.createTime}}</view>
       <button
         class="btn"
         v-if="item.status === 0"
@@ -472,6 +477,7 @@ page {
   margin-top: 24rpx;
   padding: 0rpx 30rpx 8rpx 24rpx;
   box-sizing: border-box;
+  position: relative;
   .top {
     width: 100%;
     height: 80rpx;
@@ -513,7 +519,6 @@ page {
         width: 100%;
         display: flex;
         .name {
-          width: 340rpx;
           word-wrap: break-word;
           font-size: 28rpx;
           font-weight: bold;
@@ -521,11 +526,11 @@ page {
           margin-right: auto;
         }
         .mark {
-          font-size: 22rpx;
+          font-size: 24rpx;
           color: rgba(195, 83, 1, 1);
-          height: 30rpx;
-          line-height: 30rpx;
-          background: rgba(255, 242, 225, 1);
+          height: 38rpx;
+          line-height: 38rpx;
+          // background: rgba(255, 242, 225, 1);
         }
       }
       .m-ct-middle {
@@ -567,6 +572,14 @@ page {
     margin-left: auto;
     margin-right: 0;
     margin-top: 20rpx;
+  }
+  .time {
+    position: absolute;
+    bottom: 24rpx;
+    left: 24rpx;
+    z-index: 10;
+    font-size: 24rpx;
+    color: rgba(102, 102, 102, 1);
   }
 }
 .pop {

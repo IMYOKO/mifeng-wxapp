@@ -30,15 +30,17 @@
     </view>
     <view class="banner area-picker">
       <view
-        class="item"
-        @tap="clickAllNot"
-        v-if="selectItemlength === contentList.length && contentList.length > 0"
-      >取消全选</view>
-      <view class="item" @tap="clickAll" v-else>全选</view>
-      <view
         class="addresss"
         @click="showMulLinkageThreePicker"
       >{{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}</view>
+      <view
+        class="item select"
+        @tap="clickAllNot"
+        v-if="selectItemlength === contentList.length && contentList.length > 0"
+      ><image class="select-icon" src="../static/images/ic_home_select.png" />全选</view>
+      <view class="item select" @tap="clickAll" v-else>
+        <image class="select-icon" src="../static/images/ic_home_not_select.png" />全选
+      </view>
     </view>
     <view
       class="ct-view"
@@ -59,13 +61,13 @@
             <view class="pri">¥{{item.imagePrice}}</view>
           </view>
           <view class="bottom">
-            <view class="text">视频价格/天</view>
+            <view class="text">视频价格/15s/天</view>
             <view class="pri">¥{{item.videoPrice}}</view>
           </view>
-          <view class="bottom">
+          <!-- <view class="bottom">
             <view class="text">视频组合价格/15s/天</view>
             <view class="pri">¥{{item.combinePrice}}</view>
-          </view>
+          </view> -->
           <view class="bottom">
             <view class="text">霸屏/{{item.bpTime}}s</view>
             <view class="pri">¥{{item.bpPrice}}</view>
@@ -218,11 +220,18 @@ export default {
     },
     //点击搜索
     clickSearch() {
-      this.$CommonJs.pathTo(
-        "/pages-home/search?material_screenType=" +
-          this.material_screenType +
-          "&isFree=free"
-      );
+      if (this.isFree) {
+        this.$CommonJs.pathTo(
+          "/pages-home/search?material_screenType=" +
+            this.material_screenType +
+            "&isFree=free"
+        );
+      } else {
+        this.$CommonJs.pathTo(
+          "/pages-home/search?material_screenType=" +
+            this.material_screenType
+        );
+      }
     },
     //地图选点
     clickSite() {
@@ -258,6 +267,10 @@ export default {
         this.contentList[index].my_cart = 1;
         this.selectItemlength += 1;
       }
+    },
+    getMachineCart() {
+      const machineCartList = uni.getStorageSync("adMachineId") || [];
+      return machineCartList;
     },
     async getMachineType() {
       try {
@@ -316,6 +329,17 @@ export default {
         if (this.isFree != "") {
           this.contentList.map(item => (item.notDel = true));
         }
+        const machineCartList = this.getMachineCart()
+        machineCartList.forEach(item => {
+          this.contentList.forEach(value => {
+            console.log(item.id === value.id)
+            if (item.id === value.id) {
+              value.my_cart = 1
+              this.selectItemlength += 1;
+              this.adMachineId.push(value);
+            }
+          })
+        })
         if (res.data.data.isNext === 0) {
           //没有更多数据
           this.no_more = true;
@@ -423,6 +447,16 @@ export default {
       font-size: 28rpx;
       color: rgba(102, 102, 102, 1);
       display: inline-block;
+      &.select {
+        width: 178rpx;
+        display: flex;
+        align-items: center;
+        .select-icon{
+          width: 40rpx;
+          height: 40rpx;
+          margin-right: 10rpx;
+        }
+      }
     }
     ::-webkit-scrollbar {
       width: 0;
