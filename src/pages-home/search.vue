@@ -13,6 +13,39 @@
       />
       <view class="search" @tap="clickSearch">搜索</view>
     </view>
+    <view class="banner" v-if="false">
+      <scroll-view class="sv" scroll-x="true">
+        <view
+          class="item"
+          :class="advertise_machine_label_type_index === -1 ?'selected':''"
+          @tap="clickSx(-1)"
+        >全部</view>
+        <view
+          class="item"
+          :class="advertise_machine_label_type_index === index?'selected':''"
+          v-for="(item, index) in machineType"
+          :key="index"
+          @tap="clickSx(index)"
+        >{{item}}</view>
+      </scroll-view>
+      <view class="more" @tap="clickShow">
+        <image class="banner-img" src="../static/images/ic_more_2.png" />
+      </view>
+    </view>
+    <view class="banner area-picker" v-if="false">
+      <view
+        class="addresss"
+        @click="showMulLinkageThreePicker"
+      >{{provincesCitiesDistrict === '' ? '请选择 省 市 区' : provincesCitiesDistrict }}</view>
+      <view
+        class="item select"
+        @tap="clickAllNot"
+        v-if="selectItemlength === contentList.length && contentList.length > 0"
+      ><image class="select-icon" src="../static/images/ic_home_select.png" />全选</view>
+      <view class="item select" @tap="clickAll" v-else>
+        <image class="select-icon" src="../static/images/ic_home_not_select.png" />全选
+      </view>
+    </view>
     <block v-if="isSearch">
       <view class="grey" v-if="false">
         <view class="tit">热门搜索</view>
@@ -84,6 +117,14 @@
     <BottomNoMore :show.sync="no_more"></BottomNoMore>
     <!--暂无数据显示-->
     <Placeholder :show.sync="is_empty"></Placeholder>
+
+    <mpvue-city-picker
+      :themeColor="themeColor"
+      ref="mpvueCityPicker"
+      :pickerValueDefault="cityPickerValueDefault"
+      @onCancel="onCancel"
+      @onConfirm="onConfirm"
+    ></mpvue-city-picker>
   </view>
 </template>
 
@@ -91,6 +132,7 @@
 import Placeholder from "../component/common/placeholder";
 import BottomNoMore from "../component/common/bottomNoMore";
 import BottomLoadMore from "../component/common/bottomLoadMore";
+import mpvueCityPicker from "../component/mpvue-citypicker/mpvueCityPicker.vue";
 import tip from "../utils/tip";
 export default {
   data() {
@@ -108,15 +150,51 @@ export default {
       historyLength: 8, //搜索历史个数
       adMachineId: [], //选择的广告机id
       material_screenType: null,
-      isFree: ""
+      isFree: "",
+      machineType: [],
+      themeColor: "#007AFF",
+      cityPickerValueDefault: [0, 0, 1],
+      provincesCitiesDistrict: "",
+      province: "",
+      city: "",
+      district: "",
+      showClassify: false
     };
   },
   onLoad(option) {
     this.isFree = option.isFree || "";
     this.material_screenType = Number(option.material_screenType);
     this.getCartList();
+    //获取机器分类
+    this.getMachineType();
   },
   methods: {
+    clickShow() {
+      this.showClassify = true;
+    },
+    clickHidden() {
+      this.showClassify = false;
+    },
+    onCancel(e) {},
+    showMulLinkageThreePicker() {
+      this.$refs.mpvueCityPicker.show();
+    },
+    onConfirm(e) {
+      this.provincesCitiesDistrict = e.label;
+      const cityArr = e.label.split("-");
+      this.provinces = cityArr[0];
+      this.city = cityArr[1];
+      this.district = cityArr[2] || "";
+      this.cityPickerValueDefault = e.value;
+      this.start = 0;
+      this.getMachineList(0, true);
+    },
+    async getMachineType() {
+      try {
+        const res = await this.$server.getMachineLabels();
+        this.machineType = res.data.data.machineLabels;
+      } catch (error) {}
+    },
     //点击广告机
     clickItem(id, index, my_cart, item) {
       let mycart = my_cart;
@@ -164,7 +242,7 @@ export default {
         }
         history.unshift(this.name);
       }
-      uni.setStorageSync("history", history);
+      this.history = history
       this.start = 0;
       this.getMachineList(0, true);
     },
@@ -172,13 +250,12 @@ export default {
     clickClearHistory() {
       let history = [];
       this.history = [];
-      // wx.setStorageSync('history',history);
+      wx.setStorageSync('history', history);
     },
     //点击搜索历史列表
-    clickHistoryItem(item) {
-      console.log(e);
+    clickHistoryItem(name) {
       this.isSearch = true;
-      this.name = item.machineName;
+      this.name = name;
       this.getMachineList(0, true);
     },
     //确定
@@ -270,7 +347,8 @@ export default {
   components: {
     Placeholder,
     BottomNoMore,
-    BottomLoadMore
+    BottomLoadMore,
+    mpvueCityPicker
   }
 };
 </script>
@@ -280,6 +358,72 @@ page {
   padding-bottom: 92rpx;
   box-sizing: border-box;
 }
+.banner {
+    width: 100%;
+    height: 80rpx;
+    background: rgba(255, 255, 255, 1);
+    position: fixed;
+    top: 80rpx;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: 2;
+    .sv {
+      padding: 0 40rpx;
+      box-sizing: border-box;
+    }
+    .item {
+      width: 140rpx;
+      height: 80rpx;
+      line-height: 80rpx;
+      font-size: 28rpx;
+      color: rgba(102, 102, 102, 1);
+      display: inline-block;
+      &.select {
+        width: 178rpx;
+        display: flex;
+        align-items: center;
+        .select-icon{
+          width: 40rpx;
+          height: 40rpx;
+          margin-right: 10rpx;
+        }
+      }
+    }
+    ::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      color: transparent;
+    }
+    .more {
+      width: 81rpx;
+      height: 81rpx;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: -7px -6px 12px 0px rgba(52, 52, 52, 0.14);
+      padding: 20rpx;
+      box-sizing: border-box;
+      position: absolute;
+      right: 0;
+      top: 0;
+      .banner-img {
+        width: 40rpx;
+        height: 40rpx;
+      }
+    }
+  }
+  .area-picker {
+    top: 164rpx;
+    padding: 0 40rpx;
+    display: flex;
+    align-items: center;
+    .addresss {
+      flex: 1;
+      height: 80rpx;
+      line-height: 80rpx;
+      font-size: 28rpx;
+      color: #666666;
+    }
+  }
 .top {
   width: 100%;
   height: 85rpx;

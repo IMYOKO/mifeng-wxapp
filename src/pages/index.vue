@@ -40,10 +40,9 @@ export default {
 		uni.getLocation({
       type: 'wgs84',
       success: res => {
-        let site = res.address;
         let latitude = res.latitude;
         let longitude = res.longitude;
-        this.loadCity(longitude, latitude, site);
+        this.loadCity(longitude, latitude);
       }
   	})
 	},
@@ -51,13 +50,29 @@ export default {
 		this.getBanner({type: 1})
 	},
 	methods: {
-		loadCity (longitude, latitude, site) {
-			let position  = {
-				latitude,
-				longitude,
-				site
-			}
-			uni.setStorageSync('position', position);
+		loadCity (longitude, latitude) {
+			wx.request({
+        url: 'https://restapi.amap.com/v3/geocode/regeo',
+        data: {
+          key: 'b37e43d28e9ad29f4784eabbc6598b86',
+          location: longitude + "," + latitude,
+          extensions: "all",
+          s: "rsx",
+          sdkversion: "sdkversion",
+          logversion: "logversion"
+        },
+        success: res => {
+					let position  = {
+						latitude:latitude,
+						longitude:longitude,
+						site:res.data.regeocode.addressComponent.province+res.data.regeocode.addressComponent.city+res.data.regeocode.addressComponent.district+res.data.regeocode.addressComponent.township,
+					}
+          uni.setStorageSync('position', position);
+        },
+        fail: function (res) {
+          console.log('获取地理位置失败')
+        }
+      })
 		},
 		goWebView (item) {
 			if (item.linkType === 0) {

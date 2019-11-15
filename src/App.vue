@@ -29,5 +29,8 @@ page {
   clear: both;
   height: 0;
 }
+button::after {
+  border: none;
+}
 </style>
 
