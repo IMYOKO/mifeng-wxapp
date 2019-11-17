@@ -411,6 +411,20 @@ class Api extends BasicRequest {
   wxxxdy(payload) {
     return this.POST('/api/user/wxxxdy', payload);
   }
+
+  /**
+   * 我的广告机统计信息
+   */
+  getMyMachinesTotal() {
+    return this.POST('/api/machines/getMyMachinesTotal', {});
+  }
+
+  /**
+   * 提现审核查询
+   */
+  userCashAudit(payload) {
+    return this.POST('/api/user/userCashAudit', payload);
+  }
 }
 
 export default new Api();

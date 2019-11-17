@@ -185,12 +185,27 @@ export default {
   methods: {
     onCancel(e) {},
     onConfirm(e) {
-      this.provincesCitiesDistrict = e.label;
-      const cityArr = e.label.split("-");
-      this.provinces = cityArr[0];
-      this.city = cityArr[1];
-      this.district = cityArr[2] || "";
+      // this.provincesCitiesDistrict = e.label;
       this.cityPickerValueDefault = e.value;
+      if (this.cityPickerValueDefault[0] > 0) {
+        const cityArr = e.label.split("-");
+        this.province = cityArr[0];
+        this.city = this.cityPickerValueDefault[1] === 0 ? '' : cityArr[1];
+        this.district = this.cityPickerValueDefault[2] === 0 ? '' : cityArr[2];
+        let provincesCitiesDistrict = this.province
+        if (this.city) {
+          provincesCitiesDistrict += '-' + this.city
+        }
+        if (this.district) {
+          provincesCitiesDistrict += '-' + this.district
+        }
+        this.provincesCitiesDistrict = provincesCitiesDistrict
+      } else {
+        this.province = '';
+        this.city = '';
+        this.district = '';
+        this.provincesCitiesDistrict = '全国'
+      }
       this.start = 0;
       this.getMachineList(0, true);
     },
@@ -654,7 +669,8 @@ export default {
     color: rgba(20, 20, 20, 1);
   }
   .area-picker {
-    top: 164rpx;
+    border-top: 1rpx solid #e5e5e5;
+    top: 161rpx;
     padding: 0 40rpx;
     display: flex;
     align-items: center;

@@ -1,10 +1,9 @@
 <template>
-  <view class="search">
-    <view class="top">
+  <view class="search search-page">
+    <view class="top top-search">
       <view class="icon">
         <image class="search-icon" src="../static/images/ic_home_search_2.png" />
       </view>
-      <!-- <input type="text"  placeholder="请输入广告机名称"  placeholder-class = "input-placeholder" @input="inputSearch"/> -->
       <input
         type="text"
         placeholder="请输入广告机名称"
@@ -13,7 +12,7 @@
       />
       <view class="search" @tap="clickSearch">搜索</view>
     </view>
-    <view class="banner" v-if="false">
+    <view class="banner">
       <scroll-view class="sv" scroll-x="true">
         <view
           class="item"
@@ -32,7 +31,7 @@
         <image class="banner-img" src="../static/images/ic_more_2.png" />
       </view>
     </view>
-    <view class="banner area-picker" v-if="false">
+    <view class="banner area-picker">
       <view
         class="addresss"
         @click="showMulLinkageThreePicker"
@@ -118,6 +117,37 @@
     <!--暂无数据显示-->
     <Placeholder :show.sync="is_empty"></Placeholder>
 
+    <view class="pop-classify" v-if="showClassify">
+      <view class="top">
+        <view class="tit">分类</view>
+        <image
+          class="xx"
+          src="../static/images/ic_home_advertising_machine_close.png"
+          @tap="clickHidden"
+        />
+      </view>
+      <view class="classify-ct">
+        <view
+          class="classify-item"
+          :class="advertise_machine_label_type_index=== -1?'selected':''"
+          @tap="clickSx"
+        >全部</view>
+        <view
+          class="classify-item"
+          :class="advertise_machine_label_type_index===index?'selected':''"
+          :key="index"
+          v-for="(item, index) in machineType"
+          @tap="clickSx(index)"
+        >{{item}}</view>
+      </view>
+    </view>
+    <view
+      class="modal-mask"
+      @tap="clickHidden"
+      catchtouchmove="preventTouchMove"
+      v-if="showClassify"
+    ></view>
+
     <mpvue-city-picker
       :themeColor="themeColor"
       ref="mpvueCityPicker"
@@ -158,17 +188,35 @@ export default {
       province: "",
       city: "",
       district: "",
-      showClassify: false
+      showClassify: false,
+      advertise_machine_label_type_index: -1,
+      ongitude: "",
+      latitude: "",
+      address: "",
+      selectItemlength: 0
     };
   },
   onLoad(option) {
     this.isFree = option.isFree || "";
     this.material_screenType = Number(option.material_screenType);
+    let position = uni.getStorageSync("position") || null;
+    if (position) {
+      this.address = position.site;
+      this.longitude = position.longitude;
+      this.latitude = position.latitude;
+    }
     this.getCartList();
     //获取机器分类
     this.getMachineType();
   },
   methods: {
+    //头部筛选
+    clickSx(index) {
+      this.advertise_machine_label_type_index = index;
+      this.isSearch = true;
+      this.start = 0;
+      this.getMachineList(0, true);
+    },
     clickShow() {
       this.showClassify = true;
     },
@@ -180,14 +228,39 @@ export default {
       this.$refs.mpvueCityPicker.show();
     },
     onConfirm(e) {
-      this.provincesCitiesDistrict = e.label;
-      const cityArr = e.label.split("-");
-      this.provinces = cityArr[0];
-      this.city = cityArr[1];
-      this.district = cityArr[2] || "";
+      // this.provincesCitiesDistrict = e.label;
       this.cityPickerValueDefault = e.value;
+      if (this.cityPickerValueDefault[0] > 0) {
+        const cityArr = e.label.split("-");
+        this.province = cityArr[0];
+        this.city = this.cityPickerValueDefault[1] === 0 ? '' : cityArr[1];
+        this.district = this.cityPickerValueDefault[2] === 0 ? '' : cityArr[2];
+        let provincesCitiesDistrict = this.province
+        if (this.city) {
+          provincesCitiesDistrict += '-' + this.city
+        }
+        if (this.district) {
+          provincesCitiesDistrict += '-' + this.district
+        }
+        this.provincesCitiesDistrict = provincesCitiesDistrict
+
+      } else {
+        this.province = '';
+        this.city = '';
+        this.district = '';
+        this.provincesCitiesDistrict = '全国'
+      }
       this.start = 0;
       this.getMachineList(0, true);
+    },
+    clickAll() {
+      this.adMachineId = this.contentList.filter(item => (item.my_cart = 1));
+      this.selectItemlength = this.adMachineId.length;
+    },
+    clickAllNot() {
+      this.contentList.map(item => (item.my_cart = 0));
+      this.adMachineId = [];
+      this.selectItemlength = 0;
     },
     async getMachineType() {
       try {
@@ -203,9 +276,11 @@ export default {
         let flagIndex = this.adMachineId.indexOf(id);
         this.adMachineId.splice(flagIndex, 1);
         this.contentList[index].my_cart = 0;
+        this.selectItemlength -= 1;
       } else {
         this.adMachineId.push(item);
         this.contentList[index].my_cart = 1;
+        this.selectItemlength += 1;
       }
     },
     //点击热门
@@ -288,14 +363,17 @@ export default {
         let payload;
         if (this.isFree == "") {
           payload = {
-            longitude: "",
-            latitude: "",
-            labelType: "",
+            longitude: this.longitude,
+            latitude: this.latitude,
+            labelType:
+              this.advertise_machine_label_type_index >= 0
+                ? this.machineType[this.advertise_machine_label_type_index]
+                : "",
             machineName: this.name,
             screenType: this.material_screenType,
-            province: "",
-            city: "",
-            district: "",
+            province: this.province,
+            city: this.city,
+            district: this.district,
             start,
             offset: this.offset
           };
@@ -358,6 +436,10 @@ page {
   padding-bottom: 92rpx;
   box-sizing: border-box;
 }
+.search-page {
+  padding-top: 244rpx;
+  padding-bottom: 94rpx;
+}
 .banner {
     width: 100%;
     height: 80rpx;
@@ -411,8 +493,66 @@ page {
       }
     }
   }
+  .pop-classify {
+    width: 100%;
+    min-height: 180rpx;
+    background: rgba(255, 255, 255, 1);
+    position: fixed;
+    top: 80rpx;
+    left: 0;
+    z-index: 999;
+    padding-bottom: 30rpx;
+    box-sizing: border-box;
+    .top {
+      width: 100%;
+      height: 80rpx;
+      display: flex;
+      align-items: center;
+      padding: 0 24rpx;
+      box-sizing: border-box;
+      .tit {
+        font-size: 30rpx;
+        font-weight: bold;
+        color: rgba(20, 20, 20, 1);
+        margin-right: auto;
+      }
+      .xx {
+        width: 30rpx;
+        height: 30rpx;
+      }
+    }
+    .classify-ct {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      .classify-item {
+        width: 154rpx;
+        height: 70rpx;
+        line-height: 70rpx;
+        background: rgba(246, 246, 246, 1);
+        font-size: 28rpx;
+        color: rgba(102, 102, 102, 1);
+        text-align: center;
+        margin-top: 20rpx;
+      }
+    }
+  }
+  .modal-mask {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.5;
+    overflow: hidden;
+    z-index: 3;
+    color: #fff;
+  }
   .area-picker {
-    top: 164rpx;
+    border-top: 1rpx solid #e5e5e5;
+    top: 161rpx;
     padding: 0 40rpx;
     display: flex;
     align-items: center;
@@ -434,6 +574,12 @@ page {
   padding-left: 20rpx;
   box-sizing: border-box;
   border-bottom: 1rpx solid #e5e5e5;
+  &.top-search {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+  }
   .icon {
     height: 60rpx;
     background: rgba(242, 242, 242, 1);
@@ -529,6 +675,7 @@ page {
   margin-top: 24rpx;
   padding: 25rpx 25rpx 0 25rpx;
   box-sizing: border-box;
+  position: relative;
   .ct {
     display: flex;
     border-bottom: 1rpx solid #e5e5e5;

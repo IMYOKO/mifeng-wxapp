@@ -2,7 +2,6 @@
   <view>
     <view class="top-button">
       <view class="item">
-        <!-- <button class="top-btn" @tap="clickManager">管理</button> -->
         <button class="top-btn add" @tap="clickAdd">添加素材</button>
       </view>
     </view>

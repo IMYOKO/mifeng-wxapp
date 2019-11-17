@@ -151,12 +151,17 @@ export default {
     },
     //选择时间
     clickChooseDate() {
+      if (this.machineCartList.length === 0) {
+        tip.toast("请选择广告机");
+        return;
+      }
+      const machineIds = this.machineCartList.map(item => item.id).join(",");
       uni.navigateTo({
         url:
           "/pages-home/chooseDate?to_dates=" +
           this.to_dates +
-          "&free=1&advertise_machine_id=" +
-          this.id
+          "&free=1"
+           + '&machineIds=' + machineIds
       });
     },
     //选择素材
@@ -208,7 +213,8 @@ export default {
           machineIds,
           materialId: this.material_id,
           putDays,
-          bpsj: 0
+          bpsj: 0,
+          publishEntry: 1
         };
         if (this.type === 2) {
           payload.bpsj = this.multiArray[0][this.multiIndex[0]] * 60 * 60 + this.multiArray[1][this.multiIndex[1]] * 60

@@ -57,11 +57,13 @@ import util from '../utils/util';
 export default {
   data() {
     return {
+      free: null,
       year: 0,
       month: 0,
       date: ["日", "一", "二", "三", "四", "五", "六"],
       dateArr: [],
       isToday: "",
+      machineIds: '',
       isTodayWeek: false,
       selectDate: [], //选择的日期
       unUseDate: [] //无法选择的日期
@@ -69,7 +71,8 @@ export default {
   },
   async onLoad(options) {
     let free = options.free;
-    let advertise_machine_id = options.advertise_machine_id;
+    this.free = options.free
+    this.machineIds = options.machineIds;
     let to_dates = options.to_dates;
     if (to_dates) {
       this.selectDate = to_dates.split(",");
@@ -83,7 +86,7 @@ export default {
     this.month = month;
     let this_month_day =
       "" + year + "-" + (month < 10 ? "0" + month : month) + "-" + "01";
-    await this.getUnuseDate(this_month_day, free, advertise_machine_id);
+    await this.getUnuseDate(this_month_day, free);
     this.isToday =
       "" +
       year +
@@ -162,7 +165,8 @@ export default {
       // this.unUseDate = json.data;
       try {
         const payload = {
-          machineIds: `${advertise_machine_id}`
+          publishEntry: this.free === '1' ? 1 : 0,
+          machineIds: this.machineIds
         }
         const res = await this.$server.checkDate(payload)
         this.unUseDate = res.data.data.dataList;

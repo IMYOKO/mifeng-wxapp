@@ -171,7 +171,12 @@ export default {
     },
     //选择时间
     clickChooseDate() {
-      this.$CommonJs.pathTo("/pages-home/chooseDate?to_dates=" + this.to_dates);
+      if (this.machineCartList.length === 0) {
+        tip.toast("请选择广告机");
+        return;
+      }
+      const machineIds = this.machineCartList.map(item => item.id).join(",");
+      this.$CommonJs.pathTo("/pages-home/chooseDate?to_dates=" + this.to_dates + '&machineIds=' + machineIds);
     },
     getMachineCart() {
       const machineCartList = uni.getStorageSync("adMachineId") || [];
@@ -223,7 +228,8 @@ export default {
           machineIds,
           materialId: this.material_id,
           putDays,
-          bpsj: 0
+          bpsj: 0,
+          publishEntry: 0
         };
         if (this.type === 2) {
           payload.bpsj = Number.parseInt(this.multiArray[0][this.multiIndex[0]]) * 60 * 60 + Number.parseInt(this.multiArray[1][this.multiIndex[1]]) * 60

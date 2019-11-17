@@ -1,6 +1,14 @@
 /* eslint-disable */
 var areaData = [
   [
+    [
+      {
+        "label": "---",
+        "value": "100001"
+      },
+    ]
+  ],
+  [
     [{
         "label": "东城区",
         "value": "110101"
@@ -12539,4 +12547,18 @@ var areaData = [
     }]
   ]
 ]
+areaData.map((area, index) => {
+  if (index > 0) {
+    area.map(item => {
+      item.unshift({
+        label: '请选择',
+        value: Number(item[0].value) -1,
+      })
+    })
+    area.unshift([{
+      label: '请选择',
+      value: Number(area[0][0].value) -1,
+    }])
+  }
+})
 export default areaData;

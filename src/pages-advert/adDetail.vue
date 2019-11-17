@@ -78,7 +78,7 @@
           <view class="top">{{item.materialName}}</view>
           <view class="middle">
             <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
-            <block v-if="item.sfbp === 0">
+            <block v-if="orderInfo.sfbp === 0">
               <view
                 class="pri"
                 v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
@@ -89,13 +89,21 @@
               >¥{{item.price}}／15s／天</view>
             </block>
             <block v-else>
-              <view class="pri">¥{{orderInfo.bpprice}}／{{orderInfo.bpsj}}s</view>
+              <view class="pri">¥{{orderInfo.bpprice}}／{{orderInfo.bpsj}}</view>
             </block>
+          </view>
+          <view class="middle">
+            <view class="place">投放次数</view>
+            <view class="pri">{{item.playTimes}}</view>
+          </view>
+          <view class="middle">
+            <view class="place">投放时间</view>
+            <view class="pri">{{item.playTime}}</view>
           </view>
           <view class="bottom">
             <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
             <view class="mark">{{item.lableType}}</view>
-            <view class="num" v-if="item.sfbp === 0">×{{item.price}}</view>
+            <view class="num" v-if="orderInfo.sfbp === 0">×{{item.price}}</view>
             <view class="num" v-else>×{{orderInfo.bpprice}}</view>
           </view>
         </view>
@@ -303,6 +311,9 @@ export default {
         orderInfo.bpsj = this.$CommonJs.bpsjFn(orderInfo.bpsj)
         this.orderInfo = orderInfo;
         this.machineList = res.data.data.machineList;
+        this.machineList.map(item => {
+          item.playTime = this.$CommonJs.bpsjFn(item.playTime)
+        })
       } catch (error) {}
     },
     //取消订单
@@ -645,6 +656,7 @@ export default {
           font-size: 22rpx;
           color: rgba(102, 102, 102, 1);
           margin-right: auto;
+          width: 80%;
         }
         .pri {
           font-size: 24rpx;

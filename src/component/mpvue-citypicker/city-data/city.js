@@ -1,6 +1,10 @@
 /* eslint-disable */
 var cityData = [
   [{
+    "label": "--",
+    "value": "1000"
+  }],
+  [{
     "label": "市辖区",
     "value": "1101"
   }],
@@ -1500,4 +1504,12 @@ var cityData = [
     }
   ]
 ]
+cityData.map((city, index) => {
+  if (index > 0) {
+    city.unshift({
+      label: '请选择',
+      value: Number(city[0].value) -1,
+    })
+  }
+})
 export default cityData;

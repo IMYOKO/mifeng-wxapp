@@ -1,5 +1,9 @@
 /* eslint-disable */
 var provinceData = [{
+    "label": "全国",
+    "value": "10"
+  },
+  {
     "label": "北京市",
     "value": "11"
   },

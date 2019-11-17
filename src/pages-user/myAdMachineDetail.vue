@@ -45,11 +45,41 @@
           >{{adInfo.province}}{{adInfo.city}}{{adInfo.district}}{{adInfo.address}}</view>
         </view>
       </view>
-      <view class="note">在播广告</view>
+      <view class="note">机主广告</view>
       <view class="content" :style="{height: contentHeight + 'rpx'}">
         <view
           class="ct-view"
           v-for="(item, index) in contentList"
+          :key="index"
+          :data-id="item.id"
+          :data-index="index"
+          :class="{'min': item.screenType === 2}"
+          :style="{left: item.style.left, top: item.style.top}"
+        >
+          <video
+            :src="item.video"
+            v-if="item.materialType === 3 || item.materialType === 4 || item.materialType === 5"
+            :class="item.materialType === 5 ? 'ct-video' : (item.screenType === 2 ? 'ct-img min' : 'ct-img')"
+          />
+          <image
+            class="ct-img"
+            v-if="item.materialType === 1 || item.materialType === 2 || item.materialType === 5"
+            :class="item.materialType === 5 ? 'group' : (item.screenType === 2 ? 'min' : '')"
+            :src="item.logo"
+          />
+          <cover-image
+            v-if="item.isSelected"
+            class="select-icon"
+            src="../static/images/ic_home_select.png"
+          ></cover-image>
+          <view class="tit">{{item.materialName}}</view>
+        </view>
+      </view>
+      <view class="note">客户广告</view>
+      <view class="content" :style="{height: contentHeight + 'rpx'}">
+        <view
+          class="ct-view"
+          v-for="(item, index) in contentList2"
           :key="index"
           :data-id="item.id"
           :data-index="index"
@@ -99,10 +129,14 @@ export default {
   data() {
     return {
       id: "",
+      start: 0,
+      offset: 10,
       adInfo: null,
       windowHeight: "",
       contentHeight: 0,
+      contentHeight2: 0,
       contentList: [],
+      contentList2: [],
       load_more: false, //加载更多图案
       no_more: false, //没有更多数据
       is_empty: false //无数据，显示空页面
@@ -110,9 +144,7 @@ export default {
   },
   onLoad(options) {
     this.start = 0;
-  },
-  onLoad(options) {
-    this.id = options.id;
+    this.id = Number(options.id);
     this.item;
     this.getAdInfo();
     let systemInfo = uni.getSystemInfoSync();
@@ -121,7 +153,8 @@ export default {
     );
     this.id = Number(options.id);
     this.getAdInfo();
-    this.getMyMachineMaterialList(this.start, true);
+    this.getMyMachineMaterialList(1, this.start, true);
+    this.getMyMachineMaterialList(0, this.start, true);
   },
   methods: {
     clickPostAd(item) {
@@ -140,49 +173,79 @@ export default {
       const res = await this.$server.getMyMachineDetail({ id: this.id });
       this.adInfo = res.data.data.machine;
     },
-    async getMyMachineMaterialList(start, refresh) {
+    async getMyMachineMaterialList(isme, start, refresh) {
+      console.log('sssssssssss')
+      console.log(this.id)
       const payload = {
         id: this.id,
+        isme,
         start,
         offset: 10
       };
+      if (isme === 1) {
+        payload.start = 0
+        payload.offset = 10000
+      }
       try {
         const response = await this.$server.getMyMachineMaterialList(payload);
         this.load_more = false;
         if (refresh) {
-          this.contentList = response.data.data.item;
+          if (isme === 1) {
+            this.contentList = response.data.data.item;
+          } else {
+            this.contentList2 = response.data.data.item;
+          }
         } else {
-          this.contentList = [...this.contentList, ...response.data.data.item];
+          if (isme === 1) {
+            this.contentList = [...this.contentList, ...response.data.data.item];
+          } else {
+            this.contentList2 = [...this.contentList, ...response.data.data.item];
+          }
         }
-        if (response.data.data.isNext === 0) {
-          //没有更多数据
-          this.no_more = true;
+        if (isme === 0) {
+          if (response.data.data.isNext === 0) {
+            //没有更多数据
+            this.no_more = true;
+          } else {
+            this.no_more = false;
+          }
+          if (
+            this.start === 0 &&
+            response.data.data.isNext === 0 &&
+            response.data.data.item.length === 0
+          ) {
+            //暂无数据
+            this.is_empty = true;
+            this.no_more = false;
+          } else {
+            this.is_empty = false;
+          }
+        }
+        let tops = [0, 0];
+        if (isme === 1) {
+          if (this.contentList.length) {
+            this.contentList = this.contentList.map(item => {
+              this.computeLeftAndTop(item, tops);
+              return item;
+            });
+          }
+          this.contentHeight = Math.max(tops[0], tops[1]);
         } else {
-          this.no_more = false;
+          if (this.contentList2.length) {
+            this.contentList2 = this.contentList2.map(item => {
+              this.computeLeftAndTop(item, tops);
+              return item;
+            });
+          }
+          this.contentHeight2 = Math.max(tops[0], tops[1]);
         }
-        if (
-          this.start === 0 &&
-          response.data.data.isNext === 0 &&
-          response.data.data.item.length === 0
-        ) {
-          //暂无数据
-          this.is_empty = true;
-        } else {
-          this.is_empty = false;
-        }
-        const tops = [0, 0];
-        if (this.contentList.length) {
-          this.contentList = this.contentList.map(item => {
-            this.computeLeftAndTop(item, tops);
-            return item;
-          });
-        }
-        this.contentHeight = Math.max(tops[0], tops[1]);
       } catch (error) {
-        this.is_empty = this.start === 0 && this.contentList.length === 0;
-        this.no_more = !this.is_empty;
-        this.load_more = false;
-        return;
+        if (isme === 0) {
+          this.is_empty = this.start === 0 && this.contentList.length === 0;
+          this.no_more = !this.is_empty;
+          this.load_more = false;
+          return;
+        }
       }
     },
     computeLeftAndTop(item, tops) {
@@ -208,7 +271,8 @@ export default {
    */
   onPullDownRefresh() {
     this.start = 0;
-    this.getMyMachineMaterialList(0, true);
+    this.getMyMachineMaterialList(1, 0, true);
+    this.getMyMachineMaterialList(0, 0, true);
     setTimeout(() => {
       uni.stopPullDownRefresh();
     }, 1000);
@@ -219,7 +283,8 @@ export default {
   onReachBottom() {
     if (!this.no_more && !this.is_empty) {
       this.start += 1;
-      this.getMyMachineMaterialList(this.start, false);
+      this.getMyMachineMaterialList(1, this.start, false);
+      this.getMyMachineMaterialList(0, this.start, false);
     }
   }
 };

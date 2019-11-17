@@ -33,7 +33,7 @@
     </view>
     <view @tap="clickEarningDetail">
       <formidTaker>
-        <view class="item" v-if="userInfo.userLevel !== 0">
+        <view class="item" v-if="userInfo.userLevel !== 0 || userInfo.managerLevel === 1">
           <image class="item-icon" src="../static/images/ic_my_profit.png" />
           <view class="item-text">收益明细</view>
         </view>

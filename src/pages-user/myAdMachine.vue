@@ -1,5 +1,53 @@
 <template>
   <view class="myAdMachine">
+    <view class="top-button">
+      <view class="item">
+        <button class="top-btn add" @tap="clickPostFreeAd">免费发布广告</button>
+      </view>
+    </view>
+    <view class="total-wrapper">
+      <ul>
+        <li>
+          <view class="list-item">
+            <view class="h5">广告机：(台)</view>
+            <view class="h3">{{machineCount}}</view>
+          </view>
+        </li>
+        <li>
+          <view class="list-item">
+            <view class="h5">在播数：(个)</view>
+            <view class="h3">{{playingMaterialsCount}}</view>
+          </view>
+        </li>
+        <li>
+          <view class="list-item">
+            <view class="h5">在线数：(台)</view>
+            <view class="h3">{{machineOnlineCount}}</view>
+          </view>
+        </li>
+        <li>
+          <view class="list-item">
+            <view class="h5">广告总数：(台)</view>
+            <view class="h3">{{materialsCount}}</view>
+          </view>
+        </li>
+        <!-- <li>
+          <view class="list-item">
+            在播数：<span>dsdas</span> 个
+          </view>
+        </li>
+        <li>
+          <view class="list-item">
+            在线数：<span>12</span> 台
+          </view>
+        </li>
+        <li>
+          <view class="list-item">
+            广告总数：<span>100</span> 个
+          </view>
+        </li> -->
+      </ul>
+    </view>
     <view
       class="ct-view"
       v-for="(item, index) in contentList"
@@ -71,7 +119,11 @@ export default {
       is_empty: false, //无数据，显示空页面
       start: 0,
       offset: 10,
-      contentList: [] //页面列表数据
+      contentList: [], //页面列表数据
+      machineCount: 0,
+      playingMaterialsCount: 0,
+      machineOnlineCount: 0,
+      materialsCount: 0,
     };
   },
   components: {
@@ -82,14 +134,27 @@ export default {
   onShow() {
     this.page = 0;
     this.getAdMachineList(0, true);
+    this.getMyMachinesTotal()
   },
   methods: {
+    clickPostFreeAd() {
+      uni.navigateTo({
+        url: "/pages-home/postFreeAd"
+      });
+    },
     //广告机详情
     clickDetail(id) {
       console.log(id)
       uni.navigateTo({
         url: "/pages-user/myAdMachineDetail?id=" + id
       });
+    },
+    async getMyMachinesTotal () {
+      const res = await this.$server.getMyMachinesTotal()
+      this.machineCount = res.data.data.machineCount;
+      this.playingMaterialsCount = res.data.data.playingMaterialsCount;
+      this.machineOnlineCount = res.data.data.machineOnlineCount;
+      this.materialsCount = res.data.data.materialsCount;
     },
     async getAdMachineList(start, refresh) {
       try {
@@ -147,6 +212,78 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.myAdMachine {
+  padding-top: 100rpx;
+}
+.total-wrapper {
+  // position: fixed;
+  // left: 0;
+  // top: 80rpx;
+  // z-index: 1000;
+  background: #fff;
+  margin: 0 25rpx;
+  padding: 20rpx 0;
+  box-shadow: 0rpx 2rpx 10rpx #e7e7e7;
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    li {
+      width: 50%;
+      padding: 15rpx 0;
+      .list-item {
+        color: #575757;
+        padding: 0 25rpx;
+
+        .h5 {
+          font-size: 24rpx;
+          color: #575757;
+          margin-bottom: 3rpx;
+        }
+        .h3 {
+          font-size: 30rpx;
+          color: #000;
+        }
+      }
+    }
+  }
+}
+.top-button {
+  width: 100%;
+  height: 80rpx;
+  background: #141414;
+  position: fixed;
+  top: 0rpx;
+  right: 0;
+  white-space: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: hidden;
+  z-index: 600;
+
+  .item {
+    height: 80rpx;
+    font-size: 28rpx;
+    color: rgba(153, 153, 153, 1);
+    margin-right: 10rpx;
+    margin-top: 16rpx;
+    box-sizing: border-box;
+    border-bottom: 6rpx solid #141414;
+    .top-btn {
+      height: 48rpx;
+      line-height: 48rpx;
+      text-align: center;
+      font-size: 24rpx;
+      color: rgba(20, 20, 20, 1);
+      background: rgba(246, 246, 246, 1);
+      border-radius: 0;
+    }
+    .add {
+      background: rgba(51, 51, 51, 1);
+      color: rgba(255, 214, 2, 1);
+      float: right;
+    }
+  }
+}
 .ct-view {
   width: 702rpx;
   min-height: 280rpx;

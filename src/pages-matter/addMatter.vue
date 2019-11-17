@@ -8,7 +8,7 @@
         <view class="modal_btn" @tap="closeModal">确定</view>
       </view>
     </view>
-    <view class="banner-click" v-if="showTag">
+    <view class="banner-click">
       <view class="banner-item" v-for="(item, index) in tags" :key="index">
         <view class="item-inner">
           <view
@@ -21,7 +21,6 @@
         </view>
       </view>
     </view>
-    <view class="bg" @click="showTag = false" v-if="showTag"></view>
     <view class="item pd mt">
       <view class="line"></view>
       <view class="tit">素材类型</view>
@@ -335,6 +334,7 @@ export default {
 <style lang="less">
 .container {
   position: relative;
+  padding-bottom: 100rpx;
 }
 
 .bg {
@@ -352,9 +352,9 @@ export default {
   display: flex;
   background: #fff;
   flex-wrap: wrap;
-  position: fixed;
-  left: 0;
-  top: 0;
+  // position: fixed;
+  // left: 0;
+  // top: 0;
   z-index: 1000;
 
   .banner-item {
