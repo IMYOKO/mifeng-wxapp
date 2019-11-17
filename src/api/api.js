@@ -425,6 +425,27 @@ class Api extends BasicRequest {
   userCashAudit(payload) {
     return this.POST('/api/user/userCashAudit', payload);
   }
+
+  /**
+   * 机主删除自己发布的广告
+   */
+  delMyAd(payload) {
+    return this.POST('/api/machines/delMyAd', payload);
+  }
+
+  /**
+   * 查询支付密码是否设置
+   */
+  checkPaypwd() {
+    return this.POST('/api/user/checkPaypwd', {});
+  }
+
+  /**
+   * 查询支付密码是否设置
+   */
+  getMachinesForHomePage(payload) {
+    return this.POST('/api/machines/getMachinesForHomePage', payload);
+  }
 }
 
 export default new Api();

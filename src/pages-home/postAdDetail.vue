@@ -21,7 +21,12 @@
       <video
         :src="orderInfo.video"
         class="video"
-        v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4 || orderInfo.materialType === 5"
+        v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
+      ></video>
+      <video
+        :src="orderInfo.video"
+        class="video min min5"
+        v-if="orderInfo.materialType === 5"
       ></video>
       <image
         class="img"
@@ -57,22 +62,22 @@
               <view
                 class="pri"
                 v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
-              >¥{{item.price}}／天</view>
+              >¥{{item.unitPrice}}／天</view>
               <view
                 class="pri"
                 v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
-              >¥{{item.price}}／15s／天</view>
+              >¥{{item.unitPrice}}／{{item.unitTime}}s／天</view>
             </block>
             <block v-else>
               <view
                 class="pri"
-              >¥{{orderInfo.bpprice}}／{{orderInfo.bpsj}}s</view>
+              >¥{{item.unitPrice}}／{{item.unitTime}}s</view>
             </block>
           </view>
           <view class="bottom">
             <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
             <view class="mark">{{item.lableType}}</view>
-            <view class="num">×{{item.price}}</view>
+            <view class="num">×{{item.amount}}</view>
           </view>
         </view>
       </view>
@@ -154,7 +159,8 @@ export default {
       machineList: [],
       money: 0,
       integral: 0,
-      orderStatus: 0
+      orderStatus: 0,
+      payPwd: 0 // 0-否、1-是
     }
   },
   async onLoad(options) {
@@ -164,7 +170,8 @@ export default {
     //获取页面信息
     await this.getUserAssets();
     await this.getUserIntegral();
-    this.getOrderInfo();
+    await this.checkPaypwd()
+    await this.getOrderInfo();
   },
   methods: {
     //获取用户信息
@@ -223,14 +230,21 @@ export default {
         this.machineList = res.data.data.machineList;
       } catch (error) {}
     },
+    // 获取是否设置支付密码
+    async checkPaypwd () {
+      const res = await this.$server.checkPaypwd()
+      if (res.data.status === 0) {
+        this.payPwd = res.data.data.payPwd
+      }
+    },
     async clickSureOrder() {
       //没有密码
       if (this.pay_type === 2 || this.pay_type === 3) {
         //余额  积分支付
-        // if(!this.userInfo.has_password){
-        //   this.$CommonJs.pathTo('/pages-user/setPayPass')
-        //   return;
-        // }
+        if(this.payPwd === 0){
+          this.$CommonJs.pathTo('/pages-user/setPayPass')
+          return;
+        }
         this.showPay = true;
       } else if (this.pay_type === 1) {
         // 微信支付
@@ -414,6 +428,10 @@ export default {
       width: 700rpx;
       height: 340rpx;
     }
+    &.min5 {
+      width: 344rpx;
+      height: 180rpx;
+    }
   }
   .img {
     width: 344rpx;
@@ -477,6 +495,7 @@ export default {
           color: rgba(102, 102, 102, 1);
           margin-right: auto;
           word-break: break-all;
+          width: 70%;
         }
         .pri {
           font-size: 24rpx;

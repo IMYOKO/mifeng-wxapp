@@ -1,7 +1,7 @@
 <template>
   <view>
-    <image src="../static/images/pic_banner_1.png" class="bg-img" />
-    <view class="header">
+    <!-- <image src="../static/images/pic_banner_1.png" class="bg-img" /> -->
+    <!-- <view class="header">
       <view class="h-item">
         <view class="h-text">总收益</view>
         <view class="h-num">{{info.earnings_sum_money}}</view>
@@ -11,8 +11,27 @@
         <view class="h-num">{{info.money_avg}}</view>
       </view>
       <view class="h-line"></view>
+    </view> -->
+    <view class="new-header">
+      <view class="header-bg"></view>
+      <view class="header-wrapper">
+        <view class="header-inner">
+          <image class="ca" src="../static/images/ca.png" />
+          <view class="line"></view>
+          <view class="shouyi-box">
+            <view class="shouyi-item">
+              <view class="h1">{{info.earnings_sum_money}}</view>
+              <view class="h5">总收益</view>
+            </view>
+            <view class="shouyi-item">
+              <view class="h1">{{info.money_avg}}</view>
+              <view class="h5">上周平均收益/台</view>
+            </view>
+          </view>
+      </view>
+      </view>
     </view>
-    <view class="tips">注：广告机每天在线时间达到10个小时才会计算当天收益</view>
+    <!-- <view class="tips">注：广告机每天在线时间达到10个小时才会计算当天收益</view> -->
     <view class="charts" v-if="contentList.length">
       <UchartsComponent :cHeight="uchartOpts.height" :cWidth="uchartOpts.width" :opts="uchartOpts"></UchartsComponent>
     </view>
@@ -157,6 +176,74 @@ export default {
   height: 140rpx;
   position: fixed;
   z-index: 1;
+}
+.new-header {
+  padding: 40rpx 0 20rpx;
+
+  .header-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    height: 240rpx;
+    background: url('../static/images/shouyibg.png') center center no-repeat;
+    background-size: 750rpx 240rpx;
+  }
+
+  .header-wrapper {
+    padding: 0 20rpx;
+
+    .header-inner {
+      height: 240rpx;
+      overflow: hidden;
+      background-color: #ffd602;
+      border-radius: 10rpx;
+      box-shadow: 1rpx 0 5rpx rgba(255, 214, 2, .5);
+      position: relative;
+
+      .ca {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 0;
+        width: 408rpx;
+        height: 206rpx;
+      }
+      .line {
+        width: 1px;
+        height: 50rpx;
+        background: #000;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+      }
+      .shouyi-box {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        height: 240rpx;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+
+        .shouyi-item {
+          width: 50%;
+          text-align: center;
+          .h1 {
+            font-size: 38rpx;
+            font-weight: bold;
+            margin-bottom: 32rpx;
+          }
+          .h5 {
+            font-size: 24rpx;
+          }
+        }
+      }
+    }
+  }
 }
 .header {
   width: 100%;

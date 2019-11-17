@@ -49,16 +49,10 @@ export default {
       const payload = {
         longitude,
         latitude,
-        labelType: '',
-        machineName: '',
-        screenType: '',
-        province: '',
-        city: '',
-        district: '',
         start: 0,
         offset: 50,
       }
-      const res = await this.$server.getMachinesList(payload)
+      const res = await this.$server.getMachinesForHomePage(payload)
       const contentList = res.data.data.item;
       let arr = []
       contentList.forEach((item, index) => {

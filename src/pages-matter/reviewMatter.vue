@@ -1,97 +1,108 @@
 <template>
-  <view class="prew-img">
-    <view class = "img" v-if="(type === 1 || type === 2) && screenType === 1">
-      <image class = "images" :src="logo" @click="previewImage(logo)"/>
+  <view class="review-matter">
+    <view class="banner">
+      <span v-if="auditStatus === 0">待审核素材</span>
+      <span v-if="auditStatus === 1">已通过素材</span>
+      <span v-if="auditStatus === 2">已驳回素材</span>
     </view>
-    <view class = "img min" v-if="(type === 1 || type === 2) && screenType === 2">
-      <image class = "images min" :src="logo" @click="previewImage(logo)" />
+    <view class="info-item">
+      <span>创建时间</span>
+      <span>{{createTime}}</span>
     </view>
-    <view class = "group" v-if="type === 5">
-      <video :src="video"></video>
-      <image class = "images" :src="logo" @click="previewImage(logo)" />
+    <view class="info-item">
+      <span>用户昵称</span>
+      <span>{{nickName}}</span>
     </view>
-    <view class = "video" v-if="(type === 3 || type === 4)  && screenType === 1">
-      <video :src="video" class="videos"></video>
-    </view>
-    <view class = "video min" v-if="(type === 3 || type === 4)  && screenType === 2">
-      <video :src="video" class="videos min"></video>
-    </view>
+    <view class="matter-wrapper">
+      <view class="top">
+        <span>{{screenType === 1 ? '竖屏' : screenType === 2 ? '横屏' : ''}}</span>
+        <span>{{materialTypeText}}</span>
+      </view>
 
-    <view class="shenhe" v-if="auditStatus === 0">
-      <view class="input-box">
-        <input type="text" placeholder="请输入审核备注" v-model="auditRemark" />
-      </view>
-      <view class="btn-view">
-        <button class="refuse_btn btn" @click="sumbit(2)">不通过</button>
-        <button class="login_btn btn" @click="sumbit(1)">通过</button>
+      <view class="matter-box">
+        <view class="matter heng" v-if="screenType === 2 && materialType !== 5">
+          <image :src='logo' v-if="materialType === 1 || materialType === 2" />
+          <video :src="video" v-if="materialType === 3 || materialType === 2"></video>
+        </view>
+        <view class="matter shu" v-if="screenType === 1 && materialType !== 5">
+          <image :src='logo' v-if="materialType === 1 || materialType === 2" />
+          <video :src="video" v-if="materialType === 3 || materialType === 2"></video>
+        </view>
+        <view class="matter zhuhe" v-if="materialType === 5">
+          <video :src="video"></video>
+          <image :src='logo' />
+        </view>
       </view>
     </view>
-    <view class="shenhe shenhe2" v-if="auditStatus === 1">审核通过</view>
-    <view class="shenhe shenhe2" v-if="auditStatus === 2">审核不通过</view>
+    <view class="info-item" v-if="auditStatus === 0">
+      <span>审核备注</span>
+    </view>
+    <view class="input-box" v-if="auditStatus === 0">
+      <input type="text" placeholder="请输入审核备注" v-model="auditRemark" />
+    </view>
+    <view class="info-item btn" v-if="auditStatus === 0">
+      <view class="left"></view>
+      <view class="right">
+        <span class="bohui" @click="sumbit(2)">驳回</span>
+        <span @click="sumbit(1)">通过</span>
+      </view>
+    </view>
   </view>
-
 </template>
+
 <script>
-import request from '../utils/request';
-import tip from '../utils/tip';
-import {
-  USER_TOKEN,USER_INFO,USER_SPECICAL_INFO
-} from '../utils/constant';
 export default {
-  config: {
-    navigationBarTitleText: '素材预览',
-  },
-  data() {
+  data () {
     return {
-      type:'',
-      logo:'',
-      video:'',
-      name:'',
-      interval: null,
-      pace: 1.2, //滚动速度
-      interval: 20, //时间间隔
-      size:32, //字体大小in px
-      length: 0, //字体宽度
-      offsetLeft: 0, //
-      windowWidth: 0,
-      windowHeight:0,
-      logoImg:'',
-      codeImg:'',
-      screenType: null,
       id: null,
-      auditStatus: 0,
-      auditRemark: ''
+      materialType: null,
+      logo: '',
+      video: '',
+      screenType: null,
+      auditStatus: null,
+      nickName: '',
+      auditRemark: '',
+      createTime: '',
+      materialTypeText: ''
     }
   },
-  async onLoad(options) {
-    let systemInfo = uni.getSystemInfoSync();
-    this.windowHeight = `height:${Math.ceil(systemInfo.windowHeight/(systemInfo.windowWidth/750))}rpx`
-    this.type = Number(options.type);
-    if(this.type === 5){
-      this.pace = 0.8; //滚动速度
-    }
-    this.id = Number(options.id);
+  onLoad (option) {
+    this.id = Number.parseInt(option.id)
     this.getMaterialsForAudit()
   },
   methods: {
-    previewImage(url) {
-      uni.previewImage({
-        urls: [url]
-      });
-    },
     async getMaterialsForAudit() {
       const payload = {
         id: this.id
       }
       const res = await this.$server.getMaterialsForAudit(payload)
-      console.log(res)
       const item = res.data.data.material
-      console.log(item)
-      this.type = item.materialType
+      let materialType = item.materialType
+      this.materialType = materialType
+      switch (materialType) {
+        case 1:
+          this.materialTypeText = '竖屏图片'
+          break;
+        case 2:
+          this.materialTypeText = '横屏图片'
+          break;
+        case 3:
+          this.materialTypeText = '竖屏视频'
+          break;
+        case 4:
+          this.materialTypeText = '横屏视频'
+          break;
+        case 5:
+          this.materialTypeText = '组合素材'
+          break;
+      }
+      
       this.logo = item.logo
       this.video = item.video
       this.screenType = item.screenType
       this.auditStatus = item.auditStatus
+      this.nickName = item.nickName
+      this.createTime = item.createTime
     },
     async sumbit (auditStatus) {
       if (this.auditRemark == '') {
@@ -108,182 +119,104 @@ export default {
     }
   }
 }
-
 </script>
-<style lang="less">
-page{
-  background-color: #fff;
-}
-.prew-img {
-  padding: 15rpx;
-  .img,
-  .video {
-    width: 715rpx;
-    height: 1272rpx;
+
+<style lang="less" scoped>
+.review-matter {
+  .banner {
+    height: 200rpx;
+    background: #FFD602;
+    text-align: center;
+    font-size: 44rpx;
+    font-weight: bold;
+    line-height: 200rpx;
+  }
+  .info-item {
+    height: 85rpx;
+    line-height: 85rpx;
+    padding: 0 30rpx;
+    background: #fff;
     display: flex;
-    justify-content: center;
-    .images,
-    .videos {
-      width: 715rpx;
-      height: 1272rpx;
-    }
-    &.min {
-      height: 402rpx;
-      .min {
-        height: 402rpx;
+    font-size: 28rpx;
+    justify-content: space-between;
+    margin-bottom: 1rpx;
+    &.btn {
+      margin-top: 40rpx;
+      .right {
+        span {
+          padding: 5rpx 20rpx;
+          background: #FFD602;
+          color: #141414;
+          margin-left: 15rpx;
+        }
+        .bohui {
+          color: #999;
+          background: none;
+          border: 1rpx solid #999;
+        }
       }
     }
   }
-}
+  .matter-wrapper {
+    margin: 20rpx 0;
+    background: #fff;
 
-.shenhe {
-  padding: 20rpx 0;
-  &.shenhe2 {
-    text-align: center;
-    font-size: 24rpx;
-    line-height: 24rpx;
-    padding-top: 30px;
-  }
-}
+    .top {
+      height: 85rpx;
+      line-height: 85rpx;
+      padding: 0 30rpx;
+      background: #fff;
+      display: flex;
+      font-size: 28rpx;
+      color:rgba(20,20,20,1);
+      justify-content: space-between;
+      margin-bottom: 1rpx;
+    }
 
-.input-box {
-  width: 95%;
-  margin: 0 auto;
-  display: flex;
-  padding-top: 30rpx;
-  input {
-    padding: 20rpx;
-    width: 100%;
-    height: 24rpx;
-    line-height: 24rpx;
-    border: 1rpx solid #e3e3e4;
-    border-radius: 5px;
-  }
-}
+    .matter-box {
+      padding: 20rpx 0;
+      display: flex;
+      justify-content: center;
 
-.btn-view {
-  width: 95%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-around;
+      .shu {
+        width: 344rpx;
 
-  .btn {
-    width: 340rpx;
-    height: 92rpx;
-    border-radius: 5rpx;
-    line-height: 92rpx;
-    margin-top: 40rpx;
-    font-size: 32rpx;
-    border-radius: 4rpx;
-    border: none;
-  }
+        image,
+        video {
+          width: 100%;
+          height: 630rpx;
+        }
+      }
+      .heng {
+        width: 662rpx;
+        image,
+        video {
+          width: 100%;
+          height: 352rpx;
+        }
+      }
+      .zhuhe {
+        width: 662rpx;
+        video {
+          width: 100%;
+          height: 352rpx;
+          margin-bottom: 10rpx;
+        }
+        image {
+          width: 100%;
+          height: 268rpx;
+        }
+      }
+    }
 
-  .login_btn {
-    background-color: #e9c300;
-    color: #fff;
   }
+  .input-box {
+    background: #fff;
+    padding: 10rpx 30rpx;
 
-  .refuse_btn {
-    background: rgba(216, 216, 216, 1);
-    color: #fff;
+    input {
+      font-size: 28rpx;
+    }
   }
-}
-
-.images{
-  position: relative;
-}
-.img-logo{
-    width:60rpx;
-    height:60rpx;
-    position: absolute;
-    top:10rpx;
-    left:10rpx;
-  }
-  .img-code{
-    width:60rpx;
-    height:60rpx;
-    position: absolute;
-    top:10rpx;
-    right:10rpx;
-  }
-.img{
-  position: relative;
-  .images{
-    width:100%;
-    /*height:1100rpx;*/
-    display: block;
-  }
-}
-.video {
-  video{
-    width:662rpx;
-    height:350rpx;
-    background:rgba(20,20,20,1);
-    border-radius:7rpx 7rpx 0px 0px;
-    display: block;
-    margin:0 auto;
-    margin-top:20rpx;
-    position: relative;
-    z-index:999;
-  }
-}
-.group{
-  video{
-    width:662rpx;
-    height:350rpx;
-    background:rgba(20,20,20,1);
-    border-radius:7rpx 7rpx 0px 0px;
-    display: block;
-    margin:0 auto;
-    margin-top:20rpx;
-    position: relative;
-    z-index:999;
-  }
-  .img-logo{
-    top:30rpx;
-    left:55rpx;
-  }
-  .img-code{
-    top:30rpx;
-    right:55rpx;
-  }
-  .images{
-    width:662rpx;
-    height:780rpx;
-    display: block;
-    margin:0 auto;
-    margin-top:20rpx;
-  }
-}
-.sv{
-  width:100%;
-  height:100rpx;
-  line-height:100rpx;
-  font-size:30rpx;
-  font-weight:bold;
-  color:rgba(20,20,20,1);
-  white-space: nowrap;
-}
-.rollCon {
-  width: 100%;
-  height: 60rpx;
-  z-index: 100;
-  font-size: 34rpx;
-  line-height: 60rpx;
-  background:rgba(20,20,20,0.6);
-  position: absolute;
-  bottom:0;
-  left:0;
-}
-.box {
-  width: 100%;
-  position: relative;
-}
-
-.text {
-  white-space: nowrap;
-  position: absolute;
-  top: 0;
-  font-size:34rpx;
 }
 </style>

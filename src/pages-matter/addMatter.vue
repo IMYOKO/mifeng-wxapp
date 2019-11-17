@@ -25,9 +25,8 @@
       <view class="line"></view>
       <view class="tit">素材类型</view>
       <!-- <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">-->
-      <view class="picker-container" @click="showTag=true">
+      <view class="picker-container">
         <view class="itembtn">{{tags[typeIndex]}}</view>
-        <image class="arrow" src="../static/images/ic_home_open_1.png" />
       </view>
     </view>
     <view class="item pd" v-if="type === 1 || type === 2 || type === 5" @tap="clickChooseImg">
@@ -94,6 +93,7 @@ export default {
   },
   data() {
     return {
+      tips: tip,
       typeIndex: 0,
       nameLength: 0,
       name: "",
@@ -181,11 +181,11 @@ export default {
               sourceType: ["camera"],
               success: function(res) {
                 let tempFilePaths = res.tempFilePaths;
-                tip.loading("上传中");
+                that.tips.loading("上传中");
                 console.log('图片上传中')
                 qiniuUpload(tempFilePaths[0], async function(res) {
                   that.logo = res.imageURL;
-                  tip.loaded();
+                  that.tips.loaded();
                   console.log('图片上传完成')
                 });
               }
@@ -196,11 +196,11 @@ export default {
               sourceType: ["album"],
               success: function(res) {
                 let tempFilePaths = res.tempFilePaths;
-                tip.loading("上传中");
+                that.tips.loading("上传中");
                 console.log('图片上传中')
                 qiniuUpload(tempFilePaths[0], async function(res) {
                   that.logo = res.imageURL;
-                  tip.loaded();
+                  that.tips.loaded();
                   console.log('图片上传完成')
                 });
               }

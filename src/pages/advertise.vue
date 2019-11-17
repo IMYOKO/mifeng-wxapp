@@ -49,8 +49,7 @@
           </view>
           <view class="m-ct-bottom">
             <view class="text">合计费用</view>
-            <view class="pri" v-if="item.sfbp === 0">¥{{item.amount}}</view>
-            <view class="pri" v-else>¥{{item.bpprice}}</view>
+            <view class="pri">¥{{item.amount}}</view>
           </view>
         </view>
       </view>

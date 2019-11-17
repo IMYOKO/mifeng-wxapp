@@ -9,43 +9,28 @@
       <ul>
         <li>
           <view class="list-item">
-            <view class="h5">广告机：(台)</view>
+            <view class="h5">广告机总台数：(台)</view>
             <view class="h3">{{machineCount}}</view>
           </view>
         </li>
         <li>
           <view class="list-item">
-            <view class="h5">在播数：(个)</view>
+            <view class="h5">在播广告数：(个)</view>
             <view class="h3">{{playingMaterialsCount}}</view>
           </view>
         </li>
         <li>
           <view class="list-item">
-            <view class="h5">在线数：(台)</view>
+            <view class="h5">在线广告机数：(台)</view>
             <view class="h3">{{machineOnlineCount}}</view>
           </view>
         </li>
         <li>
           <view class="list-item">
-            <view class="h5">广告总数：(台)</view>
+            <view class="h5">广告总数：(个)</view>
             <view class="h3">{{materialsCount}}</view>
           </view>
         </li>
-        <!-- <li>
-          <view class="list-item">
-            在播数：<span>dsdas</span> 个
-          </view>
-        </li>
-        <li>
-          <view class="list-item">
-            在线数：<span>12</span> 台
-          </view>
-        </li>
-        <li>
-          <view class="list-item">
-            广告总数：<span>100</span> 个
-          </view>
-        </li> -->
       </ul>
     </view>
     <view
@@ -73,6 +58,14 @@
             <view class="mark">{{item.labelType}}</view>
           </view>
           <view class="middle">
+            <view class="text">用户级别</view>
+            <view class="pri">
+              {{item.isOwner === 1 ? '机主' : ''}}
+              {{item.isManager === 1 ? ' 管理员' : ''}}
+              {{item.isPartner === 1 ? ' 合伙人' : ''}}
+            </view>
+          </view>
+          <view class="bottom">
             <view class="text">图片价格/天</view>
             <view class="pri">¥{{item.imagePrice}}</view>
           </view>

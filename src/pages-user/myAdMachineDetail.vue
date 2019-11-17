@@ -73,10 +73,11 @@
             src="../static/images/ic_home_select.png"
           ></cover-image>
           <view class="tit">{{item.materialName}}</view>
+          <image class="delete" @click="deleteItem(adInfo.id, item.orderId)" src="../static/images/ic_home_search_history_delete.png" />
         </view>
       </view>
       <view class="note">客户广告</view>
-      <view class="content" :style="{height: contentHeight + 'rpx'}">
+      <view class="content" :style="{height: contentHeight2 + 'rpx'}">
         <view
           class="ct-view"
           v-for="(item, index) in contentList2"
@@ -117,6 +118,7 @@
 </template>
 
 <script>
+import tip from "../utils/tip";
 import bottomLoadMore from "../components/common/bottomLoadMore";
 import bottomNoMore from "../components/common/bottomNoMore";
 import placeholder from "../components/common/placeholder";
@@ -153,10 +155,22 @@ export default {
     );
     this.id = Number(options.id);
     this.getAdInfo();
-    this.getMyMachineMaterialList(1, this.start, true);
+    this.getMyMachineMaterialList(1, 0, true);
     this.getMyMachineMaterialList(0, this.start, true);
   },
   methods: {
+    async deleteItem (id, orderId) {
+      await tip.confirm("确定删除该广告？");
+      const payload = {
+        machineId: id,
+        orderId
+      }
+      const res = await this.$server.delMyAd(payload)
+      if (res.data.status === 0) {
+        this.$CommonJs.showToast('删除成功！')
+        this.getMyMachineMaterialList(1, 0, true);
+      }
+    },
     clickPostAd(item) {
       const newItem = { ...item, notDel: true };
       const adMachineId = [newItem];
@@ -174,8 +188,6 @@ export default {
       this.adInfo = res.data.data.machine;
     },
     async getMyMachineMaterialList(isme, start, refresh) {
-      console.log('sssssssssss')
-      console.log(this.id)
       const payload = {
         id: this.id,
         isme,
@@ -283,7 +295,7 @@ export default {
   onReachBottom() {
     if (!this.no_more && !this.is_empty) {
       this.start += 1;
-      this.getMyMachineMaterialList(1, this.start, false);
+      this.getMyMachineMaterialList(1, 0, false);
       this.getMyMachineMaterialList(0, this.start, false);
     }
   }
@@ -474,6 +486,14 @@ export default {
       line-clamp: 2;
       -webkit-box-orient: vertical;
       margin-top: 20rpx;
+    }
+    .delete {
+      position: absolute;
+      bottom: 15rpx;
+      right: 15rpx;
+      z-index: 100;
+      width: 48rpx;
+      height: 48rpx;
     }
   }
 }

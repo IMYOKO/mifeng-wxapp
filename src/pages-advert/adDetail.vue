@@ -82,14 +82,14 @@
               <view
                 class="pri"
                 v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
-              >¥{{item.price}}／天</view>
+              >¥{{item.unitPrice}}／天</view>
               <view
                 class="pri"
                 v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
-              >¥{{item.price}}／15s／天</view>
+              >¥{{item.unitPrice}}／{{item.unitTime}}s／天</view>
             </block>
             <block v-else>
-              <view class="pri">¥{{orderInfo.bpprice}}／{{orderInfo.bpsj}}</view>
+              <view class="pri">¥{{item.unitPrice}}／{{item.unitTime}}s</view>
             </block>
           </view>
           <view class="middle">
@@ -103,8 +103,7 @@
           <view class="bottom">
             <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
             <view class="mark">{{item.lableType}}</view>
-            <view class="num" v-if="orderInfo.sfbp === 0">×{{item.price}}</view>
-            <view class="num" v-else>×{{orderInfo.bpprice}}</view>
+            <view class="num">×{{item.amount}}</view>
           </view>
         </view>
       </view>
@@ -585,12 +584,16 @@ export default {
   .video {
     display: block;
     width: 344rpx;
-    height: 169rpx;
+    height: 613rpx;
     margin: 0 auto;
     margin-bottom: 20rpx;
     &.min {
       width: 700rpx;
       height: 340rpx;
+    }
+    &.min5{
+      width: 700rpx;
+      height: 169rpx;
     }
   }
   .img {
@@ -656,7 +659,7 @@ export default {
           font-size: 22rpx;
           color: rgba(102, 102, 102, 1);
           margin-right: auto;
-          width: 80%;
+          width: 70%;
         }
         .pri {
           font-size: 24rpx;
