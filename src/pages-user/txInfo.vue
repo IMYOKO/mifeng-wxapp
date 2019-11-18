@@ -108,6 +108,9 @@ export default {
 .tx-info {
   padding-top: 20rpx;
   .tx-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     li {
       margin-bottom: 10rpx;
       background: #fff;

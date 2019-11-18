@@ -21,16 +21,16 @@
 
       <view class="matter-box">
         <view class="matter heng" v-if="screenType === 2 && materialType !== 5">
-          <image @click="previewImage(logo)" :src='logo' v-if="materialType === 1 || materialType === 2" />
-          <video :src="video" v-if="materialType === 3 || materialType === 2"></video>
+          <image @click="previewImage(logo)" :src='logo' v-if="materialType === 2" />
+          <video :src="video" v-if="materialType === 4"></video>
         </view>
         <view class="matter shu" v-if="screenType === 1 && materialType !== 5">
-          <image @click="previewImage(logo)" :src='logo' v-if="materialType === 1 || materialType === 2" />
-          <video :src="video" v-if="materialType === 3 || materialType === 2"></video>
+          <image @click="previewImage(logo)" :src='logo' v-if="materialType === 1" />
+          <video :src="video" v-if="materialType === 3"></video>
         </view>
         <view class="matter zhuhe" v-if="materialType === 5">
           <video :src="video"></video>
-          <image @click="previewImage(logo)" :src='logo' />
+          <image  @click="previewImage(logo)" :src='logo' />
         </view>
       </view>
     </view>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import tip from "../utils/tip";
 export default {
   data () {
     return {
@@ -120,7 +121,8 @@ export default {
         auditRemark: this.auditRemark
       }
       await this.$server.materialAudit(payload)
-      tip.success('操作成功')
+      tip.success('操作成功');
+      this.getMaterialsForAudit();
     }
   }
 }
