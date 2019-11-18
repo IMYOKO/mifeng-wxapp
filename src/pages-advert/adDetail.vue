@@ -46,12 +46,22 @@
       <video
         :src="orderInfo.video"
         class="video"
-        v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4 || orderInfo.materialType === 5"
+        v-if="orderInfo.materialType === 3 || orderInfo.materialType === 4"
+      ></video>
+      <video
+        :src="orderInfo.video"
+        class="video min min15"
+        v-if="orderInfo.materialType === 5"
       ></video>
       <image
         class="img"
         :src="orderInfo.logo"
-        v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2 || orderInfo.materialType === 5"
+        v-if="orderInfo.materialType === 1 || orderInfo.materialType === 2"
+      />
+      <image
+        class="img min5"
+        :src="orderInfo.logo"
+        v-if="orderInfo.materialType === 5"
       />
     </view>
     <view class="matter min" v-if="orderInfo.screenType === 2">
@@ -75,7 +85,7 @@
       <view class="item" v-for="(item, index) in machineList" :key="index">
         <image class="logo" :src="item.logo" />
         <view class="ct">
-          <view class="top">{{item.materialName}}</view>
+          <view class="top">{{item.machineName}}</view>
           <view class="middle">
             <view class="place">{{item.province}}{{item.city}}{{item.district}}{{item.address}}广告机</view>
             <block v-if="orderInfo.sfbp === 0">
@@ -92,6 +102,11 @@
               <view class="pri">¥{{item.unitPrice}}／{{item.unitTime}}s</view>
             </block>
           </view>
+          <view class="bottom">
+            <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
+            <view class="mark">{{item.lableType}}</view>
+            <view class="num">×{{item.amount}}</view>
+          </view>
           <view class="middle">
             <view class="place">投放次数</view>
             <view class="pri">{{item.playTimes}}</view>
@@ -99,11 +114,6 @@
           <view class="middle">
             <view class="place">投放时间</view>
             <view class="pri">{{item.playTime}}</view>
-          </view>
-          <view class="bottom">
-            <view class="mark mark2">{{item.screenType === 1 ? '竖屏' : '横屏'}}</view>
-            <view class="mark">{{item.lableType}}</view>
-            <view class="num">×{{item.amount}}</view>
           </view>
         </view>
       </view>
@@ -145,6 +155,7 @@
           <view class="line none"></view>
           <view class="item">
             <view class="info-tit">支付方式</view>
+            <view class="text" v-if="orderInfo.payType === 0">机主投放</view>
             <view class="text" v-if="orderInfo.payType === 2">余额支付</view>
             <view class="text" v-if="orderInfo.payType === 1">微信支付</view>
             <view class="text" v-if="orderInfo.payType === 3">积分支付</view>
@@ -595,6 +606,10 @@ export default {
       width: 700rpx;
       height: 169rpx;
     }
+    &.min15{
+      width: 344rpx;
+      height: 169rpx;
+    }
   }
   .img {
     width: 344rpx;
@@ -605,6 +620,10 @@ export default {
     &.min {
       width: 700rpx;
       height: 340rpx;
+    }
+    &.min5 {
+      width: 344rpx;
+      height: 460rpx;
     }
   }
 }

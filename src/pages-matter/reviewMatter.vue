@@ -21,16 +21,16 @@
 
       <view class="matter-box">
         <view class="matter heng" v-if="screenType === 2 && materialType !== 5">
-          <image :src='logo' v-if="materialType === 1 || materialType === 2" />
+          <image @click="previewImage(logo)" :src='logo' v-if="materialType === 1 || materialType === 2" />
           <video :src="video" v-if="materialType === 3 || materialType === 2"></video>
         </view>
         <view class="matter shu" v-if="screenType === 1 && materialType !== 5">
-          <image :src='logo' v-if="materialType === 1 || materialType === 2" />
+          <image @click="previewImage(logo)" :src='logo' v-if="materialType === 1 || materialType === 2" />
           <video :src="video" v-if="materialType === 3 || materialType === 2"></video>
         </view>
         <view class="matter zhuhe" v-if="materialType === 5">
           <video :src="video"></video>
-          <image :src='logo' />
+          <image @click="previewImage(logo)" :src='logo' />
         </view>
       </view>
     </view>
@@ -71,6 +71,11 @@ export default {
     this.getMaterialsForAudit()
   },
   methods: {
+    previewImage(url) {
+      uni.previewImage({
+        urls: [url]
+      });
+    },
     async getMaterialsForAudit() {
       const payload = {
         id: this.id

@@ -87,11 +87,13 @@ export default {
         "竖屏视频",
         "组合素材"
       ],
-      screenType: null
+      screenType: null,
+      noMachineCartList: 'no'
     };
   },
   onLoad (option) {
     this.screenType = Number(option.material_screenType)
+    this.noMachineCartList = option.noMachineCartList || 'no'
   },
   onShow() {
     this.getMatterList(0, true);
@@ -105,12 +107,16 @@ export default {
     },
     clickChooseIt(id, name, screenType) {
       if (this.screenType === 1 && (screenType === 2 || screenType === 4)) {
-        tip.error('请选择竖屏素材')
-        return
+        if (this.noMachineCartList === 'no') {
+          tip.error('请选择竖屏素材')
+          return
+        }
       }
       if (this.screenType === 2 && (screenType == 1 || screenType === 3 || screenType === 5)) {
-        tip.error('请选择横屏素材')
-        return
+        if (this.noMachineCartList === 'no') {
+          tip.error('请选择横屏素材')
+          return
+        }
       }
       let matter = { id, name, screenType };
       uni.setStorageSync("matter", matter);

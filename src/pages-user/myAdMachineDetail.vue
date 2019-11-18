@@ -28,10 +28,10 @@
               <view class="text">视频价格/天</view>
               <view class="pri">¥{{adInfo.videoPrice}}</view>
             </view>
-            <view class="bottom">
+            <!-- <view class="bottom">
               <view class="text">视频组合价格/15s/天</view>
               <view class="pri">¥{{adInfo.combinePrice}}</view>
-            </view>
+            </view> -->
             <view class="bottom">
               <view class="text">霸屏/{{adInfo.bpTime}}s</view>
               <view class="pri">¥{{adInfo.bpPrice}}</view>

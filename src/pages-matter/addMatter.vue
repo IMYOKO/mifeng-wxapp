@@ -8,6 +8,14 @@
         <view class="modal_btn" @tap="closeModal">确定</view>
       </view>
     </view>
+    <view class="item pd mt">
+      <view class="line"></view>
+      <view class="tit">素材类型</view>
+      <!-- <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">-->
+      <view class="picker-container">
+        <view class="itembtn">{{tags[typeIndex]}}</view>
+      </view>
+    </view>
     <view class="banner-click">
       <view class="banner-item" v-for="(item, index) in tags" :key="index">
         <view class="item-inner">
@@ -19,14 +27,6 @@
             {{item}}
           </view>
         </view>
-      </view>
-    </view>
-    <view class="item pd mt">
-      <view class="line"></view>
-      <view class="tit">素材类型</view>
-      <!-- <picker mode="selector" :range="typeRange" :value="type" @change="typeChange">-->
-      <view class="picker-container">
-        <view class="itembtn">{{tags[typeIndex]}}</view>
       </view>
     </view>
     <view class="item pd" v-if="type === 1 || type === 2 || type === 5" @tap="clickChooseImg">
@@ -356,16 +356,19 @@ export default {
   // left: 0;
   // top: 0;
   z-index: 1000;
+  margin-bottom: 20rpx;
+  margin-top: 1rpx;
+  padding-bottom: 10rpx;
 
   .banner-item {
     width: 33.33%;
 
     .item-inner {
-      padding: 10rpx;
+      padding: 10rpx 15rpx;
       .itemss {
         color: #666;
-        height: 50rpx;
-        line-height: 50rpx;
+        height: 68rpx;
+        line-height: 68rpx;
         font-size: 24rpx;
         border-radius: 5rpx;
         text-align: center;

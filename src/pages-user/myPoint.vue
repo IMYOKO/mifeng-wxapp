@@ -10,7 +10,7 @@
     <view class="item" v-for="(item, index) in contentList" :key="index">
       <view class="item-top">
         <view class="tit">{{item.bussType}}</view>
-        <view class="pri">{{item.amount}}</view>
+        <view class="pri">{{item.szlx === 1 ? "+" : "-"}}{{item.amount}}</view>
       </view>
       <view class="time">{{item.opTime}}</view>
     </view>

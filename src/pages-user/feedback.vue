@@ -91,10 +91,10 @@ export default {
         tip.toast("请输入建议内容");
         return;
       }
-      if (this.images.length <= 0) {
-        tip.toast("请上传图片");
-        return;
-      }
+      // if (this.images.length <= 0) {
+      //   tip.toast("请上传图片");
+      //   return;
+      // }
       await this.$server.addUserOpinion({
         opinion: this.content,
         imagePath: this.images.join(";")

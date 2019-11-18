@@ -116,6 +116,7 @@ export default {
     if (matter) {
       this.material_id = matter.id || "";
       this.material_name = matter.name || "";
+      this.material_screenType = matter.screenType || null;
     }
     let selectDate = uni.getStorageSync("selectDate") || null;
     if (selectDate) {
@@ -166,8 +167,15 @@ export default {
     },
     //选择素材
     clickChooseMatter() {
-      this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
-          this.material_screenType);
+      if (this.machineCartList.length > 0) {
+
+        this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
+            this.material_screenType);
+      } else {
+
+        this.$CommonJs.pathTo("/pages-home/chooseMatter?material_screenType=" +
+            this.material_screenType + "&noMachineCartList=yes");
+      }
     },
     //选择广告机
     clickChooseMachine() {
@@ -224,6 +232,9 @@ export default {
         const orderId = res.data.data.orderId;
         const orderStatus = res.data.data.status;
         await tip.success("下单成功");
+        uni.removeStorageSync("matter");
+        uni.removeStorageSync("selectDate");
+        uni.setStorageSync("adMachineId", []);
         this.$CommonJs.pathTo("/pages-home/postAdDetail?orderStatus=" + orderStatus + "&id=" + orderId);
       } catch (error) {
         const status = error.data.status

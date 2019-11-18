@@ -239,6 +239,8 @@ export default {
         const orderId = res.data.data.orderId;
         const orderStatus = res.data.data.status;
         await tip.success("下单成功");
+        uni.removeStorageSync("matter");
+        uni.removeStorageSync("selectDate");
         uni.setStorageSync("adMachineId", []);
         this.$CommonJs.pathTo("/pages-home/postAdDetail?orderStatus=" + orderStatus + "&id=" + orderId);
       } catch (error) {
