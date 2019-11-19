@@ -33,6 +33,7 @@
         </li>
       </ul>
     </view>
+    <view class="tips">注：广告机每天必须在线10小时以上才有收益</view>
     <view
       class="ct-view"
       v-for="(item, index) in contentList"
@@ -80,6 +81,14 @@
           <view class="bottom">
             <view class="text">霸屏/{{item.bpTime}}s</view>
             <view class="pri">¥{{item.bpPrice}}</view>
+          </view>
+          <view class="bottom">
+            <view class="text">当天在线时间</view>
+            <view class="pri">{{$CommonJs.bpsjFn(item.runTime)}}</view>
+          </view>
+          <view class="bottom">
+            <view class="text">本周有效天数</view>
+            <view class="pri">{{item.runDays}}/7天</view>
           </view>
         </view>
       </view>
@@ -207,6 +216,12 @@ export default {
 <style lang="less" scoped>
 .myAdMachine {
   padding-top: 100rpx;
+}
+.tips {
+  padding: 10rpx 25rpx 0;
+  font-size: 20rpx;
+  color: #575757;
+  line-height: 24rpx;
 }
 .total-wrapper {
   // position: fixed;

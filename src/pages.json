@@ -40,7 +40,7 @@
         },
         {
           "path": "postFreeAd",
-          "style": { "navigationBarTitleText": "发布广告" }
+          "style": { "navigationBarTitleText": "发布免费广告" }
         },
         {
           "path": "paySuccess",

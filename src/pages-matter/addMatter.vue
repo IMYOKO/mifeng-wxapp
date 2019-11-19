@@ -140,8 +140,12 @@ export default {
   },
   methods: {
     selectTag (index) {
-      this.typeIndex = index
-      this.showTag = false
+      if (index !== this.typeIndex) {
+        this.typeIndex = index
+        this.video = ''
+        this.logo = ''
+        this.seconds = 0
+      }
     },
     radioChange() {
       // this.status = !this.status
@@ -150,9 +154,6 @@ export default {
     click_radio() {
       this.status = !this.status;
       // console.log("click_radio:",this.status)
-    },
-    closeModal() {
-      this.showModal = false;
     },
     Torules() {
       uni.navigateTo({
@@ -221,20 +222,20 @@ export default {
         camera: "back",
         compressed: false,
         success(res) {
+          console.log('视频时间：', res.duration)
+          that.seconds = res.duration;
+          if (that.seconds > 60) {
+            that.video = "";
+            that.seconds = "";
+            tip.toast("视频长度不能超过60秒");
+            return
+          }
           tip.loading("视频上传中");
           qiniuUpload(res.tempFilePath, async function(res) {
             that.video = res.imageURL;
             tip.loaded();
           });
         },
-        complete(res) {
-          that.seconds = res.duration;
-          if (that.seconds > 60) {
-            that.video = "";
-            that.seconds = "";
-            tip.toast("视频超过60s");
-          }
-        }
       });
     },
     //预览

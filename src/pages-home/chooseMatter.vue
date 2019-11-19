@@ -183,7 +183,7 @@ export default {
     },
     computeLeftAndTop(item, tops) {
       const itemHeight =
-        item.materialType === 2 || item.materialType === 4 ? 323 : 660;
+        item.materialType === 2 || item.materialType === 4 ? 359 : 724;
       if (tops[0] <= tops[1]) {
         item.style = {
           top: tops[0] + "rpx",
@@ -226,7 +226,7 @@ export default {
 
 <style lang="less" scoped>
 .chooseMatter {
-  padding-top: 160rpx;
+  padding-top: 180rpx;
   box-sizing: border-box;
 
   .banner {
@@ -278,8 +278,8 @@ export default {
         padding: 10rpx;
         .item {
           color: #666;
-          height: 50rpx;
-          line-height: 50rpx;
+          height: 68rpx;
+          line-height: 68rpx;
           font-size: 24rpx;
           border-radius: 5rpx;
           text-align: center;

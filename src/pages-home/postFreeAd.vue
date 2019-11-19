@@ -67,8 +67,8 @@
         </view>
       </view>
     </block>
-    <view class="note" v-if="type === 1">注：广告显示为当天循环播放，图片广告每次播放时长为15秒，视频+图片广告播放时长为视频时长（视频总时长不能超过一分钟）。价格以播放时长计算，X元/15秒</view>
-    <view class="note" v-if="type === 2">注：广告显示为当天播放，霸屏播放付费时间，价格以播放时长计算，X元/60秒</view>
+    <view class="note" v-if="type === 1">注：广告显示为当天无限循环播放；图片广告每次播放时长为15秒；视频广告每次播放时长为视频时长，视频价格视频时长计算，X元/15秒。</view>
+    <view class="note" v-if="type === 2">注：广告加载完毕后马上显示在广告机上；霸屏播放时长为客户选择时长，价格按分钟计算。X元/分钟。</view>
     <button class="btn" @tap="clickSubmit">确认投放</button>
   </view>
 </template>

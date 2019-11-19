@@ -30,7 +30,7 @@
         </view>
         <view class="matter zhuhe" v-if="materialType === 5">
           <video :src="video"></video>
-          <image  @click="previewImage(logo)" :src='logo' />
+          <image @click="previewImage(logo)" :src='logo' />
         </view>
       </view>
     </view>
@@ -203,15 +203,15 @@ export default {
         }
       }
       .zhuhe {
-        width: 662rpx;
+        width: 344rpx;
         video {
           width: 100%;
-          height: 352rpx;
+          height: 169rpx;
           margin-bottom: 10rpx;
         }
         image {
           width: 100%;
-          height: 268rpx;
+          height: 460rpx;
         }
       }
     }
