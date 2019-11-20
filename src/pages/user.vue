@@ -39,14 +39,6 @@
         </view>
       </formidTaker>
     </view>
-    <view @tap="clickApplyCoop">
-      <formidTaker>
-        <view class="item">
-          <image class="item-icon hezuo" src="../static/images/ic_my_hezuo.png" />
-          <view class="item-text">申请合作</view>
-        </view>
-      </formidTaker>
-    </view>
     <view @tap="clickFeedback">
       <formidTaker>
         <view class="item">
@@ -68,6 +60,14 @@
         <view class="item">
           <image class="item-icon" src="../static/images/fuwuxieyi.png" />
           <view class="item-text">服务协议</view>
+        </view>
+      </formidTaker>
+    </view>
+    <view @tap="clickApplyCoop">
+      <formidTaker>
+        <view class="item">
+          <image class="item-icon hezuo" src="../static/images/ic_my_hezuo.png" />
+          <view class="item-text hz">申请合作</view>
         </view>
       </formidTaker>
     </view>
@@ -297,6 +297,9 @@ page {
     .item-text {
       font-size: 26rpx;
       color: rgba(20, 20, 20, 1);
+      &.hz {
+        color: #c35301;
+      }
     }
   }
 }

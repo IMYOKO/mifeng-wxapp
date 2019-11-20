@@ -218,8 +218,9 @@ export default {
   padding-top: 100rpx;
 }
 .tips {
+  text-align: center;
   padding: 10rpx 25rpx 0;
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: #575757;
   line-height: 24rpx;
 }
