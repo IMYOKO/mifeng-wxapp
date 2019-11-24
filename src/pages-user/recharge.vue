@@ -49,6 +49,7 @@ export default {
           amount: this.money
         });
         const data = res.data.data;
+        let wepy = this;
         wx.requestPayment({
           'timeStamp': data.timeStamp,
           'nonceStr': data.nonceStr,
@@ -62,7 +63,7 @@ export default {
             }, 1000);
           },
           'fail': function (res) {
-            // tip.toast('支付取消');
+            tip.toast('支付取消');
             console.log(res)
           }
         }); 

@@ -332,19 +332,20 @@ export default {
           .orderPay(payload)
           .then(res => {
             this.payPassValue = "";
+              let ndata = res.data.data.wechatOrder;
             wx.requestPayment({
-              timeStamp: res.data.timeStamp,
-              nonceStr: res.data.nonceStr,
-              package: res.data.package,
-              signType: res.data.signType,
-              paySign: res.data.paySign,
+              timeStamp: ndata.timeStamp,
+              nonceStr: ndata.nonceStr,
+              package: ndata.package,
+              signType: ndata.signType,
+              paySign: ndata.paySign,
               success: function(res) {
                 uni.redirectTo({
                   url: "/pages-home/paySuccess?id=" + payload.orderId
                 });
               },
               fail: function(res) {
-                // tip.toast('支付取消');
+                tip.toast('支付取消');
                 console.log(res);
               }
             });

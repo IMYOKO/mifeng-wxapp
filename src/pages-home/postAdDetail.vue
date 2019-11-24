@@ -253,33 +253,36 @@ export default {
           orderId: this.id,
           payType: 1
         };
-        await this.$server
-          .orderPay(payload)
-          .then(res => {
-            this.payPassValue = "";
-            wx.requestPayment({
-              timeStamp: res.data.timeStamp,
-              nonceStr: res.data.nonceStr,
-              package: res.data.package,
-              signType: res.data.signType,
-              paySign: res.data.paySign,
-              success: function(res) {
-                uni.redirectTo({
-                  url: "/pages-home/paySuccess?id=" + this.id
-                });
-              },
-              fail: function(res) {
-                // tip.toast('支付取消');
-                console.log(res);
-              }
-            });
-          })
-          .catch(err => {
-            if (err.code != 0) {
-              this.inputBan = false;
-              this.payPassValue = "";
-            }
-          });
+          var that = this;
+          await this.$server
+              .orderPay(payload)
+              .then(res => {
+                  console.log(res);
+                  let ndata = res.data.data.wechatOrder;
+                  this.payPassValue = "";
+                  wx.requestPayment({
+                      timeStamp: ndata.timeStamp,
+                      nonceStr: ndata.nonceStr,
+                      package: ndata.package,
+                      signType: ndata.signType,
+                      paySign: ndata.paySign,
+                      success: function (res) {
+                          uni.redirectTo({
+                              url: "/pages-home/paySuccess?id=" + that.id
+                          });
+                      },
+                      fail: function (res) {
+                          tip.toast('支付取消');
+                          console.log(res);
+                      }
+                  });
+              })
+              .catch(err => {
+                  if (err.code != 0) {
+                      this.inputBan = false;
+                      this.payPassValue = "";
+                  }
+              });
       }
     },
     async clickSureOrderFree () {
