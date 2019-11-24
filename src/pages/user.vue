@@ -5,7 +5,6 @@
       <image class="tx" :src="userInfo.avatarUrl" />
       <view class="name">{{userInfo.nickName}}</view>
       <view class="sf">{{userInfo.userLevelName}}</view>
-      <button class="dingyue" @click="sendMsg">订阅</button>
     </view>
     <view @tap="clickMyAd">
       <formidTaker>

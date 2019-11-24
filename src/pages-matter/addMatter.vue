@@ -110,7 +110,9 @@ export default {
         "竖屏视频",
         "组合素材"
       ],
-      showTag: false
+      showTag: false,
+      versionOk: false,
+      tmplIds: []
       // typeRange: ["竖屏图片", "横屏图片", "竖屏视频", "横屏视频", "组合素材"]
     };
   },
@@ -137,8 +139,58 @@ export default {
   },
   onLoad(options) {
     this.type = 2;
+    const version = wx.getSystemInfoSync().SDKVersion;
+    if (this.$CommonJs.compareVersion(version, '2.8.2') >= 0) {
+      this.versionOk = true
+    }
+  },
+  async onShow () {
+    await this.getUserWxTemplate()
   },
   methods: {
+    async getUserWxTemplate () {
+      try {
+        const res = await this.$server.getUserWxTemplate()
+        const templateList = res.data.data.templateList || []
+        let tmplIds = []
+        templateList.forEach(item => {
+          if (item.sfdy === 0) {
+            tmplIds.push(item.templateId)
+          }
+        })
+        this.tmplIds = tmplIds
+      } catch (error) {}
+    },
+    async wxxxdy (result) {
+      const payload = { result }
+      await this.$server.wxxxdy(payload)
+    },
+    async requestSubscribeMessage () {
+      console.log('拉起订阅')
+			return new Promise((reslove, reject) => {
+				wx.requestSubscribeMessage({
+					tmplIds: this.tmplIds,
+					success: async res => {
+            console.log('requestSubscribeMessage', res)
+						if (res.errMsg === 'requestSubscribeMessage:ok') {
+              await this.wxxxdy(JSON.stringify(res))
+							reslove({
+								status: 0
+							})
+						} else {
+							reslove({
+								status: 0
+							})
+            }
+					},
+					fail() {
+						reslove({
+							status: 0
+						})
+					}
+				})
+			})
+    },
     selectTag (index) {
       if (index !== this.typeIndex) {
         this.typeIndex = index
@@ -303,6 +355,17 @@ export default {
       ) {
         tip.toast("上传视频不能超过1分钟请重新选择");
         return;
+      }
+      // 新增订阅
+      if (this.versionOk) {
+        console.log('this.tmplIds', this.tmplIds)
+        if (this.tmplIds.length > 0) {
+          await this.requestSubscribeMessage()
+        } else {
+          console.log('您没有新的信息订阅拉！')
+        }
+      } else {
+        console.log('当前微信版本过低，无法使用订阅功能')
       }
       const payload = {
         materialName: this.name,
